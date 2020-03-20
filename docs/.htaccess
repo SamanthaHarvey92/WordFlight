@@ -26,4 +26,3 @@ AddType text/x-generic js memgz jsgz datagz asm.jsgz
 AddType application/octet-stream memgz datagz unity3dgz
 AddType application/x-javascript jsgz
 AddType application/javascript jsgz
-# Example
