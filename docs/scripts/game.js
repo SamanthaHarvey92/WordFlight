@@ -12,7 +12,7 @@
 // LAST UPDATE:		03/22/2020 - Created main game.js file to work from
 //========================================================================
 
-window.onLoad() => {
+window.onLoad = function() {
   var c = document.getElementById("myCanvas");
   var ctx = c.getContext("2d");
   var img = document.getElementById("scream");
