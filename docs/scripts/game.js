@@ -11,3 +11,4 @@
 // DESCRIPTION:		Controls the heart of Word Flight
 // LAST UPDATE:		03/22/2020 - Created main game.js file to work from
 //========================================================================
+// Made a change
