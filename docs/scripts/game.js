@@ -11,4 +11,10 @@
 // DESCRIPTION:		Controls the heart of Word Flight
 // LAST UPDATE:		03/22/2020 - Created main game.js file to work from
 //========================================================================
-// Made a change
+
+window.onLoad() => {
+  var c = document.getElementById("myCanvas");
+  var ctx = c.getContext("2d");
+  var img = document.getElementById("scream");
+  ctx.drawImage(img, 10, 10);
+}
