@@ -17,4 +17,5 @@ window.onLoad = function() {
   var ctx = c.getContext("2d");
   var img = document.getElementById("scream");
   ctx.drawImage(img, 250, 100);
+  img.style.display = "block";
 }
