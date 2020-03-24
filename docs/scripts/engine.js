@@ -163,9 +163,99 @@ engine.input = {
 	}
 };
 
+// Bind the engine's input handlers to the document's handlers
+document.onkeydown = engine.input.onkeydown.bind(engine.input);
+document.onkeyup = engine.input.onkeyup.bind(engine.input);
+document.onmouseup = engine.input.onmouseup.bind(engine.input);
 
+// Assign values to mouse buttons
+engine.button = {
+	LEFT: -1,
+	MIDDLE: -2,
+	RIGHT: -3,
+	WHEELDOWN: -4,
+	WHEELUP: -5
+};
+
+// Assign values to keyboard input for special keys
+engine.key = {
+	TAB: 9,
+	ENTER: 13,
+	ESC: 27,
+	SPACE: 32,
+	LEFT_ARROW: 37,
+	UP_ARROW: 38,
+	RIGHT_ARROW: 39,
+	DOWN_ARROW: 40
+};
+
+// Assign values to keyboard input for alpha keys
+for (c = 65; c <= 90; c++) {
+	engine.key[String.fromCharCode(c)] = c;
+}
+
+// Create an eventCode for mouse button clicks
+eventCode = function(e) {
+	if (e.type === 'keydown' || e.type === 'keyup') {
+		return e.keyCode;
+	} else if (e.type === 'mousedown' || e.type === 'mouseup') {
+		switch (e.button) {
+			case 0:
+				return engine.button.LEFT;
+			case 1:
+				return engine.button.MIDDLE;
+			case 2:
+				return engine.button.RIGHT;
+		}
+	} else if (e.type === 'mousewheel') {
+		if (e.wheel > 0) {
+			return engine.button.WHEELUP;
+		} else {
+			return engine.button.WHEELDOWN;
+		}
+	}
+};
+
+// Initialize canvas hooks
+engine.canvas = document.getElementsByTagName("canvas")[0];
+// Set canvas size and position
+engine.canvas.style.position = "absolute";
+engine.canvas.style.top = "0";
+engine.canvas.style.left = "0";
+// Get canvas context
+engine.context = engine.canvas.getContext("2d");
+
+// Bind the engine's mouse events to the canvas
+engine.canvas.onmousemove = engine.input.onmousemove.bind(engine.input);
+engine.canvas.onmousedown = engine.input.onmousedown.bind(engine.input);
+engine.canvas.onmouseup = engine.input.onmouseup.bind(engine.input);
+//engine.canvas.onmousewheel = engine.input.onmousewheel.bind(engine.input);
+engine.canvas.oncontextmenu = engine.input.oncontextmenu.bind(engine.input);
+
+// React proportions
+engine.widthProportion = Math.abs(1920 - window.innerWidth) / 1920;
+engine.heightProportion = Math.abs(1080 - window.innerHeight) / 1080;
+
+window.onload = function() {
+	//alert("loaded");
+	console.log("(w: " + engine.widthProportion + "%, h: " + engine.heightProportion + "%)");
+};
+
+// Handle window resizing events
+window.onresize = function(e) {
+	engine.canvas.width = window.innerWidth;
+	engine.canvas.height = window.innerHeight;
+	engine.width = engine.canvas.width;
+	engine.height = engine.canvas.height;
+	engine.widthProportion = (Math.abs(1920 - window.innerWidth) / 1920).toPrecision(4);
+	engine.heightProportion = (Math.abs(1080 - window.innerWidth) / 1080).toPrecision(4);
+	return;
+};
+window.onresize();
+
+// Primary game loop
 GameObject = (function() {
-	function GameObject() {}
+	function GameObject() {};
 	GameObject.prototype.update = function (dt) {};
 	GameObject.prototype.draw = function() {};
 	GameObject.prototype.run = function() {
@@ -187,6 +277,8 @@ GameObject = (function() {
 		}, this);
 		
 		this.lastStep = Date.now();
+
+		// console.log("(w: " + engine.widthProportion + ", h: " + engine.heightProportion + ")");
 		
 		return requestAnimationFrame(s);
 	};
