@@ -74,12 +74,11 @@ game.startButton = {
 	}
 };
 
-
 /* Game States and transitions
 ** -- Start Scene
 ** |\ - Play Scene
 ** |  \ - End Scene
-** |    \ - Leaderboard Scene
+** \____\ - Leaderboard Scene
 **        \ - Start Scene
 */
 game.gameState = ['start', 'play', 'end', 'leaderboard'];
@@ -146,7 +145,6 @@ game.draw = function() {
 			break;
 	}
 };
-
 
 // Lose focus
 window.onblur = function() {
