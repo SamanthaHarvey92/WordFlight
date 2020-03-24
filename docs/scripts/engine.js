@@ -24,7 +24,7 @@
 //========================================================================
 
 // Declare important engine variables
-var engine, GameObject, c, eventCode, requestAnimationFrame;
+var engine, GameObject, c, eventCode, _requestAnimationFrame;
 
 // Retrieve the index of an object prototype stored within the game
 var __indexOf = Array.prototype.indexOf ||
@@ -44,10 +44,11 @@ var __indexOf = Array.prototype.indexOf ||
 	};
 
 // Access the current browser's framerate for maximum control over animation
-requestAnimationFrame = 					// Multibrowser support options:
+_requestAnimationFrame = 					// Multibrowser support options:
 	window.requestAnimationFrame || 		// - Generic
 	window.webkitRequestAnimationFrame || 	// - Chrome, Safari, Opera
 	window.mozRequestAnimationFrame || 		// - Firefox
+	window.oRequestAnimationFrame ||
 	window.msRequestAnimationFrame || 		// - Edge
 	function(callback) {
 		return window.setTimeout((function() {
@@ -63,7 +64,7 @@ engine.input = {
 	_bindings: {},
 	_down: {},
 	_pressed: {},
-	_released: {},
+	_released: [],
 	
 	mouse: {
 		x: 0,
@@ -229,27 +230,28 @@ engine.context = engine.canvas.getContext("2d");
 engine.canvas.onmousemove = engine.input.onmousemove.bind(engine.input);
 engine.canvas.onmousedown = engine.input.onmousedown.bind(engine.input);
 engine.canvas.onmouseup = engine.input.onmouseup.bind(engine.input);
-//engine.canvas.onmousewheel = engine.input.onmousewheel.bind(engine.input);
-engine.canvas.oncontextmenu = engine.input.oncontextmenu.bind(engine.input);
+engine.canvas.onmousewheel = engine.input.onmousewheel.bind(engine.input);
+// engine.canvas.oncontextmenu = engine.input.oncontextmenu.bind(engine.input);
 
 // React proportions
-engine.widthProportion = Math.abs(1920 - window.innerWidth) / 1920;
-engine.heightProportion = Math.abs(1080 - window.innerHeight) / 1080;
+engine.widthProportion = (Math.abs(1920 - window.innerWidth) / 1920).toPrecision(4);
+engine.heightProportion = (Math.abs(1080 - window.innerHeight) / 1080).toPrecision(4);
 
 window.onload = function() {
-	//alert("loaded");
-	console.log("(w: " + engine.widthProportion + "%, h: " + engine.heightProportion + "%)");
+	console.log("(w: " + (engine.widthProportion*100).toPrecision(4) + "%, h: " + (engine.heightProportion*100).toPrecision(4) + "%)");
+	console.log("(w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
 };
 
 // Handle window resizing events
 window.onresize = function(e) {
 	engine.canvas.width = window.innerWidth;
 	engine.canvas.height = window.innerHeight;
-	engine.width = engine.canvas.width;
-	engine.height = engine.canvas.height;
 	engine.widthProportion = (Math.abs(1920 - window.innerWidth) / 1920).toPrecision(4);
 	engine.heightProportion = (Math.abs(1080 - window.innerWidth) / 1080).toPrecision(4);
-	return;
+	engine.width = engine.canvas.width;
+	// console.log("(w: " + (engine.widthProportion*100).toPrecision(4) + "%, h: " + (engine.heightProportion*100).toPrecision(4) + "%)");
+	console.log("(w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
+	return engine.height = engine.canvas.height;
 };
 window.onresize();
 
@@ -273,14 +275,14 @@ GameObject = (function() {
 			
 			this.step();
 			
-			return requestAnimationFrame(s);
+			return _requestAnimationFrame(s);
 		}, this);
 		
 		this.lastStep = Date.now();
 
-		// console.log("(w: " + engine.widthProportion + ", h: " + engine.heightProportion + ")");
 		
-		return requestAnimationFrame(s);
+		
+		return _requestAnimationFrame(s);
 	};
 	
 	GameObject.prototype.stop = function() {
@@ -298,5 +300,5 @@ GameObject = (function() {
 	}
 	
 	return GameObject;
-});
+})();
 engine.GameObject = GameObject;
