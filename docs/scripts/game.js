@@ -68,6 +68,8 @@ game.startButton = {
 		this.image.style.display = "block";
 		this.image.style.left = this.posX.toString() + "px";
 		this.image.style.top = this.posY.toString() + "px";
+		this.image.style.width = this.width + "px";
+		this.image.style.height = this.height + "px";
 		this.image.style.zIndex = 1;
 	}
 };
@@ -129,9 +131,7 @@ game.draw = function() {
 			// Draw images on the canvas
 			this.wordFlightTitle.draw();
 			// Display buttons
-			if (this.startButton.image.style.display == "none") {
-				this.startButton.adjustStyle();
-			}
+			this.startButton.adjustStyle();
 			break;
 		case 'play':
 			
