@@ -1,4 +1,3 @@
-# Word Flight
 ![Word Flight Title](/docs/images/WordFlight_Title.png)
 
 ## Primary Objective
