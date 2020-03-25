@@ -1,4 +1,5 @@
 # Word Flight
+![Word Flight Title](/docs/images/WordFlight_Title.png)
 
 ## Primary Objective
 Following a similar game style to Hangman, Word Flight has players race against the clock to build as many planes as possible within the time limit.
