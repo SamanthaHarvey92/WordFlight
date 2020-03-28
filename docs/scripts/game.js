@@ -21,11 +21,17 @@ for (var i = 0; i < game.keys.length-1; i++) {
     engine.input.bind(engine.key[game.keys[i]], game.keys[i]);
 }
 
+// Declare Game Variables
+// - Globals
+game.scale = 0.9;
+
 // Image hooks
+// - Start Scene
+//   - Images
 game.wordFlightTitle = {
     image: document.getElementById("wordFlightTitle"),
-    org_width: 1000 * 0.9,
-    org_height: 208 * 0.9,
+    org_width: 1000 * game.scale,
+    org_height: 208 * game.scale,
     width: 0,
     height: 0,
 	posX: 0,
@@ -43,10 +49,11 @@ game.wordFlightTitle = {
 	}
 };
 
+//   - Buttons
 game.startButton = {
     image: document.getElementById("startButton"),
-    org_width: 644 * 0.9,
-    org_height: 156 * 0.9,
+    org_width: 644 * game.scale,
+    org_height: 156 * game.scale,
     width: 0,
     height: 0,
 	posX: 0,
