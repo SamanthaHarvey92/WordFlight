@@ -502,37 +502,29 @@ game.leaderboardPlayerScore = {
 		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
 	}
 };
-//   - Buttons
-game.leaderboardMenuButton = {
-    image: document.getElementById("wordFlightMenuButton"),
-    org_width: 644 * game.scale,
-    org_height: 156 * game.scale,
-    width: 0,
-    height: 0,
+
+game.leaderboardSponsor = {
+	image: document.getElementById("leaderboardSponsor"),
+	org_width = 302 * game.scale,
+	org_height = 365 * game.scale,
+	width: 0,
+	height: 0,
 	posX: 0,
 	posY: 0,
-    resize: function() {
-        this.width = this.org_width * (1- engine.widthProportion);
-        this.height = this.org_height * (1- engine.widthProportion);
-		this.posX = engine.width/2 - this.width/2;
-		this.posY = engine.height/2 - this.height/2;
-    },
-	draw: function() {
-		this.resize();
-		// drawImage(source, posX, posY, width, height)
-		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	resize: function () {
+		this.width = this.org_width * (1- engine.widthProportion);
+		this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = 10 * (1- engine.widthProportion);
+		this.posY = 10 * (1- engine.widthProportion);
 	},
-	adjustStyle: function() {
+	draw: function () {
 		this.resize();
-		this.image.style.position = "absolute";
-		this.image.style.display = "block";
-		this.image.style.left = this.posX.toString() + "px";
-		this.image.style.top = this.posY.toString() + "px";
-		this.image.style.width = this.width + "px";
-		this.image.style.height = this.height + "px";
-		this.image.style.zIndex = 1;
+		//drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
 	}
 };
+
+//   - Buttons
 game.leaderboardMenuButton = {
     image: document.getElementById("wordFlightMenuButton"),
     org_width: 204 * game.scale,
@@ -763,6 +755,7 @@ game.drawOnce = function() {
 			this.leaderboardTitle.draw();
 			this.leaderboardClipboard.draw();
 			this.leaderboardPlayerScore.draw();
+			this.leaderboardSponsor.draw();
 			// Display buttons
 			this.leaderboardMenuButton.adjustStyle();
 			this.leaderboardRetryButton.adjustStyle();
