@@ -21,9 +21,25 @@ for (var i = 0; i < game.keys.length-1; i++) {
     engine.input.bind(engine.key[game.keys[i]], game.keys[i]);
 }
 
+// Control bindings for testing purposes
+game.controls = ['SPACE'];
+for (var i = 0; i < game.controls.length; i++) {
+	engine.input.bind(engine.key[game.controls[i]], game.controls[i]);
+};
+
+// Mouse bindings
+game.mouse = ['LEFT', 'MIDDLE', 'RIGHT', 'WHEELDOWN', 'WHEELUP'];
+for (var i = 0; i < game.mouse.length; i++) {
+	// engine.input.bind(engine.button.LEFT, 'left_click');
+	engine.input.bind(engine.button[game.mouse[i]], game.mouse[i]);
+}
+
 // Declare Game Variables
 // - Globals
-game.scale = 0.9;
+game.scale = 1.0;
+// - Browser size monitors
+game.oldWidth = 0;
+game.oldHeight = 0;
 
 // Image hooks
 // - Start Scene
@@ -106,7 +122,7 @@ game.startScene = {
 
      resize: function() {
 	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion); //why is this not heightProportion?
+	this.height = this.org_height * (1 - engine.widthProportion); 
 	this.posX = engine.width/2 - this.width/2;
 	this.posY = engine.height/4 - this.height/2;
      },
@@ -121,11 +137,11 @@ game.startScene = {
 //   - Buttons
 game.menuButton = {
     image: document.getElementById("menuButton"),
-    org_width: 644 * game.scale,  //do we want the menuButton smaller than other buttons on screen? 
+    org_width: 644 * game.scale,  
     org_height: 156 * game.scale,
     width: 0,
     height: 0,
-    posX: 0,	//do I need to change position since menuButton will be in top right corner?
+    posX: 0,
     posY: 0,
 	
     resize: function() {
@@ -148,7 +164,7 @@ game.menuButton = {
 		this.image.style.top = this.posY.toString() + "px";
 		this.image.style.width = this.width + "px";
 		this.image.style.height = this.height + "px";
-		this.image.style.zIndex = 1; //Do I keep zIndex same to be on same level as other buttons above Canvas? 
+		this.image.style.zIndex = 1; 
 	}
 };
 	
@@ -227,7 +243,7 @@ game.quitButton = {
     posY: 0,
 	
     resize: function() {
-	this.width = this.org_width * (1 - engine.widthProportion);
+    this.width = this.org_width * (1 - engine.widthProportion);
 	this.height = this.org_height * (1 - engine.widthProportion);
 	this.posX = engine.width/2 - this.width/2;
 	this.posY = engine.height/2 - this.height/2;
@@ -236,8 +252,157 @@ game.quitButton = {
 		this.resize();
 		//drawImage(source, posX, posY, width, height)
 		//engine.context.drawImage(this.image, engine.width/2 - this.width/2, engine.height/2, this.width, this.height); //644x156
+	}
+};	
+
+// - Play Scene
+//   - Images
+game.playBackground = {
+    image: document.getElementById("playBackground"),
+    org_width: 1923,
+    org_height: 1093,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = engine.width;
+        this.height = engine.height;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.playTitle = {
+    image: document.getElementById("wordFlightTitleSmall"),
+    org_width: 541 * game.scale,
+    org_height: 120 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = 10 * (1- engine.widthProportion);
+		this.posY = 10 * (1- engine.widthProportion);
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.playScore = {
+    image: document.getElementById("playScore"),
+    org_width: 555 * game.scale,
+    org_height: 371 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = engine.width/2 - this.width/2;
+		this.posY = engine.height/4 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.playSponsor = {
+    image: document.getElementById("playSponsor"),
+    org_width: 403 * game.scale,
+    org_height: 490 * game.scale,
+    width: 0,
+    height: 0,
+	org_posX: 1516,
+	org_posY: 447,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = this.org_posX - engine.widthDifference;
+		this.posY = this.org_posY - engine.heightDifference;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.playTimer = {
+    image: document.getElementById("playTimer"),
+    org_width: 459 * game.scale,
+    org_height: 371 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = engine.width/2 - this.width/2;
+		this.posY = engine.height/4 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.playLetterSpace = {
+    image: document.getElementById("playLetterSpace"),
+    org_width: 110 * game.scale,
+    org_height: 142 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = engine.width/2 - this.width/2;
+		this.posY = engine.height/4 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+//   - Buttons
+game.playMenuButton = {
+    image: document.getElementById("wordFlightMenuButton"),
+    org_width: 204 * game.scale,
+    org_height: 69 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = engine.width/2 - this.width/2;
+		this.posY = engine.height/2 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		// engine.context.drawImage(this.image, engine.width/2 - this.width/2, engine.height/2, this.width, this.height); // 644x156
 	},
-	
 	adjustStyle: function() {
 		this.resize();
 		this.image.style.position = "absolute";
@@ -246,9 +411,17 @@ game.quitButton = {
 		this.image.style.top = this.posY.toString() + "px";
 		this.image.style.width = this.width + "px";
 		this.image.style.height = this.height + "px";
-		this.image.style.zIndex = 1; //same question as previous buttons
+		this.image.style.zIndex = 1;
 	}
 };
+
+// - End Scene
+//   - Images
+//   - Buttons
+
+// - Leaderboard Scene
+//   - Images
+//   - Buttons
 
 /* Game States and transitions
 ** -- Start Scene
@@ -260,24 +433,102 @@ game.quitButton = {
 game.gameState = ['start', 'play', 'end', 'leaderboard'];
 game.currState = game.gameState[0];
 
+// Clear the screen of all elements
+game.hideElements = {
+	// Hide images
+	images: function() {
+		var y = document.getElementsByTagName("img");
+		for (var i = 0; i < y.length; i++) {
+			y[i].style.display = "none";
+		}
+	},
+	// Hide canvas drawings
+	canvas: function() {
+		engine.context.clearRect(0, 0, engine.width, engine.height);
+	},
+	// Hide everything
+	hideAll: function() {
+		this.images();
+		this.canvas();
+	}
+};
+
 // Maintain live game data (timers, scores, etc.)
 game.gameController = {
 	gsStart: function(dt) {
 		// Start Scene
+		
+		// Toggle next state
+		for (var i = 0; i < game.controls.length; i++) {
+			if (engine.input.pressed(game.controls[i])) {
+				game.currState = game.gameState[1];
+				game.hideElements.hideAll();
+				game.drawOnce();
+			}
+		}
 	},
 	gsPlay: function(dt) {
 		// Play Scene
+		
+		// Toggle next state
+		for (var i = 0; i < game.controls.length; i++) {
+			if (engine.input.pressed(game.controls[i])) {
+				game.currState = game.gameState[2];
+				game.hideElements.hideAll();
+				game.drawOnce();
+			}
+		}
+		
+		// Handle mouse clicks
+		for (var i = 0; i < game.mouse.length; i++) {
+			if (engine.input.pressed(game.mouse[i])) {
+				// alert("Event: " + game.mouse[i].toString());
+			}
+		}
 	},
 	gsEnd: function(dt) {
 		// End Scene
+		
+		// Toggle next state
+		for (var i = 0; i < game.controls.length; i++) {
+			if (engine.input.pressed(game.controls[i])) {
+				game.currState = game.gameState[3];
+				game.hideElements.hideAll();
+				game.drawOnce();
+			}
+		}
+		
+		// Handle mouse clicks
+		for (var i = 0; i < game.mouse.length; i++) {
+			if (engine.input.pressed(game.mouse[i])) {
+				// alert("Event: " + game.mouse[i].toString());
+			}
+		}
 	},
 	gsLeaderboard: function(dt) {
 		// Leaderboard Scene
+		
+		// Toggle next state
+		for (var i = 0; i < game.controls.length; i++) {
+			if (engine.input.pressed(game.controls[i])) {
+				game.currState = game.gameState[0];
+				game.hideElements.hideAll();
+				game.drawOnce();
+			}
+		}
+		
+		// Handle mouse clicks
+		for (var i = 0; i < game.mouse.length; i++) {
+			if (engine.input.pressed(game.mouse[i])) {
+				// alert("Event: " + game.mouse[i].toString());
+			}
+		}
 	}
 };
 
 // Update
 game.update = function(dt) {
+	// Monitor game states
 	switch(game.currState) {
 		case 'start':
 			this.gameController.gsStart(dt);
@@ -295,11 +546,19 @@ game.update = function(dt) {
 			this.gameController.gsStart(dt);
 			break;
 	};
+	
+	// Montior window sizes
+	if (this.oldWidth != engine.width || this.oldHeight != engine.height) {
+		this.drawOnce();
+		this.oldWidth = engine.width;
+		this.oldHeight = engine.height;
+	}
 };
 
-// Draw
-game.draw = function() {
-	
+// Draw functions
+// - Static
+//   - Draw static assets once, if they are active
+game.drawOnce = function() {
 	// Draw based on the GameState
 	switch(this.currState) {
 		case 'start':
@@ -309,13 +568,56 @@ game.draw = function() {
 			this.startButton.adjustStyle();
 			break;
 		case 'play':
+			// Draw images on the canvas
+			this.playBackground.draw();
+			this.playTitle.draw();
+			this.playScore.draw();
+			this.playSponsor.draw();
+			this.playTimer.draw();
 			
+			this.playLetterSpace.draw();
+			// Display buttons
+			this.playMenuButton.adjustStyle();
 			break;
 		case 'end':
+			// Draw images on the canvas
+			
+			// Display buttons
 			
 			break;
 		case 'leaderboard':
+			// Draw images on the canvas
 			
+			// Display buttons
+			
+			break;
+		default:
+			break;
+	}
+};
+//   - First draw event
+game.drawOnce();
+
+// - Reactive
+//   - React to window resizing
+/*window.onresize = function(e) {
+	game.hideElements.hideAll();
+	game.drawOnce();
+};*/
+
+// - Animation
+//   - Draw animations
+game.draw = function() {
+	
+	// Draw based on the GameState
+	switch(this.currState) {
+		case 'start':
+			break;
+		case 'play':
+			break;
+		case 'end':
+			break;
+		case 'leaderboard':
 			break;
 		default:
 			break;

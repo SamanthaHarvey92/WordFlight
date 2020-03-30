@@ -244,10 +244,15 @@ window.onload = function() {
 
 // Handle window resizing events
 window.onresize = function(e) {
+	// Set canvas dimensions to the inner browser dimensions
 	engine.canvas.width = window.innerWidth;
 	engine.canvas.height = window.innerHeight;
-	engine.widthProportion = (Math.abs(1920 - window.innerWidth) / 1920).toPrecision(4);
-	engine.heightProportion = (Math.abs(1080 - window.innerWidth) / 1080).toPrecision(4);
+	// Find the dimension differences
+	engine.widthDifference = 1920 - window.innerWidth;
+	engine.heightDifference = 1080 - window.innerHeight;
+	// Find the dimensional proportion ratios
+	engine.widthProportion = (Math.abs(engine.widthDifference) / 1920).toPrecision(4);
+	engine.heightProportion = (Math.abs(engine.heightDifference) / 1080).toPrecision(4);
 	engine.width = engine.canvas.width;
 	// console.log("(w: " + (engine.widthProportion*100).toPrecision(4) + "%, h: " + (engine.heightProportion*100).toPrecision(4) + "%)");
 	console.log("(w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
@@ -280,8 +285,6 @@ GameObject = (function() {
 		
 		this.lastStep = Date.now();
 
-		
-		
 		return _requestAnimationFrame(s);
 	};
 	
