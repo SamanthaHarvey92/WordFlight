@@ -252,6 +252,17 @@ game.quitButton = {
 		this.resize();
 		//drawImage(source, posX, posY, width, height)
 		//engine.context.drawImage(this.image, engine.width/2 - this.width/2, engine.height/2, this.width, this.height); //644x156
+	},
+	
+	adjustStyle: function() {
+		this.resize();
+		this.image.style.position = "absolute";
+		this.image.style.display = "block";
+		this.image.style.left = this.posX.toString() + "px";
+		this.image.style.top = this.posY.toString() + "px";
+		this.image.style.width = this.width + "px";
+		this.image.style.height = this.height + "px";
+		this.image.style.zIndex = 1; //same question as menuButton
 	}
 };	
 
