@@ -423,7 +423,7 @@ game.leaderboardRetryButton = {
 	draw: function() {
 		this.resize();
 		// drawImage(source, posX, posY, width, height)
-		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height); // 644x156
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
 	},
 	adjustStyle: function() {
 		this.resize();
@@ -601,8 +601,13 @@ game.drawOnce = function() {
 			break;
 		case 'leaderboard':
 			// Draw images on the canvas
-			
+			this.leaderboardBackground.draw();
+			this.leaderboardTitle.draw();
+			this.leaderboardClipboard.draw();
+			this.leaderboardPlayerScore.draw();
 			// Display buttons
+			this.leaderboardMenuButton.adjustStyle();
+			this.leaderboardRetryButton.adjustStyle();
 			
 			break;
 		default:

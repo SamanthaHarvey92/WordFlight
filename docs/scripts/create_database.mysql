@@ -11,6 +11,8 @@ CREATE TABLE Words (
     word varchar(15), 
     PRIMARY KEY (unique_id), 
     FOREIGN KEY (sponsor_id) REFERENCES Sponsors(sponsor_id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
 );
 CREATE TABLE Leaderboard (
     user char(2) NOT NULL,
