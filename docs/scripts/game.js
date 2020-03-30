@@ -119,6 +119,39 @@ game.startScene = {
 };
 
 //   - Buttons
+game.menuButton = {
+    image: document.getElementById("menuButton"),
+    org_width: 644 * game.scale,  //do we want the menuButton smaller than other buttons on screen? 
+    org_height: 156 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,	//do I need to change position since menuButton will be in top right corner?
+    posY: 0,
+	
+    resize: function() {
+	this.width = this.org_width * (1 - engine.widthProportion);
+	this.height = this.org_height * (1 - engine.widthProportion);
+	this.posX = engine.width/2 - this.width/2;
+	this.posY = engine.height/2 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		//drawImage(source, posX, posY, width, height)
+		//engine.context.drawImage(this.image, engine.width/2 - this.width/2, engine.height/2, this.width, this.height); //644x156
+	},
+	
+	adjustStyle: function() {
+		this.resize();
+		this.image.style.position = "absolute";
+		this.image.style.display = "block";
+		this.image.style.left = this.posX.toString() + "px";
+		this.image.style.top = this.posY.toString() + "px";
+		this.image.style.width = this.width + "px";
+		this.image.style.height = this.height + "px";
+		this.image.style.zIndex = 1; //Do I keep zIndex same to be on same level as other buttons above Canvas? 
+	}
+};
+	
 game.startButton = {
     image: document.getElementById("startButton"),
     org_width: 644 * game.scale,
@@ -150,7 +183,72 @@ game.startButton = {
 	}
 };
 
+game.leaderboardButton = {
+    image:document.getElementById("leaderboardButton"),
+    org_width: 644 * game.scale,
+    org_height: 156 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+	
+    resize: function(){
+	this.width = this.org_width * (1 - engine.widthProportion);
+	this.height = this.org_height * (1 - engine.widthProportion);
+	this.posX = engine.width/2 - this.width/2;
+	this.posY = engine.height/2 - this.height/2;
+    },
+	
+	draw: function() {
+		this.resize();
+		//drawImage(source, posX, posY, width, height)
+		//engine.context.drawImage(this.image, engine.width/2 - this.width/2, enging.height/2, this.width, this.height); //644x156
+	},
+	
+	adjustStyle: function() {
+		this.resize();
+		this.image.style.position = "absolute";
+		this.image.style.display = "block";
+		this.image.style.left = this.posX.toString() + "px";
+		this.image.style.top = this.posY.toString() + "px";
+		this.image.style.width = this.width + "px";
+		this.image.style.height = this.height + "px";
+		this.image.style.zIndex = 1; //same question as menuButton
+	}
+};
 
+game.quitButton = {
+    image: document.getElementById("quitButton"),
+    org_width: 644 * game.scale,
+    org_height: 156 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+	
+    resize: function() {
+	this.width = this.org_width * (1 - engine.widthProportion);
+	this.height = this.org_height * (1 - engine.widthProportion);
+	this.posX = engine.width/2 - this.width/2;
+	this.posY = engine.height/2 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		//drawImage(source, posX, posY, width, height)
+		//engine.context.drawImage(this.image, engine.width/2 - this.width/2, engine.height/2, this.width, this.height); //644x156
+	},
+	
+	adjustStyle: function() {
+		this.resize();
+		this.image.style.position = "absolute";
+		this.image.style.display = "block";
+		this.image.style.left = this.posX.toString() + "px";
+		this.image.style.top = this.posY.toString() + "px";
+		this.image.style.width = this.width + "px";
+		this.image.style.height = this.height + "px";
+		this.image.style.zIndex = 1; //same question as previous buttons
+	}
+};
 
 /* Game States and transitions
 ** -- Start Scene
