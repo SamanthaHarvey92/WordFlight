@@ -446,7 +446,171 @@ game.playMenuButton = {
 
 // - Leaderboard Scene
 //   - Images
+game.leaderboardBackground = {
+    image: document.getElementById("leaderboardBackground"),
+    org_width: 1923,
+    org_height: 1093,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = engine.width;
+        this.height = engine.height;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.leaderboardTitle = {
+    image: document.getElementById("wordFlightTitleSmall"),
+    org_width: 541 * game.scale,
+    org_height: 120 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = 10 * (1- engine.widthProportion);
+		this.posY = 10 * (1- engine.widthProportion);
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.leaderboardClipboard = {
+	image: document.getElementById("leaderboardClipboard"),
+	org_width = 330 * game.scale,
+	org_height = 459 * game.scale,
+	width: 0,
+	height: 0,
+	posX: 0,
+	posY: 0,
+	resize: function() {
+		this.width = this.org_width * (1- engine.widthProportion);
+		this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = 10 * (1- engine.widthProportion);
+		this.posY = 10 * (1- engine.widthProportion);
+	},
+	draw: function () {
+		this.resize();
+		//drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.leaderboardPlayerScore = {
+	image: document.getElementById("leaderboardScore"),
+	org_width = 450 * game.scale,
+	org_height = 120 * game.scale,
+	width: 0,
+	height: 0,
+	posX: 0,
+	posY: 0,
+	resize: function () {
+		this.width = this.org_width * (1- engine.widthProportion);
+		this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = 10 * (1- engine.widthProportion);
+		this.posY = 10 * (1- engine.widthProportion);
+	},
+	draw: function () {
+		this.resize();
+		//drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
+game.leaderboardSponsor = {
+	image: document.getElementById("leaderboardSponsor"),
+	org_width = 302 * game.scale,
+	org_height = 365 * game.scale,
+	width: 0,
+	height: 0,
+	posX: 0,
+	posY: 0,
+	resize: function () {
+		this.width = this.org_width * (1- engine.widthProportion);
+		this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = 10 * (1- engine.widthProportion);
+		this.posY = 10 * (1- engine.widthProportion);
+	},
+	draw: function () {
+		this.resize();
+		//drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
 //   - Buttons
+game.leaderboardMenuButton = {
+    image: document.getElementById("wordFlightMenuButton"),
+    org_width: 204 * game.scale,
+    org_height: 69 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = engine.width/2 - this.width/2;
+		this.posY = engine.height/2 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	},
+	adjustStyle: function() {
+		this.resize();
+		this.image.style.position = "absolute";
+		this.image.style.display = "block";
+		this.image.style.left = this.posX.toString() + "px";
+		this.image.style.top = this.posY.toString() + "px";
+		this.image.style.width = this.width + "px";
+		this.image.style.height = this.height + "px";
+		this.image.style.zIndex = 1;
+	}
+};
+
+game.leaderboardRetryButton = {
+    image: document.getElementById("leaderboardRetryButton"),
+    org_width: 433 * game.scale,
+    org_height: 105 * game.scale,
+    width: 0,
+    height: 0,
+	posX: 0,
+	posY: 0,
+    resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = engine.width/2 - this.width/2;
+		this.posY = engine.height/2 - this.height/2;
+    },
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	},
+	adjustStyle: function() {
+		this.resize();
+		this.image.style.position = "absolute";
+		this.image.style.display = "block";
+		this.image.style.left = this.posX.toString() + "px";
+		this.image.style.top = this.posY.toString() + "px";
+		this.image.style.width = this.width + "px";
+		this.image.style.height = this.height + "px";
+		this.image.style.zIndex = 1;
+	}
+};
 
 /* Game States and transitions
  ** -- Start Scene
@@ -583,6 +747,7 @@ game.update = function (dt) {
 // Draw functions
 // - Static
 //   - Draw static assets once, if they are active
+
 game.drawOnce = function () {
     // Draw based on the GameState
     switch (this.currState) {
@@ -617,13 +782,20 @@ game.drawOnce = function () {
             break;
         case 'leaderboard':
             // Draw images on the canvas
-
+            this.leaderboardBackground.draw();
+            this.leaderboardTitle.draw();
+            this.leaderboardClipboard.draw();
+            this.leaderboardPlayerScore.draw();
+            this.leaderboardSponsor.draw();
             // Display buttons
+            this.leaderboardMenuButton.adjustStyle();
+            this.leaderboardRetryButton.adjustStyle();
 
             break;
-        default:
+          default:
             break;
-    }
+	}
+  
 };
 //   - First draw event
 game.drawOnce();
