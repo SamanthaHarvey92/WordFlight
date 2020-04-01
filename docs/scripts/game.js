@@ -344,7 +344,7 @@ game.playScore = {
 	}
 };*/
 game.playSponsor = {
-    image: document.getElementById("playSponsor"),
+    image: document.getElementById("wordFlightSponsor"),
     org_width: 403 * game.scale,
     org_height: 490 * game.scale,
     width: 0,
@@ -509,8 +509,8 @@ game.leaderboardTitle = {
 
 game.leaderboardClipboard = {
 	image: document.getElementById("leaderboardClipboard"),
-	org_width = 330 * game.scale,
-	org_height = 459 * game.scale,
+	org_width: 330 * game.scale,
+	org_height: 459 * game.scale,
 	width: 0,
 	height: 0,
 	posX: 0,
@@ -530,8 +530,8 @@ game.leaderboardClipboard = {
 
 game.leaderboardPlayerScore = {
 	image: document.getElementById("leaderboardScore"),
-	org_width = 450 * game.scale,
-	org_height = 120 * game.scale,
+	org_width: 450 * game.scale,
+	org_height: 120 * game.scale,
 	width: 0,
 	height: 0,
 	posX: 0,
@@ -550,9 +550,9 @@ game.leaderboardPlayerScore = {
 };
 
 game.leaderboardSponsor = {
-	image: document.getElementById("leaderboardSponsor"),
-	org_width = 302 * game.scale,
-	org_height = 365 * game.scale,
+	image: document.getElementById("wordFlightSponsor"),
+	org_width: 302 * game.scale,
+	org_height: 365 * game.scale,
 	width: 0,
 	height: 0,
 	posX: 0,
