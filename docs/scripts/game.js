@@ -465,6 +465,27 @@ game.leaderboardBackground = {
 	}
 };
 
+game.leaderboardPlane = {
+	image: document.getElementById("leaderboardPlane"),
+	org_width: 1096,
+	org_heigth: 456,
+	width: 0,
+	height: 0,
+	posX: 0,
+	posY: 0,
+	resize: function() {
+        this.width = this.org_width * (1- engine.widthProportion);
+        this.height = this.org_height * (1- engine.widthProportion);
+		this.posX = 10 * (1- engine.widthProportion);
+		this.posY = 10 * (1- engine.widthProportion);
+	},
+	draw: function() {
+		this.resize();
+		// drawImage(source, posX, posY, width, height)
+		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+	}
+};
+
 game.leaderboardTitle = {
     image: document.getElementById("wordFlightTitleSmall"),
     org_width: 541 * game.scale,
