@@ -393,10 +393,10 @@ game.playSponsor = {
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = this.org_width * (1 - engine.dimensionProportion);
-        this.height = this.org_height * (1 - engine.dimensionProportion);
+        this.width = this.org_width * (1 - (this.org_width/engine.width));
+        this.height = this.org_height * (1 - (this.org_height/engine.height));
         this.posX = engine.width - this.width; // this.org_posX - engine.widthDifference;
-        this.posY = this.org_posY * (1 - engine.dimensionProportion);
+        this.posY = this.org_posY * (1 - (this.org_height/engine.height));
     },
     draw: function () {
         this.resize();
