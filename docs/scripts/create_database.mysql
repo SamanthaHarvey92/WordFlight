@@ -1,0 +1,21 @@
+CREATE DATABASE WordFlight;
+USE WordFlight;
+CREATE TABLE Sponsors (
+    sponsor_id int NOT NULL,  
+    sponsor_name varchar(20),
+    PRIMARY KEY (sponsor_id)
+);
+CREATE TABLE Words (
+    unique_id int NOT NULL, 
+    sponsor_id int, 
+    word varchar(15), 
+    PRIMARY KEY (unique_id), 
+    FOREIGN KEY (sponsor_id) REFERENCES Sponsors(sponsor_id)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+CREATE TABLE Leaderboard (
+    user char(2) NOT NULL,
+    score int NOT NULL,
+    PRIMARY KEY (user)
+);
