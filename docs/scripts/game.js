@@ -381,22 +381,43 @@ public class CameraCrop : MonoBehaviour {
     }
 }
 
+        // Attach Bottom Side
+        this.posX = this.org_posX - (engine.widthDifference);
+        this.posY = engine.height - this.height;
+
+        // Attach Right Side
+        this.posX = engine.width - this.width;
+        this.posY = this.org_posY * (1 - (this.org_posY/engine.height));
+
 */
 game.playSponsor = {
     image: document.getElementById("wordFlightSponsor"),
-    org_width: 403 * game.scale,
-    org_height: 490 * game.scale,
+    org_width: 290 * (game.scale+0.4),
+    org_height: 295 * (game.scale+0.4),
+    myRatio: this.org_width / this.org_height,
     width: 0,
     height: 0,
-    org_posX: 1516,
-    org_posY: 447,
+    org_posX: 1590,
+    org_posY: 785,
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = this.org_width * (1 - (this.org_width/engine.width));
-        this.height = this.org_height * (1 - (this.org_height/engine.height));
-        this.posX = engine.width - this.width; // this.org_posX - engine.widthDifference;
-        this.posY = this.org_posY * (1 - (this.org_height/engine.height));
+
+        // Use aspect ratios
+        if (engine.aspectRatio < engine.targetRatio) {
+            // Larger width (match height)
+            this.width = this.org_width * (1 - (this.org_width / engine.width));
+            this.height = (this.width ) * ( (this.org_height / this.org_height));
+        } else {
+            // Smaller width (match width)
+            this.height = this.org_height * (1 - (this.org_height / engine.height));
+            this.width = (this.height ) * ( (this.org_width / this.org_width));
+            
+        }
+
+        // Attach Bottom Side
+        this.posX = this.org_posX - (engine.widthDifference);
+        this.posY = engine.height - this.height;
     },
     draw: function () {
         this.resize();
