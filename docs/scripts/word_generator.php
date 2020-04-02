@@ -1,11 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "WordFlight";
+include 'http://cmedeiros.mydevryportfolio.com/includes/wordflight.inc.php'
 
 try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $conn = new PDO("mysql:host=$servername;dbname=$wf_Database", $wf_UID, $wf_PWD);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $stmt = $conn->prepare("SELECT word FROM WordBank ORDER BY RAND() LIMIT 1");
     $stmt->execute();
