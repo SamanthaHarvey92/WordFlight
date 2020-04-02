@@ -540,7 +540,7 @@ game.leaderboardPlayerScore = {
 		this.width = this.org_width * (1- engine.widthProportion);
 		this.height = this.org_height * (1- engine.widthProportion);
 		this.posX = 10 * (1- engine.widthProportion);
-		this.posY = engine.height/2 - this.height/2 - 100;
+		this.posY = 230 * (1 - engine.widthProportion);
 	},
 	draw: function () {
 		this.resize();
@@ -562,7 +562,7 @@ game.leaderboardSponsor = {
     resize: function () {
         this.width = this.org_width * (1 - engine.dimensionProportion);
         this.height = this.org_height * (1 - engine.dimensionProportion);
-        this.posX = engine.width - this.width - 50;
+        this.posX = engine.width - this.width - (50 * (1-engine.widthProportion));
         this.posY = engine.height - this.height;
     },
     draw: function () {
@@ -616,7 +616,7 @@ game.leaderboardRetryButton = {
         this.width = this.org_width * (1- engine.widthProportion);
         this.height = this.org_height * (1- engine.widthProportion);
 		this.posX = 100 * (1-engine.widthProportion);
-		this.posY = engine.height - this.height - (50 * (1-engine.widthProportion));
+		this.posY = engine.height - this.height - (50 * (1-engine.dimensionProportion));
     },
 	draw: function() {
 		this.resize();
