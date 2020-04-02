@@ -474,10 +474,10 @@ game.leaderboardPlane = {
 	posX: 0,
 	posY: 0,
 	resize: function() {
-        this.width = this.org_width * (1- engine.widthProportion);
-        this.height = this.org_height * (1- engine.widthProportion);
-		this.posX = 10 * (1- engine.widthProportion);
-		this.posY = 10 * (1- engine.widthProportion);
+        this.width = this.org_width/2 * (1- engine.widthProportion);
+        this.height = this.org_height/2 * (1- engine.widthProportion);
+		this.posX = 0;
+		this.posY = engine.height - (300 * (1 - engine.widthProportion));
 	},
 	draw: function() {
 		this.resize();
@@ -518,8 +518,8 @@ game.leaderboardClipboard = {
 	resize: function() {
 		this.width = this.org_width * (1- engine.widthProportion);
 		this.height = this.org_height * (1- engine.widthProportion);
-		this.posX = 10 * (1- engine.widthProportion);
-		this.posY = 10 * (1- engine.widthProportion);
+		this.posX = engine.width - this.width - (375 * (1-engine.widthProportion));
+		this.posY = 25;
 	},
 	draw: function () {
 		this.resize();
@@ -540,7 +540,7 @@ game.leaderboardPlayerScore = {
 		this.width = this.org_width * (1- engine.widthProportion);
 		this.height = this.org_height * (1- engine.widthProportion);
 		this.posX = 10 * (1- engine.widthProportion);
-		this.posY = 10 * (1- engine.widthProportion);
+		this.posY = engine.height/2 - this.height/2 - 100;
 	},
 	draw: function () {
 		this.resize();
@@ -553,23 +553,23 @@ game.leaderboardSponsor = {
 	image: document.getElementById("wordFlightSponsor"),
 	org_width: 290 * game.scale,
 	org_height: 295 * game.scale,
-	width: 0,
+    width: 0,
     height: 0,
-    org_posX: 1516,
-    org_posY: 447,
-	posX: 0,
-	posY: 0,
-	resize: function () {
-		this.width = this.org_width * (1- engine.widthProportion);
-		this.height = this.org_height * (1- engine.widthProportion);
-		this.posX = 10 * (1- engine.widthProportion);
-		this.posY = 10 * (1- engine.widthProportion);
-	},
-	draw: function () {
-		this.resize();
-		//drawImage(source, posX, posY, width, height)
-		engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-	}
+    org_posX: 1550,
+    org_posY: 825,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.dimensionProportion);
+        this.height = this.org_height * (1 - engine.dimensionProportion);
+        this.posX = engine.width - this.width - 50;
+        this.posY = engine.height - this.height;
+    },
+    draw: function () {
+        this.resize();
+        // drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
 };
 
 //   - Buttons
@@ -615,8 +615,8 @@ game.leaderboardRetryButton = {
     resize: function() {
         this.width = this.org_width * (1- engine.widthProportion);
         this.height = this.org_height * (1- engine.widthProportion);
-		this.posX = engine.width/2 - this.width/2;
-		this.posY = engine.height/2 - this.height/2;
+		this.posX = 100 * (1-engine.widthProportion);
+		this.posY = engine.height - this.height - (50 * (1-engine.widthProportion));
     },
 	draw: function() {
 		this.resize();
@@ -808,9 +808,10 @@ game.drawOnce = function () {
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
             //this.leaderboardPlane.draw();
+            this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-            this.leaderboardSponsor.draw();
+
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
