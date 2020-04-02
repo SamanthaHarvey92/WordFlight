@@ -488,8 +488,8 @@ game.leaderboardPlane = {
 
 game.leaderboardTitle = {
     image: document.getElementById("wordFlightTitleSmall"),
-    org_width: 541 * game.scale,
-    org_height: 120 * game.scale,
+    org_width: 488 * game.scale,
+    org_height: 118 * game.scale,
     width: 0,
     height: 0,
 	posX: 0,
@@ -509,8 +509,8 @@ game.leaderboardTitle = {
 
 game.leaderboardClipboard = {
 	image: document.getElementById("leaderboardClipboard"),
-	org_width: 330 * game.scale,
-	org_height: 459 * game.scale,
+	org_width: 845 * game.scale,
+	org_height: 1018 * game.scale,
 	width: 0,
 	height: 0,
 	posX: 0,
@@ -530,8 +530,8 @@ game.leaderboardClipboard = {
 
 game.leaderboardPlayerScore = {
 	image: document.getElementById("leaderboardScore"),
-	org_width: 450 * game.scale,
-	org_height: 120 * game.scale,
+	org_width: 613 * game.scale,
+	org_height: 342 * game.scale,
 	width: 0,
 	height: 0,
 	posX: 0,
@@ -551,10 +551,12 @@ game.leaderboardPlayerScore = {
 
 game.leaderboardSponsor = {
 	image: document.getElementById("wordFlightSponsor"),
-	org_width: 302 * game.scale,
-	org_height: 365 * game.scale,
+	org_width: 290 * game.scale,
+	org_height: 295 * game.scale,
 	width: 0,
-	height: 0,
+    height: 0,
+    org_posX: 1516,
+    org_posY: 447,
 	posX: 0,
 	posY: 0,
 	resize: function () {
@@ -573,17 +575,17 @@ game.leaderboardSponsor = {
 //   - Buttons
 game.leaderboardMenuButton = {
     image: document.getElementById("wordFlightMenuButton"),
-    org_width: 204 * game.scale,
-    org_height: 69 * game.scale,
+    org_width: 275 * game.scale,
+    org_height: 138 * game.scale,
     width: 0,
     height: 0,
 	posX: 0,
 	posY: 0,
     resize: function() {
-        this.width = this.org_width * (1- engine.widthProportion);
-        this.height = this.org_height * (1- engine.widthProportion);
-		this.posX = engine.width/2 - this.width/2;
-		this.posY = engine.height/2 - this.height/2;
+        this.width = this.org_width * (1 - engine.dimensionProportion);
+        this.height = this.org_height * (1 - engine.dimensionProportion);
+        this.posX = engine.width - this.width; // this.org_posX - engine.widthDifference;
+        this.posY = 50 * (1 - engine.dimensionProportion);
     },
 	draw: function() {
 		this.resize();
@@ -604,8 +606,8 @@ game.leaderboardMenuButton = {
 
 game.leaderboardRetryButton = {
     image: document.getElementById("leaderboardRetryButton"),
-    org_width: 433 * game.scale,
-    org_height: 105 * game.scale,
+    org_width: 265 * game.scale,
+    org_height: 107 * game.scale,
     width: 0,
     height: 0,
 	posX: 0,
@@ -805,6 +807,7 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
+            //this.leaderboardPlane.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
             this.leaderboardSponsor.draw();
