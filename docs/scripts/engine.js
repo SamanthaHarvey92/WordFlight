@@ -225,8 +225,8 @@ eventCode = function (e) {
 engine.canvas = document.getElementsByTagName("canvas")[0];
 // Set canvas size and position
 engine.canvas.style.position = "absolute";
-engine.canvas.style.top = "0";
-engine.canvas.style.left = "0";
+engine.canvas.style.top = "0px";
+engine.canvas.style.left = "0px";
 // Get canvas context
 engine.context = engine.canvas.getContext("2d");
 
@@ -251,6 +251,7 @@ window.onresize = function (e) {
     // Set canvas dimensions to the inner browser dimensions
     engine.canvas.width = window.innerWidth;
     engine.canvas.height = window.innerHeight;
+	
     // Find the dimension differences
     engine.widthDifference = 1920 - window.innerWidth;
     engine.heightDifference = 1080 - window.innerHeight;
@@ -264,8 +265,10 @@ window.onresize = function (e) {
     engine.heightProportion = (Math.abs(engine.heightDifference) / 1080).toPrecision(4);
     engine.dimensionProportion = engine.widthProportion > engine.heightProportion ? engine.widthProportion : engine.heightProportion;
     engine.width = engine.canvas.width;
-    // console.log("(w: " + (engine.widthProportion*100).toPrecision(4) + "%, h: " + (engine.heightProportion*100).toPrecision(4) + "%)");
-    console.log("(w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
+
+	// DEBUG
+    console.log("<ENGINE> (w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
+	
     return engine.height = engine.canvas.height;
 };
 window.onresize();
