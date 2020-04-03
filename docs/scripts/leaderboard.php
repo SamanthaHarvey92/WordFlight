@@ -28,7 +28,7 @@ $dbname = "WordFlight";
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $stmt = $conn->prepare("select @i:=0; SELECT user, score, @i:=@i+1 AS i FROM leaderboard ORDER BY score DESC LIMIT 10;");
+    $stmt = $conn->prepare("select @i:=0; SELECT User, Score, @i:=@i+1 AS Rank FROM Leaderboard ORDER BY Score DESC LIMIT 10;");
     $stmt->execute();
 
     // set the resulting array to associative
