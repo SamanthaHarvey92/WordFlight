@@ -254,6 +254,11 @@ window.onresize = function (e) {
     // Find the dimension differences
     engine.widthDifference = 1920 - window.innerWidth;
     engine.heightDifference = 1080 - window.innerHeight;
+
+    // Aspect ratios
+    engine.targetRatio = 1920 / 1080;
+    engine.aspectRatio = window.innerWidth / window.innerHeight;
+
     // Find the dimensional proportion ratios
     engine.widthProportion = (Math.abs(engine.widthDifference) / 1920).toPrecision(4);
     engine.heightProportion = (Math.abs(engine.heightDifference) / 1080).toPrecision(4);
