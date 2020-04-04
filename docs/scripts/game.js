@@ -54,7 +54,11 @@ game.databaseQuery = function() {
 	game.word = "newspaper";
 	
 	// Set sponsor variable
-	game.sponsor = "auntieannes";
+	game.sponsor = "bsmooth";
+}
+
+game.pullTop10 = function() {
+	
 }
 
 // Get the sponsor
@@ -490,7 +494,7 @@ game.planeCanvasBG = {
     draw: function () {
         this.resize();
         // drawImage(source, posX, posY, width, height)
-        //engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        // engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -863,14 +867,29 @@ game.inputKeypad = {
 	height: 0,
 	posX: 0,
 	posY: 0,
+	divArray: [],
 	keyArray: [],
+	btnMargin: 5,
+	btnWidth: 0,
+	btnHeight: 0,
+	btnPerRow: 0,
 	resize: function() {
-		this.width = Math.min((game.playKeyPadSpace.width + 5) * 13, game.playSponsor.posX - 20);
-        this.height = (game.playKeyPadSpace.height + 6) * 2;
-
+		console.log("Width: " + this.width);
+		this.width = game.playSponsor.posX - 20;
+        this.height = (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) * 0.8;
+		
         // Attach Left Side with Buffer
         this.posX = Math.max(10, Math.min(40, game.playSponsor.posX/2 - this.width/2));
         this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
+		
+		this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow-1) * (2 * this.btnMargin))) ) / (this.btnPerRow);
+		this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width);
+		
+		for (var i = 0; i < this.keyArray.length; i++) {
+			var domElement = document.getElementById(this.keyArray[i]);
+			domElement.style.width = this.btnWidth + "px";
+			domElement.style.height = this.btnHeight + "px";
+		}
 	},
 	adjustStyle: function() {
 		if (this.keyArray.length == 0) this.buildKeypad();
@@ -882,44 +901,94 @@ game.inputKeypad = {
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
-		this.div.style.background = "yellow";
 		//this.div.innerHTML = "Funny!";
 		
 		
 		
-		console.log(this.div.style.left + " " + this.div.style.top);
+		// console.log(this.div.style.left + " " + this.div.style.top);
 	},
 	buildKeypad: function() {
 		var letter = "";
 		// <img id="letterButton_" src="images/key_blank.png" alt="Key Blank" style="display:none;">
-		var prefix = '<img id="letterButton_';
+		
+		/*
+		.themes-display-container {
+			position: relative;
+		}
+		.themes-display-middle {
+			position: absolute;
+			left: 0;
+			bottom: 50%;
+			width: 100%;
+			text-align: center;
+		}
+		.themes-container {
+			padding: 0.01em 15px;
+		}
+		.img-overlay {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			opacity: 0.0;
+			filter: alpha(opacity=0);
+			transition: 0.5s ease;
+			background-color: #341d5b;
+		}
+		<div class="img-box themes-light-gray themes-display-container">
+			<img src="../images/chris_profile_500x500.png" style="opacity: 1;width:100%" alt="BraXVIus Prime Logo">
+			<div class="themes-display-bottomleft themes-container themes-text-light-gray">
+				<h2>BraXVIus Prime</h2>
+			</div>
+			<div class="img-overlay">
+				<a href="../index.html"><div class="overlay-text">Return Home</div></a>
+			</div>
+		</div>
+		*/
+		
+		var divPrefix = '<div id="letterDiv_';
+		var innerDivPrefix = '';
+		var btnPrefix = '<img id="letterButton_';
 		var buttonBuilder = '';
 		
-		console.log("Building keypad: " + this.keyArray.length);
+		//console.log("Building keypad: " + this.keyArray.length);
 		for (var i = 0; i < 26; i++) {
-			/*for (c = 65; c <= 90; c++) {
-				engine.key[String.fromCharCode(c)] = c;
-			}*/
+			
+			buttonBuilder += divPrefix + letter + '" style="display:inline-block;position:relative;z-index:4;">';
 			
 			letter = String.fromCharCode(65 + i);
-			console.log("Letter: " + letter);
+			//console.log("Letter: " + letter);
 			
-			buttonBuilder += prefix + letter + '" src="images/key_blank.png" alt="Key ' + letter + '" style="display:inline-block;position:relative;margin:5px;';
+			buttonBuilder += btnPrefix + letter + '" src="images/key_blank.png" alt="Key ' + letter + '" style="display:inline-block;position:relative;';
 			
-			buttonBuilder += 'width:' + game.playKeyPadSpace.width + 'px;height:' + game.playKeyPadSpace.height + 'px;z-index:3">';
+			buttonBuilder += 'margin:' + this.btnMargin + 'px;';
 			
-			this.keyArray.push(buttonBuilder);
+			buttonBuilder += 'width:' + game.playKeyPadSpace.width + 'px;height:' + game.playKeyPadSpace.height + 'px;z-index:3;">';
+			
+			if (i == 12) {
+				buttonBuilder += "<br>";
+			}
+			
+			buttonBuilder += "</div>";
+			
+			this.keyArray.push("letterButton_" + String.fromCharCode(65+i));
 		}
+		this.btnPerRow = Math.ceil(this.keyArray.length / 2);
+		
+		
 		this.div.innerHTML = buttonBuilder;
 		
-		var img = document.getElementsByTagName("img");
+		var img = this.div.getElementsByTagName("img");
         for (var i = 0; i < img.length; i++) {
 			if (img[i].id.substring(0, 13) == "letterButton_") {
 				for (var j = 0; j < 26; j++) {
 					var letter = "letterButton_" + String.fromCharCode(65+j);
 					if (img[i].id == letter) {
 						img[i].addEventListener("click", function(e) {
-							alert("Clicked: " + e.srcElement.id);
+							console.log("Clicked: " + e.srcElement.id);
 						});
 						continue;
 					}
@@ -964,10 +1033,11 @@ game.leaderboardPlane = {
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = this.org_width/2 * (1- engine.widthProportion);
-        this.height = this.org_height/2 * (1- engine.widthProportion);
+        this.width = 1000; //this.org_width * (1- engine.widthProportion);
+        this.height = 456; //this.org_height * (1- engine.widthProportion);
         this.posX = 500;
-        this.posY = engine.height - (300 * (1 - engine.heightProportion));
+        this.posY = 500;//engine.height - (300 * (1 - engine.heightProportion));
+		console.log("Display Plane");
     },
     draw: function () {
         this.resize();
@@ -1323,7 +1393,7 @@ game.drawOnce = function () {
             // Draw images on the canvas
 
             // Display buttons
-
+			this.inputKeypad.adjustStyle();
             break;
         case 'leaderboard':
             // Draw images on the canvas
