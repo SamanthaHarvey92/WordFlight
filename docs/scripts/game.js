@@ -48,7 +48,16 @@ game.oldHeight = 0;
 
 // Database - Pull random word with its sponsor
 game.databaseQuery = function() {
-	// AJAX query
+    // AJAX query
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "word_generator.php", true);
+    ajax.send();
+
+    ajax.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var selection = JSON.parse(this.responseText);
+
+        }
 	
 	// Set word variable
 	game.word = "newspaper";
@@ -58,7 +67,17 @@ game.databaseQuery = function() {
 }
 
 game.pullTop10 = function() {
-	
+    //AJAX query
+    var ajax = new XMLHttpRequest();
+    ajax.open("GET", "leaderboard.php", true);
+    ajax.send();
+
+    ajax.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var leaders = JSON.parse(this.responseText);
+
+        }
+    };
 }
 
 // Get the sponsor

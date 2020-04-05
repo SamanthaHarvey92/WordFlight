@@ -1,25 +1,19 @@
 <?php
-include 'http://cmedeiros.mydevryportfolio.com/includes/wordflight.inc.php'
+include 'db_connection.php';
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$wf_Database", $wf_UID, $wf_PWD);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $stmt = $conn->prepare("SELECT word FROM WordBank ORDER BY RAND() LIMIT 1");
-    $stmt->execute();
+$conn=pdo;
 
-    $result1 = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+$stmt = $conn->prepare("SELECT word FROM WordBank ORDER BY RAND() LIMIT 1");
+$stmt->execute();
 
-    $stmt2 = $conn->prepare("SELECT 'sponsor_name' FROM 'sponsors' join 'words' on 'sponsors.sponsor_id = words.sponsor_id' WHERE 'sponsors.sponsor_id = (SELECT words.sponsor_id WHERE word = $result1)';");
-    $stmt2->execute();
+$word->word=$stmt2->setFetchMode(PDO::FETCH_ASSOC);
 
-    $result2 = $stmt2->setFetchMode(PDO::FETCH_ASSOC);
+$stmt2 = $conn->prepare("SELECT 'sponsor_name' FROM 'sponsors' join 'words' on 'sponsors.sponsor_id = words.sponsor_id' WHERE 'sponsors.sponsor_id = (SELECT words.sponsor_id WHERE word = $result1)';");
+$stmt2->execute();
 
-    echo $result1;
-    echo $result2;
+$word->sponsor=$stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+echo json_encode($word);
 }
-catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-$conn = null;
 
 ?>
