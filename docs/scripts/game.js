@@ -57,13 +57,18 @@ game.databaseQuery = function() {
         if (this.readyState == 4 && this.status == 200) {
             var selection = JSON.parse(this.responseText);
 
+            for(var a=0; a<selection.length; a++) {
+                var gameword = selection[a].word;
+                var sponsorname = selection[a].sponsor_name;
+            }
+
         }
 	
 	// Set word variable
-	game.word = "newspaper";
+	game.word = gameword;
 	
 	// Set sponsor variable
-	game.sponsor = "bsmooth";
+	game.sponsor = sponsor;
 }
 
 game.pullTop10 = function() {
