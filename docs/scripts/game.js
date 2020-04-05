@@ -1105,7 +1105,7 @@ game.endInitials = {
 };
 
 game.endKeyboardBackground = {
-    image: document:getElementById("endKeyboardBackground"),
+    image: document.getElementById("endKeyboardBackground"),
     org_width: 1557 * game.scale,
     org_height: 283 * game.scale,
     width: 0,
