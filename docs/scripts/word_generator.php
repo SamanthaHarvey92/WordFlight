@@ -1,19 +1,13 @@
 <?php
 include 'db_connection.php';
 
-$conn=pdo;
+$conn= $pdo;
 
-$stmt = $conn->prepare("SELECT word FROM WordBank ORDER BY RAND() LIMIT 1");
+$stmt = $conn->prepare("SELECT word, sponsor_name from words A JOIN sponsors B ON A.sponsor_id=B.sponsor_id ORDER BY RAND() LIMIT 1");
 $stmt->execute();
 
-$word->word=$stmt2->setFetchMode(PDO::FETCH_ASSOC);
+$result=$stmt->fetchAll();
 
-$stmt2 = $conn->prepare("SELECT 'sponsor_name' FROM 'sponsors' join 'words' on 'sponsors.sponsor_id = words.sponsor_id' WHERE 'sponsors.sponsor_id = (SELECT words.sponsor_id WHERE word = $result1)';");
-$stmt2->execute();
-
-$word->sponsor=$stmt->setFetchMode(PDO::FETCH_ASSOC);
-
-echo json_encode($word);
-}
+echo json_encode($result);
 
 ?>

@@ -63,7 +63,7 @@ game.databaseQuery = function() {
             }
 
         }
-	
+    }
 	// Set word variable
 	game.word = gameword;
 	
@@ -71,6 +71,7 @@ game.databaseQuery = function() {
 	game.sponsor = sponsor;
 }
 
+//Database - Pull top 10 players
 game.pullTop10 = function() {
     //AJAX query
     var ajax = new XMLHttpRequest();
