@@ -133,8 +133,8 @@ game.getSponsor = function() {
 //   - Images
 game.wordFlightTitle = {
     image: document.getElementById("wordFlightTitle"),
-    org_width: 826 * game.scale,
-    org_height: 200 * game.scale,
+    org_width: 1000 * game.scale,
+    org_height: 208 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -154,8 +154,8 @@ game.wordFlightTitle = {
 
 game.startHangar = {
     image: document.getElementById("startHangar"),
-    org_width: 1920 * game.scale,
-    org_heigth: 1080 * game.scale,
+    org_width: 1000 * game.scale,
+    org_heigth: 208 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -173,8 +173,8 @@ game.startHangar = {
 
 game.startRunway = {
     image: document.getElementById("startRunway"),
-    org_width: 1920 * game.scale,
-    org_height: 1080 * game.scale,
+    org_width: 1000 * game.scale,
+    org_height: 208 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -192,8 +192,8 @@ game.startRunway = {
 
 game.startScene = {
     image: document.getElementById("startScene"),
-    org_width: 1920 * game.scale,
-    org_height: 1080 * game.scale,
+    org_width: 1000 * game.scale,
+    org_height: 208 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -214,8 +214,8 @@ game.startScene = {
 //   - Buttons
 game.menuButton = {
     image: document.getElementById("wordFlightMenuButton"),
-    org_width: 275 * game.scale,
-    org_height: 138 * game.scale,
+    org_width: 204 * game.scale,
+    org_height: 69 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -243,8 +243,8 @@ game.menuButton = {
 
 game.startButton = {
     image: document.getElementById("startButton"),
-    org_width: 450 * game.scale,
-    org_height: 120 * game.scale,
+    org_width: 644 * game.scale,
+    org_height: 156 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -272,8 +272,8 @@ game.startButton = {
 
 game.leaderboardButton = {
     image: document.getElementById("leaderboardButton"),
-    org_width: 450 * game.scale,
-    org_height: 120 * game.scale,
+    org_width: 644 * game.scale,
+    org_height: 156 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -301,8 +301,8 @@ game.leaderboardButton = {
 
 game.quitButton = {
     image: document.getElementById("quitButton"),
-    org_width: 450 * game.scale,
-    org_height: 120 * game.scale,
+    org_width: 644 * game.scale,
+    org_height: 156 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -1001,209 +1001,8 @@ game.inputKeypad = {
 
 // - End Scene
 //   - Images
-game.wordFlightTitleSmall = {
-    image: document.getElementById("wordFlightTitleSmall"),
-    org_width: 488 * game.scale,
-    org_height: 118 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0,
-    posY: 0,
-    resize: function() {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width/2 - this.width/2;
-	this.posY = 20;
-    },
-    draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height) 
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-    }
-};
-
-game.endBackground = {
-    image: document.getElementById("endBackground"),
-    org_width: 1920 * game.scale,
-    org_height: 1080 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0,
-    posY: 0,
-    resize: function () {
-    	this.width = engine.width;
-	this.height = engine.height;
-    },
-    draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-    }
-};
-
-game.endGameOver = {
-    image: document.getElementById("endGameOver"),
-    org_width: 750 * game.scale,
-    org_height: 205 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0,
-    poxY: 0,
-    resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engin.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.poxY = 25;
-    },
-    draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-    }
-};
-
-game.endGamePoints = {
-    image: document.getElementById("endGamePoints"),
-    org_width: 613 * game.scale,
-    org_heigt: 342 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0, 
-    poxY: 0,
-    resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 30; 
-    },
-    draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-    }
-};
-
-game.endInitials = {
-    image: document.getElementById("endInitials"),
-    org_width: 811 * game.scale,
-    org_height: 103 * game.scale,
-    width: 0, 
-    height: 0,
-    posX: 0, 
-    poxY: 0,
-    resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 35; 
-    },
-    draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-    }
-};
-
-game.endKeyboardBackground = {
-    image: document.getElementById("endKeyboardBackground"),
-    org_width: 1557 * game.scale,
-    org_height: 283 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0,
-    posY: 0,
-    resize: function () {
-	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 40;
-    },
-    draw: function() {
-    	this.resize();
-	//drawImage(source, posX, poxY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-    }
-};
-
-game.endKeyboardKeys = {
-    image: document.getElementById("endKeyboardKeys"),
-    org_width: 1222 * game.scale,
-    org_height: 221 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0,
-    posY: 0,
-    resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 45;
-    },
-    draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-    }
-};
 
 //   - Buttons
-game.menuButton = {
-    image: document.getElementById("menuButton"),
-    org_width: 275 * game.scale,
-    org_height: 138 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0,
-    posY: 0,
-    resize: function () {
-    	this.width = this.org_width * 2 * (1 - engine.dimensionProportion);
-	this.height = this.org_height * 2 * (1 - engine.dimensionProportion);
-	this.posX = engine.width - this.width;
-	this.posY = 50 * (1 - engine.dimensionProportion);
-    },
-    draw: function () {
-    	this.adjustStyle();
-    },
-    adjustStyle: function () {
-    	this.resize();
-	this.image.style.position = "absolute";
-	this.image.style.display = "block";
-	this.image.style.left = this.posX.toString() + "px";
-	this.image.style.top = this.poxY.toString() + "px";
-	this.image.style.width = this.width + "px";
-	this.image.style.height = this.height + "px";
-	this.image.style.zIndex = 1; 
-    }
-};
-
-game.submitButton = {
-    image: document.getElementById("submitButton"),
-    org_width: 265 * game.scale,
-    org_height: 107 * game.scale,
-    width: 0,
-    height: 0,
-    posX: 0,
-    posY: 0,
-    resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = engine.height / 3 - this.height / 2;
-    },
-    draw: function () {
-    	this.adjustStyle();
-    },
-    adjustStyle: function() {
-    	this.resize();
-	this.image.style.position = "absolute";
-	this.image.style.display = "block";
-	this.image.style.left = this.posX.toString() + "px";
-	this.image.style.top = this.posY.toString() + "px";
-	this.image.style.width = this.width + "px";
-	this.image.style.height = this.height + "px";
-	this.image.style.zIndex = 1;
-    }
-};
 
 // - Leaderboard Scene
 //   - Images
@@ -1593,16 +1392,9 @@ game.drawOnce = function () {
             break;
         case 'end':
             // Draw images on the canvas
-	    this.endBackground.draw();
-	    this.endGameOver.draw();
-	    this.endGamePoints.draw();
-	    this.endInitials.draw();
-	    this.endKeyboardBackground.draw();
-	    this.endKeyboardKeys.draw();
-	    this.wordFlightTitleSmall.draw();
+
             // Display buttons
-	    this.submitButton.adjustStyle();
-	    this.menuButton.adjustStyle();
+			this.inputKeypad.adjustStyle();
             break;
         case 'leaderboard':
             // Draw images on the canvas
