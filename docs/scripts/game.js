@@ -889,6 +889,7 @@ game.inputKeypad = {
             var domElement = document.getElementById(this.keyArray[i]);
             domElement.style.width = this.btnWidth + "px";
             domElement.style.height = this.btnHeight + "px";
+            domElement.childNodes[1].style.fontSize = this.btnHeight * 0.45 + "px";
         }
     },
     adjustStyle: function () {
@@ -909,48 +910,9 @@ game.inputKeypad = {
 	},
     buildKeypad: function () {
         var letter = "";
-        // <img id="letterButton_" src="images/key_blank.png" alt="Key Blank" style="display:none;">
-
-        /*
-        .themes-display-container {
-        	position: relative;
-        }
-        .themes-display-middle {
-        	position: absolute;
-        	left: 0;
-        	bottom: 50%;
-        	width: 100%;
-        	text-align: center;
-        }
-        .themes-container {
-        	padding: 0.01em 15px;
-        }
-        .img-overlay {
-        	position: absolute;
-        	top: 0;
-        	right: 0;
-        	bottom: 0;
-        	left: 0;
-        	height: 100%;
-        	width: 100%;
-        	opacity: 0.0;
-        	filter: alpha(opacity=0);
-        	transition: 0.5s ease;
-        	background-color: #341d5b;
-        }
-        <div class="img-box themes-light-gray themes-display-container">
-        	<img src="../images/chris_profile_500x500.png" style="opacity: 1;width:100%" alt="BraXVIus Prime Logo">
-        	<div class="themes-display-bottomleft themes-container themes-text-light-gray">
-        		<h2>BraXVIus Prime</h2>
-        	</div>
-        	<div class="img-overlay">
-        		<a href="../index.html"><div class="overlay-text">Return Home</div></a>
-        	</div>
-        </div>
-        */
 
         var divPrefix = '<div id="containerDiv_';
-        var btnPrefix = '<div id="letterButton_';
+        var btnPrefix = '<img id="letterButton_';
 		var innerDivPrefix = '<div id="letterDiv_';
         var buttonBuilder = '';
 
@@ -960,62 +922,52 @@ game.inputKeypad = {
             letter = String.fromCharCode(65 + i);
             //console.log("Letter: " + letter);
 			
+			// Open outer div
+			buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.div.width/13) + 'px">';
 			
-			// buttonBuilder += divPrefix + letter + '" class="themes-container" style="display:block;">';
-			//" style="display:inline-block;position:relative;z-index:4;">';
+            // Inner Image
+            buttonBuilder += btnPrefix + letter + '" class="keypad-image" src="images/key_blank.png">';
 
-			//buttonBuilder += btnPrefix + letter + '" src="images/key_blank.png" alt="Key ' + letter + '" style="width:' + game.playKeyPadSpace.width + '">';
-            /*buttonBuilder += btnPrefix + letter + '" src="images/key_blank.png" alt="Key ' + letter + '" style="display:inline-block;position:relative;';
-            buttonBuilder += 'margin:' + this.btnMargin + 'px;';
-            buttonBuilder += 'width:' + game.playKeyPadSpace.width + 'px;height:' + game.playKeyPadSpace.height + 'px;">';*/
+            // Open inner div
+            buttonBuilder += innerDivPrefix + letter + '" class="keypad-center-letter">';
 			
-			buttonBuilder += btnPrefix + letter + '" style="background-image:url('+game.playKeyPadSpace.image.src+');';
-			buttonBuilder += 'background-size:contain;';
-            buttonBuilder += 'display:inline-block;position:relative;margin:' + this.btnMargin + 'px;';
-            buttonBuilder += 'width:' + game.playKeyPadSpace.width + 'px;height:' + game.playKeyPadSpace.height + 'px;">';
-			buttonBuilder += '<p class="alphabet" style="font-size: ' + (game.playKeyPadSpace.height*0.25) + 'pt;">' + letter + '</p>';
-			buttonBuilder += "</div>";
-			console.log("HEIGHT: " + game.playKeyPadSpace.height);
-			//buttonBuilder += innerDivPrefix + letter + '" class="themes-display-bottomleft themes-container" style="background:yellow;">';
-			//buttonBuilder += innerDivPrefix + letter + '" style="position:relative;left:0;bottom:0;width:100%;text-align:center;display:block;background:red;">';
-/*
-			.themes-display-middle {
-				position: absolute;
-				left: 0;
-				bottom: 50%;
-				width: 100%;
-				text-align: center;
-			}
-			
-			background-image: url("img_tree.gif"), url("paper.gif");
-*/			
-			// Write the letter inside the div
-			//buttonBuilder += '<p>' + letter + '</p>';
-			
+            // Write letter
+            buttonBuilder += letter;
+
 			// Close inner div
-			//buttonBuilder += "</div>";
+			buttonBuilder += "</div>";
 			
-            if (i == 12) {
-				// Force 2 rows of keys
-                buttonBuilder += "<br>";
-            }
+            // Close outer div
+            buttonBuilder += "</div>";
 
-			// Close outer div
-            //buttonBuilder += "</div>";
-
-            this.keyArray.push("letterButton_" + String.fromCharCode(65 + i));
+            this.keyArray.push("containerDiv_" + String.fromCharCode(65 + i));
         }
         this.btnPerRow = Math.ceil(this.keyArray.length / 2);
 
         this.div.innerHTML = buttonBuilder;
 
-        var img = this.div.getElementsByTagName("div");
-        for (var i = 0; i < img.length; i++) {
-            if (img[i].id.substring(0, 13) == "letterButton_") {
+        var imgElement = this.div.getElementsByTagName("img");
+        for (var i = 0; i < imgElement.length; i++) {
+            if (imgElement[i].id.substring(0, 13) == "letterButton_") {
                 for (var j = 0; j < 26; j++) {
                     var letter = "letterButton_" + String.fromCharCode(65 + j);
-                    if (img[i].id == letter) {
-                        img[i].addEventListener("click", function (e) {
+                    if (imgElement[i].id == letter) {
+                        imgElement[i].addEventListener("click", function (e) {
+                            console.log("Clicked: " + e.srcElement.id);
+                        });
+                        continue;
+                    }
+                }
+            }
+        }
+
+        var divElement = this.div.getElementsByTagName("div");
+        for (var i = 0; i < divElement.length; i++) {
+            if (divElement[i].id.substring(0, 10) == "letterDiv_") {
+                for (var j = 0; j < 26; j++) {
+                    var letter = "letterDiv_" + String.fromCharCode(65 + j);
+                    if (divElement[i].id == letter) {
+                        divElement[i].addEventListener("click", function (e) {
                             console.log("Clicked: " + e.srcElement.id);
                         });
                         continue;
