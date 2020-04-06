@@ -903,17 +903,17 @@ game.inputKeypad = {
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
     },
-	hideKeypad: function() {
-		//this.div.style.display = "none";
-		this.divArray = [];
-		this.keyArray = [];
-	},
+    hideKeypad: function () {
+        //this.div.style.display = "none";
+        this.divArray = [];
+        this.keyArray = [];
+    },
     buildKeypad: function () {
         var letter = "";
 
         var divPrefix = '<div id="containerDiv_';
         var btnPrefix = '<img id="letterButton_';
-		var innerDivPrefix = '<div id="letterDiv_';
+        var innerDivPrefix = '<div id="letterDiv_';
         var buttonBuilder = '';
 
         //console.log("Building keypad: " + this.keyArray.length);
@@ -921,22 +921,22 @@ game.inputKeypad = {
 
             letter = String.fromCharCode(65 + i);
             //console.log("Letter: " + letter);
-			
-			// Open outer div
-			buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.div.width/13) + 'px">';
-			
+
+            // Open outer div
+            buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.div.width / 13) + 'px">';
+
             // Inner Image
             buttonBuilder += btnPrefix + letter + '" class="keypad-image" src="images/key_blank.png">';
 
             // Open inner div
             buttonBuilder += innerDivPrefix + letter + '" class="keypad-center-letter">';
-			
+
             // Write letter
             buttonBuilder += letter;
 
-			// Close inner div
-			buttonBuilder += "</div>";
-			
+            // Close inner div
+            buttonBuilder += "</div>";
+
             // Close outer div
             buttonBuilder += "</div>";
 
@@ -989,16 +989,16 @@ game.wordFlightTitleSmall = {
     height: 0,
     posX: 0,
     posY: 0,
-    resize: function() {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width/2 - this.width/2;
-	this.posY = 20;
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 20;
     },
     draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height) 
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.resize();
+        //drawImage(source, posX, posY, width, height) 
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1011,13 +1011,13 @@ game.endBackground = {
     posX: 0,
     posY: 0,
     resize: function () {
-    	this.width = engine.width;
-	this.height = engine.height;
+        this.width = engine.width;
+        this.height = engine.height;
     },
     draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1030,15 +1030,15 @@ game.endGameOver = {
     posX: 0,
     poxY: 0,
     resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engin.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.poxY = 25;
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.poxY = 25;
     },
     draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1048,18 +1048,18 @@ game.endGamePoints = {
     org_heigt: 342 * game.scale,
     width: 0,
     height: 0,
-    posX: 0, 
+    posX: 0,
     poxY: 0,
     resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 30; 
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 30;
     },
     draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1067,20 +1067,20 @@ game.endInitials = {
     image: document.getElementById("endInitials"),
     org_width: 811 * game.scale,
     org_height: 103 * game.scale,
-    width: 0, 
+    width: 0,
     height: 0,
-    posX: 0, 
+    posX: 0,
     poxY: 0,
     resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 35; 
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 35;
     },
     draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1093,15 +1093,15 @@ game.endKeyboardBackground = {
     posX: 0,
     posY: 0,
     resize: function () {
-	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 40;
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 40;
     },
-    draw: function() {
-    	this.resize();
-	//drawImage(source, posX, poxY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, poxY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1114,15 +1114,15 @@ game.endKeyboardKeys = {
     posX: 0,
     posY: 0,
     resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = 45;
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 45;
     },
     draw: function () {
-    	this.resize();
-	//drawImage(source, posX, posY, width, height)
-	engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 //   - Buttons
@@ -1135,23 +1135,23 @@ game.menuButton = {
     posX: 0,
     posY: 0,
     resize: function () {
-    	this.width = this.org_width * 2 * (1 - engine.dimensionProportion);
-	this.height = this.org_height * 2 * (1 - engine.dimensionProportion);
-	this.posX = engine.width - this.width;
-	this.posY = 50 * (1 - engine.dimensionProportion);
+        this.width = this.org_width * 2 * (1 - engine.dimensionProportion);
+        this.height = this.org_height * 2 * (1 - engine.dimensionProportion);
+        this.posX = engine.width - this.width;
+        this.posY = 50 * (1 - engine.dimensionProportion);
     },
     draw: function () {
-    	this.adjustStyle();
+        this.adjustStyle();
     },
     adjustStyle: function () {
-    	this.resize();
-	this.image.style.position = "absolute";
-	this.image.style.display = "block";
-	this.image.style.left = this.posX.toString() + "px";
-	this.image.style.top = this.posY.toString() + "px";
-	this.image.style.width = this.width + "px";
-	this.image.style.height = this.height + "px";
-	this.image.style.zIndex = 1; 
+        this.resize();
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
     }
 };
 
@@ -1164,23 +1164,23 @@ game.submitButton = {
     posX: 0,
     posY: 0,
     resize: function () {
-    	this.width = this.org_width * (1 - engine.widthProportion);
-	this.height = this.org_height * (1 - engine.widthProportion);
-	this.posX = engine.width / 2 - this.width / 2;
-	this.posY = engine.height / 3 - this.height / 2;
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = engine.height / 3 - this.height / 2;
     },
     draw: function () {
-    	this.adjustStyle();
+        this.adjustStyle();
     },
-    adjustStyle: function() {
-    	this.resize();
-	this.image.style.position = "absolute";
-	this.image.style.display = "block";
-	this.image.style.left = this.posX.toString() + "px";
-	this.image.style.top = this.posY.toString() + "px";
-	this.image.style.width = this.width + "px";
-	this.image.style.height = this.height + "px";
-	this.image.style.zIndex = 1;
+    adjustStyle: function () {
+        this.resize();
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
     }
 };
 
@@ -1428,7 +1428,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.inputKeypad.hideKeypad();
+                game.inputKeypad.hideKeypad();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -1448,7 +1448,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.inputKeypad.hideKeypad();
+                game.inputKeypad.hideKeypad();
                 game.currState = game.gameState[3];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -1575,15 +1575,15 @@ game.drawOnce = function () {
         case 'end':
             // Draw images on the canvas
             this.endBackground.draw();
-	    this.endGameOver.draw();
-	    this.endGamePoints.draw();
-	    this.endInitials.draw();
-	    this.endKeyboardBackground.draw();
-	    this.endKeyboardKeys.draw();
-	    this.wordFlightTitleSmall.draw();
+            this.endGameOver.draw();
+            this.endGamePoints.draw();
+            this.endInitials.draw();
+            this.endKeyboardBackground.draw();
+            this.endKeyboardKeys.draw();
+            this.wordFlightTitleSmall.draw();
             // Display buttons
-	    this.submitButton.adjustStyle();
-	    this.menuButton.adjustStyle();
+            this.submitButton.adjustStyle();
+            this.menuButton.adjustStyle();
             break;
         case 'leaderboard':
             // Draw images on the canvas
