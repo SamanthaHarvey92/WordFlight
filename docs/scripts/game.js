@@ -65,10 +65,10 @@ game.databaseQuery = function() {
         }
     }
 	// Set word variable
-	game.word = gameword;
+	game.word = "chai";
 	
 	// Set sponsor variable
-	game.sponsor = sponsor;
+	game.sponsor = "argo";
 }
 
 //Database - Pull top 10 players
@@ -1052,17 +1052,17 @@ game.leaderboardBackground = {
 
 game.leaderboardPlane = {
     image: document.getElementById("leaderboardPlane"),
-    org_width: 1096 * game.scale,
-    org_heigth: 456 * game.scale,
+    org_width: 1096,
+    org_heigth: 456,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = 1000; //this.org_width * (1- engine.widthProportion);
-        this.height = 456; //this.org_height * (1- engine.widthProportion);
-        this.posX = 500;
-        this.posY = 500;//engine.height - (300 * (1 - engine.heightProportion));
+        this.width = 876 * (1 - engine.widthProportion);
+        this.height = 364 * (1 - engine.widthProportion);
+        this.posX = engine.width - (2300 * (1 - engine.widthProportion));
+        this.posY = engine.height - (600 * (1 - engine.heightProportion));
 		console.log("Display Plane");
     },
     draw: function () {
@@ -1157,6 +1157,57 @@ game.leaderboardSponsor = {
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
+game.LeadboardSponsorLogo = {
+    image: function () {
+        return document.getElementById(game.getSponsor());
+    },
+    org_width: 200 * game.scale,
+    org_height: 200 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 1590,
+    org_posY: 785,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = game.leaderboardSponsor.width * (1 - engine.widthProportion);
+        this.height = this.width;
+
+        // Attach Bottom Side
+        this.posX = game.leaderboardSponsor.posX + (game.leaderboardSponsor.width - this.width) / 2;
+        this.posY = game.leaderboardSponsor.posY + game.leaderboardSponsor.height / 2 - this.height / 3;
+    },
+    draw: function () {
+        this.resize();
+        // drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image(), this.posX, this.posY, this.width, this.height);
+    }
+};
+
+/*
+game.top10players = {
+	div: document.getElementById("top10table"),
+	org_width: 0,
+	org_height: 0,
+	width: 0,
+	height: 0,
+	posX: 0,
+	posY: 0,
+	resize: function() {
+        this.width = game.leaderboardClipboard.width;
+        this.height = game.leaderboardClipboard.height;
+        this.posX = game.leaderboardClipboard.posX;
+        this.posY = game.leaderboardClipboard.posY;
+	},
+	adjustStyle: function() {
+
+	},
+	buildTable: function() {
+
+		}
+	}
+};
+*/
 
 //   - Buttons
 game.leaderboardMenuButton = {
@@ -1429,6 +1480,7 @@ game.drawOnce = function () {
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
+            this.LeadboardSponsorLogo.draw();
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
