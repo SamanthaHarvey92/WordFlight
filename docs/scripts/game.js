@@ -468,7 +468,102 @@ game.playLetterSpace = {
     draw: function () {
         this.resize();
         // drawImage(source, posX, posY, width, height)
-        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        //engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.playLetterSpaces = {
+    div: document.getElementById("letterSpaces"),
+    org_width: 0,
+    org_height: 0,
+    width: 0,
+    height: 0,
+	org_posX: 20,
+	org_posY: 0,
+    posX: 0,
+    posY: 0,
+    divArray: [],
+    keyArray: [],
+    btnMargin: 5,
+    btnWidth: 0,
+    btnHeight: 0,
+    btnPerRow: 0,
+    resize: function () {
+        this.width = game.playSponsor.posX - 20;
+        this.height = game.playLetterSpace.org_height * (1 - engine.widthProportion) + this.btnMargin;
+
+        // Attach Left Side with Buffer
+		this.posX = Math.max(20, Math.min(5, this.org_posX - engine.widthDifference));
+        this.posY = Math.max(game.playTimer.height + game.playTimer.posY + 20, Math.min(game.inputKeypad.posY - this.height - 40),((game.inputKeypad.posY - (game.playTimer.height + game.playTimer.posY)) / 2));
+		
+
+        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
+        this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
+
+        for (var i = 0; i < this.keyArray.length; i++) {
+            var domElement = document.getElementById(this.keyArray[i]);
+            domElement.style.width = this.btnWidth + "px";
+            //domElement.style.height = this.btnHeight + "px";
+            domElement.childNodes[1].style.fontSize = this.btnWidth * 0.45 + "px";
+			console.log("THIS " + this.btnHeight);
+			//domElement.childNodes[1].style.top = 100 * (Math.abs(game.playKeyPadSpace.org_width - this.btnWidth*.7) / game.playKeyPadSpace.org_width) + "px";
+			//domElement.childNodes[1].style.getPropertyValue("")
+        }
+
+    },
+    adjustStyle: function () {
+        if (this.keyArray.length == 0) this.buildKeypad();
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.zIndex = 1;
+    },
+    hideKeypad: function () {
+        this.divArray = [];
+        this.keyArray = [];
+    },
+    buildKeypad: function () {
+		
+        var letter = "";
+
+        var divPrefix = '<div id="inputContainerDiv_';
+        var btnPrefix = '<img id="inputLetterButton_';
+        var innerDivPrefix = '<div id="inputLetterDiv_';
+        var buttonBuilder = '';
+
+		this.btnPerRow = game.word.length;
+		
+        for (var i = 0; i < this.btnPerRow; i++) {
+
+            letter = game.word.substr(i, 1).toUpperCase();
+
+            // Open outer div
+            buttonBuilder += divPrefix + i + '" class="word-spaces-container" style="width:' + (this.div.width / this.btnPerRow) + 'px">';
+
+            // Inner Image
+            buttonBuilder += btnPrefix + i + '" class="word-spaces-image" src="images/play_scene/play_empty_space.png">';
+
+            // Open inner div
+            buttonBuilder += innerDivPrefix + i + '" class="word-spaces-center-letter">';
+
+            // Write letter
+            buttonBuilder += letter;
+
+            // Close inner div
+            buttonBuilder += "</div>";
+
+            // Close outer div
+            buttonBuilder += "</div>";
+
+			//console.log("Adding inputContainerDiv_" + game.word.substr(i, 1));
+            this.keyArray.push("inputContainerDiv_" + i);
+        }
+
+        this.div.innerHTML = buttonBuilder;
     }
 };
 
@@ -874,16 +969,15 @@ game.inputKeypad = {
     btnHeight: 0,
     btnPerRow: 0,
     resize: function () {
-        console.log("Width: " + this.width);
         this.width = game.playSponsor.posX - 20;
-        this.height = (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
+        this.height = (game.playKeyPadSpace.org_height * (1 - engine.widthProportion) + this.btnMargin) * 2; // (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
 
         // Attach Left Side with Buffer
         this.posX = Math.max(10, Math.min(40, game.playSponsor.posX / 2 - this.width / 2));
         this.posY = Math.max(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
 
-        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow);
-        this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width);
+        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
+        this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
 
         for (var i = 0; i < this.keyArray.length; i++) {
             var domElement = document.getElementById(this.keyArray[i]);
@@ -1566,6 +1660,8 @@ game.drawOnce = function () {
             // Display buttons
             this.playMenuButton.adjustStyle();
             this.playKeyPadSpace.adjustStyle();
+			this.inputKeypad.adjustStyle();
+			this.playLetterSpaces.adjustStyle();
             this.inputKeypad.adjustStyle();
             break;
         case 'end':

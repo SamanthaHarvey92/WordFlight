@@ -4,16 +4,7 @@
 	src: url(Roboto-Bold.ttf);
 }
 
-.alphabet {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: inherit;
-	font-family: Roboto-Bold;
-	letter-spacing: 0pt;
-	color: #FFFFFF;
-	text-align: center;
-}
+
 
 .keypad-container {
 	position: relative;
@@ -28,11 +19,35 @@
 	width: 100%;
 	text-align: center;
 	font-size: 14px;
+	letter-spacing: 0pt;
 	font-family: Roboto-Bold;
 	color: #FFFFFF;
 }
 
 .keypad-image {
+	width: 100%;
+	height: auto;
+}
+
+.word-spaces-container {
+	position: relative;
+	display: inline-block;
+	padding: 0px 5px;
+}
+
+.word-spaces-center-letter {
+	position: absolute;
+	left: 0;
+	height: calc(100%);
+	width: 100%;
+	display: inline-block;
+	text-align: center;
+	font-size: 14px;
+	font-family: Roboto-Bold;
+	color: #F41C63;
+}
+
+.word-spaces-image {
 	width: 100%;
 	height: auto;
 }
