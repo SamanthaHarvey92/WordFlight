@@ -408,7 +408,7 @@ game.playSponsorLogo = {
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = game.playSponsor.width * (1 - engine.widthProportion);
+        this.width = game.playSponsor.width * 0.95;
         this.height = this.width;
 
         // Attach Bottom Side
@@ -876,11 +876,11 @@ game.inputKeypad = {
     resize: function () {
         console.log("Width: " + this.width);
         this.width = game.playSponsor.posX - 20;
-        this.height = (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) * 0.8;
+        this.height = (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
 
         // Attach Left Side with Buffer
         this.posX = Math.max(10, Math.min(40, game.playSponsor.posX / 2 - this.width / 2));
-        this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
+        this.posY = Math.max(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
 
         this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow);
         this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width);
@@ -889,7 +889,7 @@ game.inputKeypad = {
             var domElement = document.getElementById(this.keyArray[i]);
             domElement.style.width = this.btnWidth + "px";
             domElement.style.height = this.btnHeight + "px";
-            domElement.childNodes[1].style.fontSize = this.btnHeight * 0.45 + "px";
+            domElement.childNodes[1].style.fontSize = this.btnWidth * 0.45 + "px";
         }
     },
     adjustStyle: function () {
@@ -904,7 +904,6 @@ game.inputKeypad = {
         this.div.style.zIndex = 1;
     },
     hideKeypad: function () {
-        //this.div.style.display = "none";
         this.divArray = [];
         this.keyArray = [];
     },
@@ -916,11 +915,9 @@ game.inputKeypad = {
         var innerDivPrefix = '<div id="letterDiv_';
         var buttonBuilder = '';
 
-        //console.log("Building keypad: " + this.keyArray.length);
         for (var i = 0; i < 26; i++) {
 
             letter = String.fromCharCode(65 + i);
-            //console.log("Letter: " + letter);
 
             // Open outer div
             buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.div.width / 13) + 'px">';
@@ -975,7 +972,6 @@ game.inputKeypad = {
                 }
             }
         }
-        console.log("Finished keypad: " + this.keyArray.length);
     }
 };
 
