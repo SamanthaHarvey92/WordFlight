@@ -87,70 +87,70 @@ game.pullTop10 = function() {
 }
 
 // Get the sponsor
-game.getSponsor = function() {
-	switch(this.sponsor) {
-		case "argo":
-			this.sponsorId = "sponsorArgo";
-			break;
-		case "auntieannes":
-			this.sponsorId = "sponsorAuntieAnnes";
-			break;
-		case "brookstone":
-			this.sponsorId = "sponsorBrookstone";
-			break;
-		case "bsmooth":
-			this.sponsorId = "sponsorBSmooth";
-			break;
-		case "burritobeach":
-			this.sponsorId = "sponsorBurritoBeach";
-			break;
-		case "chicagosports":
-			this.sponsorId = "sponsorChicagoSports";
-			break;
-		case "cnn":
-			this.sponsorId = "sponsorCNN";
-			break;
-		case "coach":
-			this.sponsorId = "sponsorCoach";
-			break;
-		case "dunkindonuts":
-			this.sponsorId = "sponsorDunkinDonuts";
-			break;
-		case "dutyfreestore":
-			this.sponsorId = "sponsorDutyFreeStore";
-			break;
-		case "field":
-			this.sponsorId = "sponsorField";
-			break;
-		case "hudson":
-			this.sponsorId = "sponsorHudson";
-			break;
-		case "maccosmetics":
-			this.sponsorId = "sponsorMacCosmetics";
-			break;
-		case "nutsonclark":
-			this.sponsorId = "sponsorNutsOnClark";
-			break;
-		case "rockymountainchocolate":
-			this.sponsorId = "sponsorRockyMountainChocolate";
-			break;
-		case "sarahscandies":
-			this.sponsorId = "sponsorSarahsCandies";
-			break;
-		case "shoehospital":
-			this.sponsorId = "sponsorShoeHospital";
-			break;
-		case "spiritoftheredhorse":
-			this.sponsorId = "sponsorSpiritOfTheRedHorse";
-			break;
-		case "talie":
-			this.sponsorId = "sponsorTalie";
-			break;
-		default:
-			this.sponsorId = "__INVALID__";
-			break;
-	}
-	return this.sponsorId;
+game.getSponsor = function () {
+    switch (this.sponsor) {
+        case "argo":
+            this.sponsorId = "sponsorArgo";
+            break;
+        case "auntieannes":
+            this.sponsorId = "sponsorAuntieAnnes";
+            break;
+        case "brookstone":
+            this.sponsorId = "sponsorBrookstone";
+            break;
+        case "bsmooth":
+            this.sponsorId = "sponsorBSmooth";
+            break;
+        case "burritobeach":
+            this.sponsorId = "sponsorBurritoBeach";
+            break;
+        case "chicagosports":
+            this.sponsorId = "sponsorChicagoSports";
+            break;
+        case "cnn":
+            this.sponsorId = "sponsorCNN";
+            break;
+        case "coach":
+            this.sponsorId = "sponsorCoach";
+            break;
+        case "dunkindonuts":
+            this.sponsorId = "sponsorDunkinDonuts";
+            break;
+        case "dutyfreestore":
+            this.sponsorId = "sponsorDutyFreeStore";
+            break;
+        case "field":
+            this.sponsorId = "sponsorField";
+            break;
+        case "hudson":
+            this.sponsorId = "sponsorHudson";
+            break;
+        case "maccosmetics":
+            this.sponsorId = "sponsorMacCosmetics";
+            break;
+        case "nutsonclark":
+            this.sponsorId = "sponsorNutsOnClark";
+            break;
+        case "rockymountainchocolate":
+            this.sponsorId = "sponsorRockyMountainChocolate";
+            break;
+        case "sarahscandies":
+            this.sponsorId = "sponsorSarahsCandies";
+            break;
+        case "shoehospital":
+            this.sponsorId = "sponsorShoeHospital";
+            break;
+        case "spiritoftheredhorse":
+            this.sponsorId = "sponsorSpiritOfTheRedHorse";
+            break;
+        case "talie":
+            this.sponsorId = "sponsorTalie";
+            break;
+        default:
+            this.sponsorId = "__INVALID__";
+            break;
+    }
+    return this.sponsorId;
 }
 
 // Image hooks
@@ -158,8 +158,8 @@ game.getSponsor = function() {
 //   - Images
 game.wordFlightTitle = {
     image: document.getElementById("wordFlightTitle"),
-    org_width: 1000 * game.scale,
-    org_height: 208 * game.scale,
+    org_width: 826 * game.scale,
+    org_height: 200 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -179,8 +179,8 @@ game.wordFlightTitle = {
 
 game.startHangar = {
     image: document.getElementById("startHangar"),
-    org_width: 1000 * game.scale,
-    org_heigth: 208 * game.scale,
+    org_width: 1920 * game.scale,
+    org_heigth: 1080 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -198,8 +198,8 @@ game.startHangar = {
 
 game.startRunway = {
     image: document.getElementById("startRunway"),
-    org_width: 1000 * game.scale,
-    org_height: 208 * game.scale,
+    org_width: 1920 * game.scale,
+    org_height: 1080 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -217,8 +217,8 @@ game.startRunway = {
 
 game.startScene = {
     image: document.getElementById("startScene"),
-    org_width: 1000 * game.scale,
-    org_height: 208 * game.scale,
+    org_width: 1920 * game.scale,
+    org_height: 1080 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -239,8 +239,8 @@ game.startScene = {
 //   - Buttons
 game.menuButton = {
     image: document.getElementById("wordFlightMenuButton"),
-    org_width: 204 * game.scale,
-    org_height: 69 * game.scale,
+    org_width: 275 * game.scale,
+    org_height: 138 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -268,8 +268,8 @@ game.menuButton = {
 
 game.startButton = {
     image: document.getElementById("startButton"),
-    org_width: 644 * game.scale,
-    org_height: 156 * game.scale,
+    org_width: 450 * game.scale,
+    org_height: 120 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -297,8 +297,8 @@ game.startButton = {
 
 game.leaderboardButton = {
     image: document.getElementById("leaderboardButton"),
-    org_width: 644 * game.scale,
-    org_height: 156 * game.scale,
+    org_width: 450 * game.scale,
+    org_height: 120 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -326,8 +326,8 @@ game.leaderboardButton = {
 
 game.quitButton = {
     image: document.getElementById("quitButton"),
-    org_width: 644 * game.scale,
-    org_height: 156 * game.scale,
+    org_width: 450 * game.scale,
+    org_height: 120 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -380,12 +380,12 @@ game.playTitle = {
     org_height: 110 * game.scale,
     width: 0,
     height: 0,
-	org_posX: 10,
+    org_posX: 10,
     org_posY: 10,
     posX: 10,
     posY: 10,
     resize: function () {
-		this.width = this.org_width * (1 - engine.widthProportion);
+        this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
     },
     draw: function () {
@@ -406,7 +406,7 @@ game.playSponsor = {
     posX: 0,
     posY: 0,
     resize: function () {
-		this.width = this.org_width * (1 - engine.widthProportion);
+        this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Bottom Side
@@ -421,9 +421,9 @@ game.playSponsor = {
 };
 
 game.playSponsorLogo = {
-    image: function() {
-		return document.getElementById(game.getSponsor());
-	},
+    image: function () {
+        return document.getElementById(game.getSponsor());
+    },
     org_width: 200 * game.scale,
     org_height: 200 * game.scale,
     width: 0,
@@ -433,12 +433,12 @@ game.playSponsorLogo = {
     posX: 0,
     posY: 0,
     resize: function () {
-		this.width = game.playSponsor.width * (1 - engine.widthProportion);
+        this.width = game.playSponsor.width * 0.95;
         this.height = this.width;
 
         // Attach Bottom Side
-        this.posX = game.playSponsor.posX + (game.playSponsor.width - this.width)/2;
-        this.posY = game.playSponsor.posY + game.playSponsor.height/2 - this.height/3;
+        this.posX = game.playSponsor.posX + (game.playSponsor.width - this.width) / 2;
+        this.posY = game.playSponsor.posY + game.playSponsor.height / 2 - this.height / 3;
     },
     draw: function () {
         this.resize();
@@ -453,8 +453,8 @@ game.playTimer = {
     org_height: 218 * game.scale,
     width: 0,
     height: 0,
-	org_posX: 0,
-	org_posY: 342,
+    org_posX: 0,
+    org_posY: 342,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -463,7 +463,7 @@ game.playTimer = {
 
         // Attach Left Side
         this.posX = this.org_posX;
-        this.posY = Math.max(game.playTitle.height + game.playTitle.posY + 10, engine.height/2 - this.height);
+        this.posY = Math.max(game.playTitle.height + game.playTitle.posY + 10, engine.height / 2 - this.height);
     },
     draw: function () {
         this.resize();
@@ -478,8 +478,8 @@ game.playLetterSpace = {
     org_height: 142 * game.scale,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -488,7 +488,7 @@ game.playLetterSpace = {
 
         // Attach Left Side with Buffer
         this.posX = Math.max(20, Math.min(5, this.org_posX - engine.widthDifference));
-        this.posY = Math.max(game.playTimer.height + game.playTimer.posY + 20, engine.height - engine.height/4 - this.height * 1.2);
+        this.posY = Math.max(game.playTimer.height + game.playTimer.posY + 20, engine.height - engine.height / 4 - this.height * 1.2);
     },
     draw: function () {
         this.resize();
@@ -504,17 +504,17 @@ game.planeCanvasBG = {
     org_height: 142 * game.scale,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
         this.height = Math.max(engine.height * 0.5, (game.playSponsor.posY - 20) - (game.menuButton.posY + game.menuButton.height + 20));
-		this.width = Math.min(this.height, (engine.width - 20) - (game.playTimer.width + 20));
+        this.width = Math.min(this.height, (engine.width - 20) - (game.playTimer.width + 20));
         this.height = this.width;
-		
-		this.posX = engine.width - this.width - 20;
-		this.posY = ((game.playSponsor.posY - 20) + (game.menuButton.posY + game.menuButton.height + 20))/2 - this.height/2;
+
+        this.posX = engine.width - this.width - 20;
+        this.posY = ((game.playSponsor.posY - 20) + (game.menuButton.posY + game.menuButton.height + 20)) / 2 - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -525,12 +525,12 @@ game.planeCanvasBG = {
 
 game.playPlaneDorsalFin = {
     image: document.getElementById("playPlaneDorsalFin"),
-    org_width: 186 * game.scale*1.4,
-    org_height: 30 * game.scale*1.4,
+    org_width: 186 * game.scale * 1.4,
+    org_height: 30 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -538,8 +538,8 @@ game.playPlaneDorsalFin = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-        this.posX = game.playPlaneTail.posX - this.width/4;
-        this.posY = ( game.playPlaneTail.posY + game.playPlaneTail.height / 2 ) - this.height/2;
+        this.posX = game.playPlaneTail.posX - this.width / 4;
+        this.posY = (game.playPlaneTail.posY + game.playPlaneTail.height / 2) - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -550,12 +550,12 @@ game.playPlaneDorsalFin = {
 
 game.playPlaneLeftInnerEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale*1.4,
-    org_height: 50 * game.scale*1.4,
+    org_width: 80 * game.scale * 1.4,
+    org_height: 50 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -563,8 +563,8 @@ game.playPlaneLeftInnerEngine = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-        this.posX = game.playPlaneLeftWing.posX + (game.playPlaneLeftWing.width/1.5) - this.width/2;
-        this.posY = ( game.playPlaneLeftWing.posY + game.playPlaneLeftWing.height * 0.625 ) - this.height/2;
+        this.posX = game.playPlaneLeftWing.posX + (game.playPlaneLeftWing.width / 1.5) - this.width / 2;
+        this.posY = (game.playPlaneLeftWing.posY + game.playPlaneLeftWing.height * 0.625) - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -575,12 +575,12 @@ game.playPlaneLeftInnerEngine = {
 
 game.playPlaneLeftOuterEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale*1.4,
-    org_height: 50 * game.scale*1.4,
+    org_width: 80 * game.scale * 1.4,
+    org_height: 50 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -588,8 +588,8 @@ game.playPlaneLeftOuterEngine = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-        this.posX = game.playPlaneLeftWing.posX + (game.playPlaneLeftWing.width/2) - this.width/3;
-        this.posY = ( game.playPlaneLeftWing.posY + game.playPlaneLeftWing.height * 0.45 ) - this.height/2;
+        this.posX = game.playPlaneLeftWing.posX + (game.playPlaneLeftWing.width / 2) - this.width / 3;
+        this.posY = (game.playPlaneLeftWing.posY + game.playPlaneLeftWing.height * 0.45) - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -600,12 +600,12 @@ game.playPlaneLeftOuterEngine = {
 
 game.playPlaneRightInnerEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale*1.4,
-    org_height: 50 * game.scale*1.4,
+    org_width: 80 * game.scale * 1.4,
+    org_height: 50 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -613,8 +613,8 @@ game.playPlaneRightInnerEngine = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-		this.posX = game.playPlaneRightWing.posX + (game.playPlaneRightWing.width/1.5) - this.width/2;
-        this.posY = ( game.playPlaneRightWing.posY + game.playPlaneRightWing.height * 0.375 ) - this.height/2;
+        this.posX = game.playPlaneRightWing.posX + (game.playPlaneRightWing.width / 1.5) - this.width / 2;
+        this.posY = (game.playPlaneRightWing.posY + game.playPlaneRightWing.height * 0.375) - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -625,12 +625,12 @@ game.playPlaneRightInnerEngine = {
 
 game.playPlaneRightOuterEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale*1.4,
-    org_height: 50 * game.scale*1.4,
+    org_width: 80 * game.scale * 1.4,
+    org_height: 50 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -638,8 +638,8 @@ game.playPlaneRightOuterEngine = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-		this.posX = game.playPlaneRightWing.posX + (game.playPlaneRightWing.width/2) - this.width/3;
-        this.posY = ( game.playPlaneRightWing.posY + game.playPlaneRightWing.height * 0.55 ) - this.height/2;
+        this.posX = game.playPlaneRightWing.posX + (game.playPlaneRightWing.width / 2) - this.width / 3;
+        this.posY = (game.playPlaneRightWing.posY + game.playPlaneRightWing.height * 0.55) - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -650,12 +650,12 @@ game.playPlaneRightOuterEngine = {
 
 game.playPlaneFuselage = {
     image: document.getElementById("playPlaneFuselage"),
-    org_width: 401 * game.scale*1.4,
-    org_height: 130 * game.scale*1.4,
+    org_width: 401 * game.scale * 1.4,
+    org_height: 130 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -663,7 +663,7 @@ game.playPlaneFuselage = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         this.posX = game.playPlaneNose.posX - this.width;
-        this.posY = ( game.playPlaneNose.posY );
+        this.posY = (game.playPlaneNose.posY);
     },
     draw: function () {
         this.resize();
@@ -674,12 +674,12 @@ game.playPlaneFuselage = {
 
 game.playPlaneLeftRearWing = {
     image: document.getElementById("playPlaneLeftRearWing"),
-    org_width: 186 * game.scale*1.4,
-    org_height: 130 * game.scale*1.4,
+    org_width: 186 * game.scale * 1.4,
+    org_height: 130 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -687,8 +687,8 @@ game.playPlaneLeftRearWing = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-        this.posX = game.playPlaneTail.posX - this.width/4;
-        this.posY = ( game.playPlaneTail.posY + game.playPlaneTail.height / 2 ) - this.height;
+        this.posX = game.playPlaneTail.posX - this.width / 4;
+        this.posY = (game.playPlaneTail.posY + game.playPlaneTail.height / 2) - this.height;
     },
     draw: function () {
         this.resize();
@@ -699,12 +699,12 @@ game.playPlaneLeftRearWing = {
 
 game.playPlaneLeftWing = {
     image: document.getElementById("playPlaneLeftWing"),
-    org_width: 286 * game.scale*1.4,
-    org_height: 360 * game.scale*1.4,
+    org_width: 286 * game.scale * 1.4,
+    org_height: 360 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -712,8 +712,8 @@ game.playPlaneLeftWing = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-        this.posX = game.playPlaneFuselage.posX + (game.playPlaneFuselage.width*0.2);
-        this.posY = ( game.playPlaneFuselage.posY + game.playPlaneFuselage.height / 2 ) - this.height;
+        this.posX = game.playPlaneFuselage.posX + (game.playPlaneFuselage.width * 0.2);
+        this.posY = (game.playPlaneFuselage.posY + game.playPlaneFuselage.height / 2) - this.height;
     },
     draw: function () {
         this.resize();
@@ -724,12 +724,12 @@ game.playPlaneLeftWing = {
 
 game.playPlaneNose = {
     image: document.getElementById("playPlaneNose"),
-    org_width: 160 * game.scale*1.4,
-    org_height: 130 * game.scale*1.4,
+    org_width: 160 * game.scale * 1.4,
+    org_height: 130 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -738,7 +738,7 @@ game.playPlaneNose = {
 
         // Attach Left Side with Buffer
         this.posX = game.planeCanvasBG.posX + game.planeCanvasBG.width - 20 - this.width;
-        this.posY = (game.planeCanvasBG.posY + game.planeCanvasBG.height)/2;
+        this.posY = (game.planeCanvasBG.posY + game.planeCanvasBG.height) / 2;
     },
     draw: function () {
         this.resize();
@@ -749,12 +749,12 @@ game.playPlaneNose = {
 
 game.playPlaneRightRearWing = {
     image: document.getElementById("playPlaneRightRearWing"),
-    org_width: 186 * game.scale*1.4,
-    org_height: 130 * game.scale*1.4,
+    org_width: 186 * game.scale * 1.4,
+    org_height: 130 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -762,8 +762,8 @@ game.playPlaneRightRearWing = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-        this.posX = game.playPlaneTail.posX - this.width/4;
-        this.posY = ( game.playPlaneTail.posY + game.playPlaneTail.height / 2 );
+        this.posX = game.playPlaneTail.posX - this.width / 4;
+        this.posY = (game.playPlaneTail.posY + game.playPlaneTail.height / 2);
     },
     draw: function () {
         this.resize();
@@ -774,12 +774,12 @@ game.playPlaneRightRearWing = {
 
 game.playPlaneRightWing = {
     image: document.getElementById("playPlaneRightWing"),
-    org_width: 289 * game.scale*1.4,
-    org_height: 360 * game.scale*1.4,
+    org_width: 289 * game.scale * 1.4,
+    org_height: 360 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -787,8 +787,8 @@ game.playPlaneRightWing = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
-        this.posX = game.playPlaneFuselage.posX + (game.playPlaneFuselage.width*0.2);
-        this.posY = ( game.playPlaneFuselage.posY + game.playPlaneFuselage.height / 2 );
+        this.posX = game.playPlaneFuselage.posX + (game.playPlaneFuselage.width * 0.2);
+        this.posY = (game.playPlaneFuselage.posY + game.playPlaneFuselage.height / 2);
     },
     draw: function () {
         this.resize();
@@ -799,12 +799,12 @@ game.playPlaneRightWing = {
 
 game.playPlaneTail = {
     image: document.getElementById("playPlaneTail"),
-    org_width: 138 * game.scale*1.4,
-    org_height: 130 * game.scale*1.4,
+    org_width: 138 * game.scale * 1.4,
+    org_height: 130 * game.scale * 1.4,
     width: 0,
     height: 0,
-	org_posX: 20,
-	org_posY: 0,
+    org_posX: 20,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
@@ -813,7 +813,7 @@ game.playPlaneTail = {
 
         // Attach Left Side with Buffer
         this.posX = game.playPlaneFuselage.posX - this.width;
-        this.posY = ( game.playPlaneFuselage.posY );
+        this.posY = (game.playPlaneFuselage.posY);
     },
     draw: function () {
         this.resize();
@@ -829,13 +829,13 @@ game.playMenuButton = {
     org_height: 138 * game.scale,
     width: 0,
     height: 0,
-	org_posX: 1645,
-	org_posY: 942,
+    org_posX: 1645,
+    org_posY: 942,
     posX: 0,
     posY: 0,
     resize: function () {
-        
-		this.width = this.org_width * (1 - engine.widthProportion);
+
+        this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Top-Right Side
@@ -863,18 +863,18 @@ game.playKeyPadSpace = {
     org_height: 102 * game.scale,
     width: 0,
     height: 0,
-	org_posX: 60,
-	org_posY: 0,
+    org_posX: 60,
+    org_posY: 0,
     posX: 0,
     posY: 0,
     resize: function () {
-        
-		this.width = this.org_width * (1 - engine.widthProportion); //Math.min(, (this.org_width + 5) * 13);
+
+        this.width = this.org_width * (1 - engine.widthProportion); //Math.min(, (this.org_width + 5) * 13);
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side with Buffer
         this.posX = Math.max(60, Math.min(60, this.org_posX - engine.widthDifference));
-        this.posY = Math.max(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height*2.2);
+        this.posY = Math.max(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height * 2.2);
     },
     draw: function () {
         this.resize();
@@ -885,149 +885,325 @@ game.playKeyPadSpace = {
 };
 
 game.inputKeypad = {
-	div: document.getElementById("inputKeypad"),
-	org_width: 0,
-	org_height: 0,
-	width: 0,
-	height: 0,
-	posX: 0,
-	posY: 0,
-	divArray: [],
-	keyArray: [],
-	btnMargin: 5,
-	btnWidth: 0,
-	btnHeight: 0,
-	btnPerRow: 0,
-	resize: function() {
-		console.log("Width: " + this.width);
-		this.width = game.playSponsor.posX - 20;
-        this.height = (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) * 0.8;
-		
+    div: document.getElementById("inputKeypad"),
+    org_width: 0,
+    org_height: 0,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    divArray: [],
+    keyArray: [],
+    btnMargin: 5,
+    btnWidth: 0,
+    btnHeight: 0,
+    btnPerRow: 0,
+    resize: function () {
+        console.log("Width: " + this.width);
+        this.width = game.playSponsor.posX - 20;
+        this.height = (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
+
         // Attach Left Side with Buffer
-        this.posX = Math.max(10, Math.min(40, game.playSponsor.posX/2 - this.width/2));
-        this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
-		
-		this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow-1) * (2 * this.btnMargin))) ) / (this.btnPerRow);
-		this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width);
-		
-		for (var i = 0; i < this.keyArray.length; i++) {
-			var domElement = document.getElementById(this.keyArray[i]);
-			domElement.style.width = this.btnWidth + "px";
-			domElement.style.height = this.btnHeight + "px";
-		}
-	},
-	adjustStyle: function() {
-		if (this.keyArray.length == 0) this.buildKeypad();
-		this.resize();
-		this.div.style.position = "absolute";
+        this.posX = Math.max(10, Math.min(40, game.playSponsor.posX / 2 - this.width / 2));
+        this.posY = Math.max(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
+
+        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow);
+        this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width);
+
+        for (var i = 0; i < this.keyArray.length; i++) {
+            var domElement = document.getElementById(this.keyArray[i]);
+            domElement.style.width = this.btnWidth + "px";
+            domElement.style.height = this.btnHeight + "px";
+            domElement.childNodes[1].style.fontSize = this.btnWidth * 0.45 + "px";
+        }
+    },
+    adjustStyle: function () {
+        if (this.keyArray.length == 0) this.buildKeypad();
+        this.resize();
+        this.div.style.position = "absolute";
         this.div.style.display = "block";
         this.div.style.left = this.posX.toString() + "px";
         this.div.style.top = this.posY.toString() + "px";
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
-		//this.div.innerHTML = "Funny!";
-		
-		
-		
-		// console.log(this.div.style.left + " " + this.div.style.top);
-	},
-	buildKeypad: function() {
-		var letter = "";
-		// <img id="letterButton_" src="images/key_blank.png" alt="Key Blank" style="display:none;">
-		
-		/*
-		.themes-display-container {
-			position: relative;
-		}
-		.themes-display-middle {
-			position: absolute;
-			left: 0;
-			bottom: 50%;
-			width: 100%;
-			text-align: center;
-		}
-		.themes-container {
-			padding: 0.01em 15px;
-		}
-		.img-overlay {
-			position: absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			height: 100%;
-			width: 100%;
-			opacity: 0.0;
-			filter: alpha(opacity=0);
-			transition: 0.5s ease;
-			background-color: #341d5b;
-		}
-		<div class="img-box themes-light-gray themes-display-container">
-			<img src="../images/chris_profile_500x500.png" style="opacity: 1;width:100%" alt="BraXVIus Prime Logo">
-			<div class="themes-display-bottomleft themes-container themes-text-light-gray">
-				<h2>BraXVIus Prime</h2>
-			</div>
-			<div class="img-overlay">
-				<a href="../index.html"><div class="overlay-text">Return Home</div></a>
-			</div>
-		</div>
-		*/
-		
-		var divPrefix = '<div id="letterDiv_';
-		var innerDivPrefix = '';
-		var btnPrefix = '<img id="letterButton_';
-		var buttonBuilder = '';
-		
-		//console.log("Building keypad: " + this.keyArray.length);
-		for (var i = 0; i < 26; i++) {
-			
-			buttonBuilder += divPrefix + letter + '" style="display:inline-block;position:relative;z-index:4;">';
-			
-			letter = String.fromCharCode(65 + i);
-			//console.log("Letter: " + letter);
-			
-			buttonBuilder += btnPrefix + letter + '" src="images/key_blank.png" alt="Key ' + letter + '" style="display:inline-block;position:relative;';
-			
-			buttonBuilder += 'margin:' + this.btnMargin + 'px;';
-			
-			buttonBuilder += 'width:' + game.playKeyPadSpace.width + 'px;height:' + game.playKeyPadSpace.height + 'px;z-index:3;">';
-			
-			if (i == 12) {
-				buttonBuilder += "<br>";
-			}
-			
-			buttonBuilder += "</div>";
-			
-			this.keyArray.push("letterButton_" + String.fromCharCode(65+i));
-		}
-		this.btnPerRow = Math.ceil(this.keyArray.length / 2);
-		
-		
-		this.div.innerHTML = buttonBuilder;
-		
-		var img = this.div.getElementsByTagName("img");
-        for (var i = 0; i < img.length; i++) {
-			if (img[i].id.substring(0, 13) == "letterButton_") {
-				for (var j = 0; j < 26; j++) {
-					var letter = "letterButton_" + String.fromCharCode(65+j);
-					if (img[i].id == letter) {
-						img[i].addEventListener("click", function(e) {
-							console.log("Clicked: " + e.srcElement.id);
-						});
-						continue;
-					}
-				}
-			}
+    },
+    hideKeypad: function () {
+        this.divArray = [];
+        this.keyArray = [];
+    },
+    buildKeypad: function () {
+        var letter = "";
+
+        var divPrefix = '<div id="containerDiv_';
+        var btnPrefix = '<img id="letterButton_';
+        var innerDivPrefix = '<div id="letterDiv_';
+        var buttonBuilder = '';
+
+        for (var i = 0; i < 26; i++) {
+
+            letter = String.fromCharCode(65 + i);
+
+            // Open outer div
+            buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.div.width / 13) + 'px">';
+
+            // Inner Image
+            buttonBuilder += btnPrefix + letter + '" class="keypad-image" src="images/key_blank.png">';
+
+            // Open inner div
+            buttonBuilder += innerDivPrefix + letter + '" class="keypad-center-letter">';
+
+            // Write letter
+            buttonBuilder += letter;
+
+            // Close inner div
+            buttonBuilder += "</div>";
+
+            // Close outer div
+            buttonBuilder += "</div>";
+
+            this.keyArray.push("containerDiv_" + String.fromCharCode(65 + i));
         }
-		console.log("Finished keypad: " + this.keyArray.length);
-	}
+        this.btnPerRow = Math.ceil(this.keyArray.length / 2);
+
+        this.div.innerHTML = buttonBuilder;
+
+        var imgElement = this.div.getElementsByTagName("img");
+        for (var i = 0; i < imgElement.length; i++) {
+            if (imgElement[i].id.substring(0, 13) == "letterButton_") {
+                for (var j = 0; j < 26; j++) {
+                    var letter = "letterButton_" + String.fromCharCode(65 + j);
+                    if (imgElement[i].id == letter) {
+                        imgElement[i].addEventListener("click", function (e) {
+                            console.log("Clicked: " + e.srcElement.id);
+                        });
+                        continue;
+                    }
+                }
+            }
+        }
+
+        var divElement = this.div.getElementsByTagName("div");
+        for (var i = 0; i < divElement.length; i++) {
+            if (divElement[i].id.substring(0, 10) == "letterDiv_") {
+                for (var j = 0; j < 26; j++) {
+                    var letter = "letterDiv_" + String.fromCharCode(65 + j);
+                    if (divElement[i].id == letter) {
+                        divElement[i].addEventListener("click", function (e) {
+                            console.log("Clicked: " + e.srcElement.id);
+                        });
+                        continue;
+                    }
+                }
+            }
+        }
+    }
 };
 
 // - End Scene
 //   - Images
+game.wordFlightTitleSmall = {
+    image: document.getElementById("wordFlightTitleSmall"),
+    org_width: 488 * game.scale,
+    org_height: 118 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 20;
+    },
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, posY, width, height) 
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
 
+game.endBackground = {
+    image: document.getElementById("endBackground"),
+    org_width: 1920 * game.scale,
+    org_height: 1080 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = engine.width;
+        this.height = engine.height;
+    },
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.endGameOver = {
+    image: document.getElementById("endGameOver"),
+    org_width: 750 * game.scale,
+    org_height: 205 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    poxY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.poxY = 25;
+    },
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.endGamePoints = {
+    image: document.getElementById("endGamePoints"),
+    org_width: 613 * game.scale,
+    org_heigt: 342 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    poxY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 30;
+    },
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.endInitials = {
+    image: document.getElementById("endInitials"),
+    org_width: 811 * game.scale,
+    org_height: 103 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    poxY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 35;
+    },
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.endKeyboardBackground = {
+    image: document.getElementById("endKeyboardBackground"),
+    org_width: 1557 * game.scale,
+    org_height: 283 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 40;
+    },
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, poxY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.endKeyboardKeys = {
+    image: document.getElementById("endKeyboardKeys"),
+    org_width: 1222 * game.scale,
+    org_height: 221 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = 45;
+    },
+    draw: function () {
+        this.resize();
+        //drawImage(source, posX, posY, width, height)
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
 //   - Buttons
+game.menuButton = {
+    image: document.getElementById("menuButton"),
+    org_width: 275 * game.scale,
+    org_height: 138 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = this.org_width * 2 * (1 - engine.dimensionProportion);
+        this.height = this.org_height * 2 * (1 - engine.dimensionProportion);
+        this.posX = engine.width - this.width;
+        this.posY = 50 * (1 - engine.dimensionProportion);
+    },
+    draw: function () {
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
+    }
+};
+
+game.submitButton = {
+    image: document.getElementById("submitButton"),
+    org_width: 265 * game.scale,
+    org_height: 107 * game.scale,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = engine.height / 3 - this.height / 2;
+    },
+    draw: function () {
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
+    }
+};
 
 // - Leaderboard Scene
 //   - Images
@@ -1063,7 +1239,7 @@ game.leaderboardPlane = {
         this.height = 364 * (1 - engine.widthProportion);
         this.posX = engine.width - (2300 * (1 - engine.widthProportion));
         this.posY = engine.height - (600 * (1 - engine.heightProportion));
-		console.log("Display Plane");
+        console.log("Display Plane");
     },
     draw: function () {
         this.resize();
@@ -1286,7 +1462,7 @@ game.hideElements = {
         for (var i = 0; i < y.length; i++) {
             y[i].style.display = "none";
         }
-		var z = document.getElementsByTagName("div");
+        var z = document.getElementsByTagName("div");
         for (var i = 0; i < z.length; i++) {
             z[i].style.display = "none";
         }
@@ -1310,8 +1486,8 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.databaseQuery();
-				game.getSponsor();
+                game.databaseQuery();
+                game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -1324,6 +1500,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+                game.inputKeypad.hideKeypad();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -1343,6 +1520,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+                game.inputKeypad.hideKeypad();
                 game.currState = game.gameState[3];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -1429,54 +1607,61 @@ game.drawOnce = function () {
             this.playBackground.draw();
             this.playTitle.draw();
             this.playSponsor.draw();
-			this.playSponsorLogo.draw();
+            this.playSponsorLogo.draw();
             this.playTimer.draw();
             this.playLetterSpace.draw();
-			// Display plane parts
-			this.planeCanvasBG.draw();
-			this.playPlaneNose.resize();
-			this.playPlaneFuselage.resize();
-			this.playPlaneTail.resize();
-			this.playPlaneDorsalFin.resize();
-			this.playPlaneLeftRearWing.resize();
-			this.playPlaneLeftWing.resize();
-			this.playPlaneRightRearWing.resize();
-			this.playPlaneRightWing.resize();
-			this.playPlaneLeftInnerEngine.resize();
-			this.playPlaneLeftOuterEngine.resize();
-			this.playPlaneRightInnerEngine.resize();
-			this.playPlaneRightOuterEngine.resize();
-			
-			this.playPlaneLeftInnerEngine.draw();
-			this.playPlaneLeftOuterEngine.draw();
-			this.playPlaneRightInnerEngine.draw();
-			this.playPlaneRightOuterEngine.draw();
-			
-			this.playPlaneLeftRearWing.draw();
-			this.playPlaneLeftWing.draw();
-			this.playPlaneRightRearWing.draw();
-			this.playPlaneRightWing.draw();
-			
-			this.playPlaneNose.draw();
-			this.playPlaneFuselage.draw();
-			this.playPlaneTail.draw();
-			this.playPlaneDorsalFin.draw();
+            // Display plane parts
+            this.planeCanvasBG.draw();
+            this.playPlaneNose.resize();
+            this.playPlaneFuselage.resize();
+            this.playPlaneTail.resize();
+            this.playPlaneDorsalFin.resize();
+            this.playPlaneLeftRearWing.resize();
+            this.playPlaneLeftWing.resize();
+            this.playPlaneRightRearWing.resize();
+            this.playPlaneRightWing.resize();
+            this.playPlaneLeftInnerEngine.resize();
+            this.playPlaneLeftOuterEngine.resize();
+            this.playPlaneRightInnerEngine.resize();
+            this.playPlaneRightOuterEngine.resize();
+
+            this.playPlaneLeftInnerEngine.draw();
+            this.playPlaneLeftOuterEngine.draw();
+            this.playPlaneRightInnerEngine.draw();
+            this.playPlaneRightOuterEngine.draw();
+
+            this.playPlaneLeftRearWing.draw();
+            this.playPlaneLeftWing.draw();
+            this.playPlaneRightRearWing.draw();
+            this.playPlaneRightWing.draw();
+
+            this.playPlaneNose.draw();
+            this.playPlaneFuselage.draw();
+            this.playPlaneTail.draw();
+            this.playPlaneDorsalFin.draw();
             // Display buttons
             this.playMenuButton.adjustStyle();
-			this.playKeyPadSpace.adjustStyle();
-			this.inputKeypad.adjustStyle();
+            this.playKeyPadSpace.adjustStyle();
+            this.inputKeypad.adjustStyle();
             break;
         case 'end':
             // Draw images on the canvas
-
+            this.endBackground.draw();
+            this.endGameOver.draw();
+            this.endGamePoints.draw();
+            this.endInitials.draw();
+            this.endKeyboardBackground.draw();
+            this.endKeyboardKeys.draw();
+            this.wordFlightTitleSmall.draw();
             // Display buttons
-			this.inputKeypad.adjustStyle();
+            this.submitButton.adjustStyle();
+            this.menuButton.adjustStyle();
             break;
         case 'leaderboard':
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
-			this.leaderboardPlane.draw();
+            this.leaderboardPlane.draw();
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
@@ -1489,7 +1674,7 @@ game.drawOnce = function () {
         default:
             break;
     }
-	// DEBUG
+    // DEBUG
     console.log("<GAME> Loaded Scene: " + this.currState);
 };
 //   - First draw event
