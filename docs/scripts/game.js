@@ -985,8 +985,8 @@ game.inputKeypad = {
         for (var i = 0; i < this.keyArray.length; i++) {
             var domElement = document.getElementById(this.keyArray[i]);
             domElement.style.width = this.btnWidth + "px";
-            domElement.style.height = this.btnHeight + "px";
-            domElement.childNodes[1].style.fontSize = this.btnWidth * 0.45 + "px";
+            domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
+            domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
         }
 
     },
