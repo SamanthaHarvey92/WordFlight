@@ -72,7 +72,7 @@ game.databaseQuery = function() {
 }
 
 //Database - Pull top 10 players
-game.pullTop10 = function() {
+/*game.pullTop10 = function() {
     //AJAX query
     var ajax = new XMLHttpRequest();
     ajax.open("GET", "leaderboard.php", true);
@@ -84,7 +84,7 @@ game.pullTop10 = function() {
 
         }
     };
-}
+}*/
 
 // Get the sponsor
 game.getSponsor = function() {
@@ -1184,7 +1184,6 @@ game.LeadboardSponsorLogo = {
     }
 };
 
-/*
 game.top10players = {
 	div: document.getElementById("top10table"),
 	org_width: 0,
@@ -1194,20 +1193,48 @@ game.top10players = {
 	posX: 0,
 	posY: 0,
 	resize: function() {
-        this.width = game.leaderboardClipboard.width;
-        this.height = game.leaderboardClipboard.height;
-        this.posX = game.leaderboardClipboard.posX;
-        this.posY = game.leaderboardClipboard.posY;
+		this.width = game.leaderboardClipboard.posX - 20;
+        this.height = (engine.height - (game.leaderboardClipboard.posY + game.leaderboardClipboard.height)) * 0.8;
+		
+        // Attach Left Side with Buffer
+        this.posX = Math.max(10, Math.min(40, game.leaderboardClipboard.posX/2 - this.width/2));
+        this.posY = Math.min(game.leaderboardClipboard.height + game.leaderboardClipboard.posY + 40, engine.height - this.height - 40);
+
 	},
 	adjustStyle: function() {
-
-	},
+		this.buildTable();
+		this.resize();
+		this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.zIndex = 1;
+    },
 	buildTable: function() {
+        //AJAX query
+        var txt= "";
+        var rank = 1;
 
-		}
-	}
+        var xml = new XMLHttpRequest();
+        xml.open("GET", "leaderboard.php", true);
+        xml.send();
+
+        xml.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var table_data = JSON.parse(this.responseText);
+                console.log(table_data);
+            
+            for (i=0; i<table_data.length; i++) {
+                    txt += "<table><tr><td>" + rank++ + "</td><td>" + table_data[i].user + "</td><td>" + table_data[i].score + "</td></tr></table>"
+                }
+                
+            }
+        }
+    }
 };
-*/
+
 
 //   - Buttons
 game.leaderboardMenuButton = {
@@ -1481,6 +1508,7 @@ game.drawOnce = function () {
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
             this.LeadboardSponsorLogo.draw();
+            this.top10players.adjustStyle();
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
