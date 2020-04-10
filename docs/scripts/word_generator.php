@@ -1,28 +1,13 @@
 <?php
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "WordFlight";
+include 'db_connection.php';
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $stmt = $conn->prepare("SELECT word FROM WordBank ORDER BY RAND() LIMIT 1");
-    $stmt->execute();
+$conn= $pdo;
 
-    $result1 = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+$stmt = $conn->prepare("SELECT word, sponsor_name from words A JOIN sponsors B ON A.sponsor_id=B.sponsor_id ORDER BY RAND() LIMIT 1");
+$stmt->execute();
 
-    $stmt2 = $conn->prepare("SELECT 'sponsor_name' FROM 'sponsors' join 'words' on 'sponsors.sponsor_id = words.sponsor_id' WHERE 'sponsors.sponsor_id = (SELECT words.sponsor_id WHERE word = $result1)';");
-    $stmt2->execute();
+$result=$stmt->fetchAll();
 
-    $result2 = $stmt2->setFetchMode(PDO::FETCH_ASSOC);
-
-    echo $result1;
-    echo $result2;
-}
-catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-$conn = null;
+echo json_encode($result);
 
 ?>
