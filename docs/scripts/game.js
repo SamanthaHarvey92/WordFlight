@@ -37,9 +37,12 @@ for (var i = 0; i < game.mouse.length; i++) {
 // Declare Game Variables
 // - Globals
 game.scale = 1.0;
+game.planeScale = 1.0;
 game.word = "";
 game.sponsor = "";
 game.sponsorId = "";
+game.score = 0;
+game.readyForNextWord = false;
 // - Browser size monitors
 game.oldWidth = 0;
 game.oldHeight = 0;
@@ -51,7 +54,7 @@ game.databaseQuery = function () {
     // AJAX query
 
     // Set word variable
-    game.word = "newspaper";
+    game.word = "ABC";
 
     // Set sponsor variable
     game.sponsor = "bsmooth";
@@ -372,8 +375,8 @@ game.playTitle = {
 
 game.playSponsor = {
     image: document.getElementById("wordFlightSponsor"),
-    org_width: 290 * (game.scale + 0.4),
-    org_height: 295 * (game.scale + 0.4),
+    org_width: 290 * game.scale,
+    org_height: 295 * game.scale,
     width: 0,
     height: 0,
     org_posX: 1590,
@@ -488,16 +491,25 @@ game.playLetterSpaces = {
     btnWidth: 0,
     btnHeight: 0,
     btnPerRow: 0,
+    lettersFound: 0,
+    dict: {},
+    add: function (dict, key, value) {
+        if (!this.dict[key]) {
+            this.dict[key] = [value];
+        } else {
+            this.dict[key].push(value);
+        }
+    },
     resize: function () {
         this.width = game.playSponsor.posX - 20;
         this.height = game.playLetterSpace.org_height * (1 - engine.widthProportion); // + this.btnMargin;
 
         // Attach Left Side with Buffer
         this.posX = Math.max(20, Math.min(5, this.org_posX - engine.widthDifference));
-        this.posY = Math.max(game.playTimer.height + game.playTimer.posY + 20, Math.min(game.inputKeypad.posY - this.height - 40),((game.inputKeypad.posY - (game.playTimer.height + game.playTimer.posY)) / 2));
-        
+        this.posY = Math.max(game.playTimer.height + game.playTimer.posY + 20, Math.min(game.inputKeypad.posY - this.height - 40), ((game.inputKeypad.posY - (game.playTimer.height + game.playTimer.posY)) / 2));
 
-        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
+
+        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (12) - 2;
         this.btnHeight = this.height; //game.playLetterSpace.height;
 
         for (var i = 0; i < this.keyArray.length; i++) {
@@ -522,9 +534,10 @@ game.playLetterSpaces = {
     hideKeypad: function () {
         this.divArray = [];
         this.keyArray = [];
+        this.lettersFound = 0;
+		this.dict = {};
     },
     buildKeypad: function () {
-        
         var letter = "";
 
         var divPrefix = '<div id="inputContainerDiv_';
@@ -533,13 +546,13 @@ game.playLetterSpaces = {
         var buttonBuilder = '';
 
         this.btnPerRow = game.word.length;
-        
+
         for (var i = 0; i < this.btnPerRow; i++) {
 
             letter = game.word.substr(i, 1).toUpperCase();
 
             // Open outer div
-            buttonBuilder += divPrefix + i + '" class="word-spaces-container" style="width:' + (this.div.width / 15) + 'px">';
+            buttonBuilder += divPrefix + i + '" class="word-spaces-container" style="width:' + (this.div.width / 12) + 'px">';
 
             // Inner Image
             buttonBuilder += btnPrefix + i + '" class="word-spaces-image" src="images/play_scene/play_empty_space.png">';
@@ -556,16 +569,51 @@ game.playLetterSpaces = {
             // Close outer div
             buttonBuilder += "</div>";
 
-            //console.log("Adding inputContainerDiv_" + game.word.substr(i, 1));
             this.keyArray.push("inputContainerDiv_" + i);
+            this.add(this.dict, "inputContainerDiv_" + i, letter);
+            this.divArray.push(this.dict);
         }
 
         this.div.innerHTML = buttonBuilder;
     },
-    showLetters: function() {
+    showLetters: function () {
         for (var i = 0; i < this.keyArray.length; i++) {
             var domElement = document.getElementById(this.keyArray[i]).childNodes[1];
             domElement.style.display = "block";
+        }
+    },
+    testLetter: function (input) {
+		var increaseBy = 0;
+        for (var i = 0; i < this.keyArray.length; i++) {
+            if (input == this.dict[this.keyArray[i]]) {
+
+                // Increment the number of letters found
+                this.lettersFound++;
+
+                // Unhide the discovered letter
+                var domElement = document.getElementById(this.keyArray[i]).childNodes[1];
+                domElement.style.display = "block";
+
+                // Draw plane parts
+                game.planeManager.draw();
+				
+				// Increment score
+				if (this.lettersFound == this.keyArray.length) {
+					increaseBy = Math.floor(12/(12-this.lettersFound))*3;
+					game.playScoreBox.updateScore("Plane", increaseBy);
+				} else {
+					increaseBy = 10;
+					game.playScoreBox.updateScore("Letter", increaseBy);
+				}
+				game.score += increaseBy;
+				game.playScore.updateScore();
+				// console.log("Game Score: " + game.score + " | Play Score:" + game.playScore.score);
+            }
+        }
+
+        // Notify the game that all letters have been found
+        if (this.lettersFound >= this.keyArray.length) {
+            game.readyForNextWord = true;
         }
     }
 };
@@ -581,6 +629,8 @@ game.planeCanvasBG = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+    animPosX: 0,
+    animPosY: 0,
     resize: function () {
         this.height = Math.max(engine.height * 0.5, (game.playSponsor.posY - 20) - (game.menuButton.posY + game.menuButton.height + 20));
         this.width = Math.min(this.height, (engine.width - 20) - (game.playTimer.width + 20));
@@ -588,6 +638,10 @@ game.planeCanvasBG = {
 
         this.posX = engine.width - this.width - 20;
         this.posY = ((game.playSponsor.posY - 20) + (game.menuButton.posY + game.menuButton.height + 20)) / 2 - this.height / 2;
+
+        // Check for animation
+        this.posX = Math.max(this.posX, this.posX + this.animPosX);
+        this.posY = Math.max(this.posY, this.posY + this.animPosY);
     },
     draw: function () {
         this.resize();
@@ -598,8 +652,9 @@ game.planeCanvasBG = {
 
 game.playPlaneDorsalFin = {
     image: document.getElementById("playPlaneDorsalFin"),
-    org_width: 186 * game.scale * 1.4,
-    org_height: 30 * game.scale * 1.4,
+    org_width: 186 * game.scale * game.planeScale,
+    org_height: 30 * game.scale * game.planeScale,
+    description: "Dorsal Fin",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -623,8 +678,9 @@ game.playPlaneDorsalFin = {
 
 game.playPlaneLeftInnerEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale * 1.4,
-    org_height: 50 * game.scale * 1.4,
+    org_width: 80 * game.scale * game.planeScale,
+    org_height: 50 * game.scale * game.planeScale,
+    description: "Left Inner Engine",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -648,8 +704,9 @@ game.playPlaneLeftInnerEngine = {
 
 game.playPlaneLeftOuterEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale * 1.4,
-    org_height: 50 * game.scale * 1.4,
+    org_width: 80 * game.scale * game.planeScale,
+    org_height: 50 * game.scale * game.planeScale,
+    description: "Left Outer Engine",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -673,8 +730,9 @@ game.playPlaneLeftOuterEngine = {
 
 game.playPlaneRightInnerEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale * 1.4,
-    org_height: 50 * game.scale * 1.4,
+    org_width: 80 * game.scale * game.planeScale,
+    org_height: 50 * game.scale * game.planeScale,
+    description: "Right Inner Engine",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -698,8 +756,9 @@ game.playPlaneRightInnerEngine = {
 
 game.playPlaneRightOuterEngine = {
     image: document.getElementById("playPlaneEngine"),
-    org_width: 80 * game.scale * 1.4,
-    org_height: 50 * game.scale * 1.4,
+    org_width: 80 * game.scale * game.planeScale,
+    org_height: 50 * game.scale * game.planeScale,
+    description: "Right Outer Engine",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -723,8 +782,9 @@ game.playPlaneRightOuterEngine = {
 
 game.playPlaneFuselage = {
     image: document.getElementById("playPlaneFuselage"),
-    org_width: 401 * game.scale * 1.4,
-    org_height: 130 * game.scale * 1.4,
+    org_width: 401 * game.scale * game.planeScale,
+    org_height: 130 * game.scale * game.planeScale,
+    description: "Fuselage",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -747,8 +807,9 @@ game.playPlaneFuselage = {
 
 game.playPlaneLeftRearWing = {
     image: document.getElementById("playPlaneLeftRearWing"),
-    org_width: 186 * game.scale * 1.4,
-    org_height: 130 * game.scale * 1.4,
+    org_width: 186 * game.scale * game.planeScale,
+    org_height: 130 * game.scale * game.planeScale,
+    description: "Left Rear Wing",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -772,8 +833,9 @@ game.playPlaneLeftRearWing = {
 
 game.playPlaneLeftWing = {
     image: document.getElementById("playPlaneLeftWing"),
-    org_width: 286 * game.scale * 1.4,
-    org_height: 360 * game.scale * 1.4,
+    org_width: 286 * game.scale * game.planeScale,
+    org_height: 360 * game.scale * game.planeScale,
+    description: "Left Wing",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -797,8 +859,9 @@ game.playPlaneLeftWing = {
 
 game.playPlaneNose = {
     image: document.getElementById("playPlaneNose"),
-    org_width: 160 * game.scale * 1.4,
-    org_height: 130 * game.scale * 1.4,
+    org_width: 160 * game.scale * game.planeScale,
+    org_height: 130 * game.scale * game.planeScale,
+    description: "Nose",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -822,8 +885,9 @@ game.playPlaneNose = {
 
 game.playPlaneRightRearWing = {
     image: document.getElementById("playPlaneRightRearWing"),
-    org_width: 186 * game.scale * 1.4,
-    org_height: 130 * game.scale * 1.4,
+    org_width: 186 * game.scale * game.planeScale,
+    org_height: 130 * game.scale * game.planeScale,
+    description: "Right Rear Wing",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -847,8 +911,9 @@ game.playPlaneRightRearWing = {
 
 game.playPlaneRightWing = {
     image: document.getElementById("playPlaneRightWing"),
-    org_width: 289 * game.scale * 1.4,
-    org_height: 360 * game.scale * 1.4,
+    org_width: 289 * game.scale * game.planeScale,
+    org_height: 360 * game.scale * game.planeScale,
+    description: "Right Wing",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -872,8 +937,9 @@ game.playPlaneRightWing = {
 
 game.playPlaneTail = {
     image: document.getElementById("playPlaneTail"),
-    org_width: 138 * game.scale * 1.4,
-    org_height: 130 * game.scale * 1.4,
+    org_width: 138 * game.scale * game.planeScale,
+    org_height: 130 * game.scale * game.planeScale,
+    description: "Tail",
     width: 0,
     height: 0,
     org_posX: 20,
@@ -894,6 +960,270 @@ game.playPlaneTail = {
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
+
+//   - Plane Manager
+game.planeManager = {
+    initialized: false,
+    planeParts: [],
+    partsDisplayed: 0,
+    animVelocity: 0.0,
+    animAcceleration: 0.01,
+    animNewX: 0.0,
+    initialize: function () {
+        if (!this.initialized) {
+            this.planeParts.push(game.playPlaneLeftInnerEngine);
+            this.planeParts.push(game.playPlaneLeftOuterEngine);
+            this.planeParts.push(game.playPlaneRightInnerEngine);
+            this.planeParts.push(game.playPlaneRightOuterEngine);
+            this.planeParts.push(game.playPlaneLeftRearWing);
+            this.planeParts.push(game.playPlaneRightRearWing);
+            this.planeParts.push(game.playPlaneLeftWing);
+            this.planeParts.push(game.playPlaneRightWing);
+            this.planeParts.push(game.playPlaneNose);
+            this.planeParts.push(game.playPlaneFuselage);
+            this.planeParts.push(game.playPlaneTail);
+            this.planeParts.push(game.playPlaneDorsalFin);
+			this.initialized = true;
+        }
+    },
+    draw: function () {
+
+        // Redraw background images
+        game.playBackground.draw();
+        game.playTitle.draw();
+        game.playSponsor.draw();
+        game.playSponsorLogo.draw();
+        game.playTimer.draw();
+        game.playLetterSpace.draw();
+        game.planeCanvasBG.draw();
+
+        // Get the number of parts to render
+        var parts = Math.round((game.playLetterSpaces.lettersFound / game.playLetterSpaces.keyArray.length) * this.planeParts.length);
+        // console.log("parts: " + parts);
+
+        // Draw all necessary parts
+        for (var i = 0; i < parts; i++) {
+            if (i < this.planeParts.length) {
+                this.planeParts[i].draw();
+            }
+        }
+    },
+    animate: function (dt) {
+        var deltaTime = dt;
+
+        // Increase acceleration every frame
+        this.animAcceleration += 0.1 + Math.min(dt * this.animAcceleration, 0.9);
+        // Increase velocity every frame based on acceleration * time
+        this.animVelocity += this.animAcceleration * deltaTime;
+        // Increase position every fame based on velocity * time
+        this.animNewX += this.animVelocity * deltaTime;
+
+        // Animate each plane part every frame
+        game.planeCanvasBG.animPosX += this.animNewX;
+
+        this.draw();
+        //console.log("bgX: " + game.planeCanvasBG.posX);
+        if (game.playPlaneTail.posX > engine.width + 100) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    resetElements: function () {
+		// Reset plane manager
+		this.initialized = false;
+		this.planeParts = [];
+		this.animAcceleration = 0.01;
+		this.animVelocity = 0.0;
+		this.animNewX = 0.0;
+		
+		// Reset plane canvas
+        game.planeCanvasBG.posX = 0;
+        game.planeCanvasBG.posY = 0;
+        game.planeCanvasBG.animPosX = 0;
+        game.planeCanvasBG.animPosY = 0;
+
+		// Reset all plane parts
+        game.planeManager.planeParts.forEach(function (item, index) {
+
+            item.posX = 0.0;
+            //console.log("Parts: " + game.planeManager.partsDisplayed + " | animAcceleration: " + game.planeManager.animAcceleration + " | dt: " + dt);
+            //console.log("["+index+"]" + item.description + " | posX: " + item.posX + " | animX: " + item.animPosX);
+            //console.log("[" + index + "] PosX: " + item.posX + " | AnimX: " + item.animPosX);
+        })
+    }
+};
+
+game.playTimerBox = {
+	div: document.getElementById("timerBox"),
+	org_width: 200 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 150,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+	org_font_size: 74,
+	font_size: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
+        this.posY = game.playTimer.posY + this.org_posY * (1 - engine.widthProportion);
+		
+		// Adjust font size
+		this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    }
+}
+
+game.playScore = {
+	div: document.getElementById("scoreBox"),
+	org_width: 325 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 450,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+	org_font_size: 74,
+	font_size: 0,
+	score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
+        this.posY = game.playTimer.posY + this.org_posY * (1 - engine.widthProportion);
+		
+		// Adjust font size
+		this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+		this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+	updateScore: function() {
+		this.score = Math.max(0, game.score);
+		this.div.innerHTML = this.score;
+	}
+}
+
+game.playScoreBox = {
+	div: document.getElementById("newScore"),
+	org_width: 325 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 450,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+	org_destX: 550,
+	org_destY: 240,
+	org_font_size: 74,
+	font_size: 0,
+	animSpeed: 0,
+	animStartX: 0,
+	animStartY: 0,
+	animEndX: 0,
+	animEndY: 0,
+	animActive: false,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
+        this.posY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
+		
+		// Adjust font size
+		this.font_size = this.org_font_size * (1 - engine.widthProportion);
+		
+		// Animation adjustments
+		this.animStartX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
+		this.animStartY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
+		this.animEndX = game.playTimer.posX + this.org_destX * (1 - engine.widthProportion);
+		this.animEndY = game.playTimer.posY - this.org_destY * (1 - engine.widthProportion);
+		console.log("<ScoreBox> posX: " + this.posX + "\nsX: " + this.animStartX + " | eX: " + game.playScoreBox.animEndX + "\nsY: " + game.playScoreBox.animStartY + " | eY: " + game.playScoreBox.animEndY);
+		
+    },
+    draw: function () {
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+	updateScore: function(type, value) {
+		var displayString = "";
+		displayString += type + "<br>";
+		if (value > 0) {
+			displayString += "+" + value;
+		} else {
+			displayString += value;
+		}
+		this.div.innerHTML = displayString;
+		this.div.style.display = "block";
+		this.animActive = true;
+	},
+	resetElements: function() {
+		this.resize();
+		this.animSpeed = 0;
+		this.div.style.display = "none";
+		console.log("Animation complete");
+	},
+	animate: function(dt) {
+		this.animSpeed += dt / (this.animEndX - this.animStartX);
+		this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
+		this.posY += (this.animEndY - this.animStartY) * this.animSpeed;
+		console.log("Animating... Spd: " + this.animSpeed + " | posX: " + this.posX + " | aniX: " + this.animEndX);
+		
+		// Force redraw
+		this.draw();
+		// Deactivate animation
+		if(this.posX > this.animEndX) {
+			this.animActive = false;
+			this.resetElements();
+		}
+	}
+}
 
 //   - Buttons
 game.playMenuButton = {
@@ -977,7 +1307,7 @@ game.inputKeypad = {
 
         // Attach Left Side with Buffer
         this.posX = Math.max(10, (game.playSponsor.posX - this.width) / 2);
-        this.posY = Math.max(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
+        this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
 
         this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
         this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
@@ -1051,9 +1381,26 @@ game.inputKeypad = {
                 for (var j = 0; j < 26; j++) {
                     var letter = "letterButton_" + String.fromCharCode(65 + j);
                     if (imgElement[i].id == letter) {
+                        imgElement[i].name = String.fromCharCode(65 + j);
                         imgElement[i].addEventListener("click", function (e) {
-                            console.log("Clicked: " + e.srcElement.id);
-                            game.playLetterSpaces.showLetters();
+                            // console.log("Clicked: " + e.srcElement.id);
+                            // game.playLetterSpaces.showLetters();
+
+                            if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
+
+                                // Set key letter to inactve
+                                e.srcElement.parentNode.childNodes[1].classList.remove("keypad-center-letter");
+                                e.srcElement.parentNode.childNodes[1].classList.add("keypad-center-letter-inactive");
+
+                                // Set key image to inactive
+                                e.srcElement.classList.remove("keypad-image");
+                                e.srcElement.classList.add("keypad-image-inactive");
+
+                                // Test letter with chosen word
+                                game.playLetterSpaces.testLetter(e.srcElement.name);
+                            } else {
+                                //console.log("Not enabled");
+                            }
                         });
                         continue;
                     }
@@ -1067,9 +1414,26 @@ game.inputKeypad = {
                 for (var j = 0; j < 26; j++) {
                     var letter = "letterDiv_" + String.fromCharCode(65 + j);
                     if (divElement[i].id == letter) {
+                        divElement[i].name = String.fromCharCode(65 + j);
                         divElement[i].addEventListener("click", function (e) {
-                            console.log("Clicked: " + e.srcElement.id);
-                            game.playLetterSpaces.showLetters();
+                            // console.log("Clicked: " + e.srcElement.id);
+                            // game.playLetterSpaces.showLetters();
+
+                            if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
+
+                                // Set key letter to inactve
+                                e.srcElement.classList.remove("keypad-center-letter");
+                                e.srcElement.classList.add("keypad-center-letter-inactive");
+
+                                // Set key image to inactive
+                                e.srcElement.parentNode.childNodes[0].classList.remove("keypad-image");
+                                e.srcElement.parentNode.childNodes[0].classList.add("keypad-image-inactive");
+
+                                // Test letter with chosen word
+                                game.playLetterSpaces.testLetter(e.srcElement.name);
+                            } else {
+                                //console.log("Not enabled");
+                            }
                         });
                         continue;
                     }
@@ -1524,12 +1888,55 @@ game.gameController = {
     },
     gsPlay: function (dt) {
         // Play Scene
+		
+		// Check whether a word is complete
+        if (game.readyForNextWord) {
+			
+			// DEBUG
+            console.log("Time to switch words! dt:" + dt);
+
+            if (game.planeManager.animate(dt)) {
+				// DEBUG
+				// - Animation complete
+                console.log("reset ready");
+				
+				// Query new word and sponsor
+				game.databaseQuery();
+				
+				// Hide all elements - prepare for redraw
+				game.hideElements.hideAll();
+				
+				// Reset keypad
+				game.inputKeypad.hideKeypad();
+				game.inputKeypad.adjustStyle();
+				
+				// Reset letter spaces
+				game.playLetterSpaces.hideKeypad();
+				game.playLetterSpaces.adjustStyle();
+				
+				// Reset plane
+				game.planeManager.resetElements();
+				
+				// Prepare for the next word
+                game.readyForNextWord = false;
+                
+                game.drawOnce();
+            }
+        }
+		
+		// Animate score box
+		if(game.playScoreBox.animActive) {
+			game.playScoreBox.animate(dt);
+			console.log("<GameContoller> Animating...");
+		}
 
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
+                game.readyForNextWord = false;
+                game.planeManager.resetElements();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -1638,6 +2045,9 @@ game.drawOnce = function () {
             this.playSponsorLogo.draw();
             this.playTimer.draw();
             this.playLetterSpace.draw();
+			this.playTimerBox.draw();
+			this.playScore.draw();
+			this.playScoreBox.resize();
             // Display plane parts
             this.planeCanvasBG.draw();
             this.playPlaneNose.resize();
@@ -1653,7 +2063,11 @@ game.drawOnce = function () {
             this.playPlaneRightInnerEngine.resize();
             this.playPlaneRightOuterEngine.resize();
 
-            this.playPlaneLeftInnerEngine.draw();
+            // Initialize plane manager
+            this.planeManager.initialize();
+			this.planeManager.draw();
+
+            /*this.playPlaneLeftInnerEngine.draw();
             this.playPlaneLeftOuterEngine.draw();
             this.playPlaneRightInnerEngine.draw();
             this.playPlaneRightOuterEngine.draw();
@@ -1666,7 +2080,7 @@ game.drawOnce = function () {
             this.playPlaneNose.draw();
             this.playPlaneFuselage.draw();
             this.playPlaneTail.draw();
-            this.playPlaneDorsalFin.draw();
+            this.playPlaneDorsalFin.draw();*/
             // Display buttons
             this.playMenuButton.adjustStyle();
             this.playKeyPadSpace.adjustStyle();
