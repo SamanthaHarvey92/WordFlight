@@ -62,13 +62,20 @@ game.databaseQuery = function() {
                 var sponsorname = selection[a].sponsor_name;
             }
 
+
         }
+
     }
-	// Set word variable
-	game.word = "chai";
-	
-	// Set sponsor variable
-	game.sponsor = "argo";
+        
+        
+        // Set word variable
+        game.word = "greentea" //gameword;
+        
+        // Set sponsor variable
+        game.sponsor = "argo" //sponsorname;
+
+
+    
 }
 
 //Database - Pull top 10 players
@@ -1390,28 +1397,49 @@ game.top10players = {
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
     },
+    hideTable: function () {
+        this.divArray = [];
+    },
 	buildTable: function() {
+        var place = "";
+		var divPrefix = '<div id="containerDiv_';
+		var tablePrefix = '<table>';
+		var rowPrefix = '<tr>';
+		var dataPrefix = '<td>';
+		var tableBuilder = '';
+
         //AJAX query
-        var txt= "";
-        var rank = 1;
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", "leaderboard.php", true);
+        ajax.send();
 
-        var xml = new XMLHttpRequest();
-        xml.open("GET", "leaderboard.php", true);
-        xml.send();
-
-        xml.onreadystatechange = function () {
+        ajax.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                var table_data = JSON.parse(this.responseText);
-                console.log(table_data);
-            
-            for (i=0; i<table_data.length; i++) {
-                    txt += "<table><tr><td>" + rank++ + "</td><td>" + table_data[i].user + "</td><td>" + table_data[i].score + "</td></tr></table>"
-                }
+                var leaders = JSON.parse(this.responseText);
                 
-            }
-        }
+                for (var i=0; i < leaders.length; i++) {
+                    place = i + 1;
+                    
+                    //open div
+                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.div.width) + 'px">';
+                    
+                    //build table row
+                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + "leaders[i].user</td>" + dataPrefix + "leaders[i].score</td><tr>";
+                    
+                    //close table
+                    tableBuilder += "</table>"
+                    
+                    //close div
+                    tableBuilder += "</div>"
+                    
+                    this.divArray.push("containerDiv_" + place);
+                }
 
-    
+                this.div.innerHTML = tableBuilder;
+
+            }
+
+        }
     }
 };
 

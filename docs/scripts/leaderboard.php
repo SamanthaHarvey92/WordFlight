@@ -10,4 +10,6 @@ $result = $stmt->fetchAll();
 
 echo json_encode($result);
 
+$conn = null;
+
 ?> 
