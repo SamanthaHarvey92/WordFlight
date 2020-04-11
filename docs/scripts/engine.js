@@ -261,8 +261,8 @@ window.onresize = function (e) {
     engine.aspectRatio = window.innerWidth / window.innerHeight;
 
     // Find the dimensional proportion ratios
-    engine.widthProportion = (Math.abs(engine.widthDifference) / 1920).toPrecision(4);
-    engine.heightProportion = (Math.abs(engine.heightDifference) / 1080).toPrecision(4);
+    engine.widthProportion = ((engine.widthDifference) / 1920).toPrecision(4);
+    engine.heightProportion = ((engine.heightDifference) / 1080).toPrecision(4);
     engine.dimensionProportion = engine.widthProportion > engine.heightProportion ? engine.widthProportion : engine.heightProportion;
     engine.width = engine.canvas.width;
 
