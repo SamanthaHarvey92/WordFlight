@@ -38,8 +38,12 @@ for (var i = 0; i < game.mouse.length; i++) {
 // - Globals
 game.scale = 1.0;
 game.planeScale = 1.0;
+game.lastWord = "";
 game.word = "";
+game.nextWord = "";
+game.lastSponsor = "";
 game.sponsor = "";
+game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
@@ -49,33 +53,55 @@ game.oldHeight = 0;
 
 // Game functions
 
+// Update words
+game.updateWords = {
+	lastWord: function() {
+		game.lastWord = game.word;
+	},
+	word: function() {
+		game.word = game.nextWord;
+		game.sponsor = game.nextSponsor;
+	},
+	nextWord: function() {
+		game.databaseQuery();
+	},
+	update: function() {
+		this.lastWord();
+		if (game.word == game.lastWord) {
+			this.nextWord();
+		}
+		this.word();
+		this.nextWord();
+	}
+}
+
 // Database - Pull random word with its sponsor
-game.databaseQuery = function() {
+game.databaseQuery = function () {
+	// Update previous word/sponsor pair
+	game.lastWord = game.word;
+	game.lastSponsor = game.sponsor;
+	
     // AJAX query
     var ajax = new XMLHttpRequest();
-    ajax.open("GET", "word_generator.php", true);
+    ajax.open("GET", "scripts/word_generator.php", true);
     ajax.send();
 
-    ajax.onreadystatechange = function() {
+    ajax.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var selection = JSON.parse(this.responseText);
 
 
-            for(var a=0; a<selection.length; a++) {
-                var gameword = selection[a].word;
-                var sponsorname = selection[a].sponsor_name;
+            for (var a = 0; a < selection.length; a++) {
+                game.nextWord = selection[a].word.toUpperCase();
+                game.nextSponsor = selection[a].sponsor_name.toUpperCase();
             }
 
-
-        }
+			// Remove all spaces from the word
+			game.nextWord = game.nextWord.replace(/\s+/g, '');
+			console.log("Word: " + game.nextWord + " | Sponsor: " + game.nextSponsor);
+        } 
 
     }
-
-        // Set word variable
-        game.word = "greentea";  //gameword
-        
-        // Set sponsor variable
-        game.sponsor = "argo"; //sponsorname
 }
 
 //Database - Pull top 10 players
@@ -96,61 +122,61 @@ game.databaseQuery = function() {
 // Get the sponsor
 game.getSponsor = function () {
     switch (this.sponsor) {
-        case "argo":
+        case "ARGO TEA":
             this.sponsorId = "sponsorArgo";
             break;
-        case "auntieannes":
+        case "AUNTIE ANNES":
             this.sponsorId = "sponsorAuntieAnnes";
             break;
-        case "brookstone":
+        case "BROOKSTONE":
             this.sponsorId = "sponsorBrookstone";
             break;
-        case "bsmooth":
+        case "BSMOOTH":
             this.sponsorId = "sponsorBSmooth";
             break;
-        case "burritobeach":
+        case "BURRITO BEACH":
             this.sponsorId = "sponsorBurritoBeach";
             break;
-        case "chicagosports":
+        case "CHICAGO SPORTS":
             this.sponsorId = "sponsorChicagoSports";
             break;
-        case "cnn":
+        case "CNN":
             this.sponsorId = "sponsorCNN";
             break;
-        case "coach":
+        case "COACH":
             this.sponsorId = "sponsorCoach";
             break;
-        case "dunkindonuts":
+        case "DUNKIN DONUTS":
             this.sponsorId = "sponsorDunkinDonuts";
             break;
-        case "dutyfreestore":
+        case "DUTY FREE STORE":
             this.sponsorId = "sponsorDutyFreeStore";
             break;
-        case "field":
+        case "FIELD":
             this.sponsorId = "sponsorField";
             break;
-        case "hudson":
+        case "HUDSON":
             this.sponsorId = "sponsorHudson";
             break;
-        case "maccosmetics":
+        case "MAC COSMETICS":
             this.sponsorId = "sponsorMacCosmetics";
             break;
-        case "nutsonclark":
+        case "NUTS ON CLARK":
             this.sponsorId = "sponsorNutsOnClark";
             break;
-        case "rockymountainchocolate":
+        case "ROCKY MOUNTAIN CHOCOLATE":
             this.sponsorId = "sponsorRockyMountainChocolate";
             break;
-        case "sarahscandies":
+        case "SARAHS CANDIES":
             this.sponsorId = "sponsorSarahsCandies";
             break;
-        case "shoehospital":
+        case "SHOE HOSPITAL":
             this.sponsorId = "sponsorShoeHospital";
             break;
-        case "spiritoftheredhorse":
+        case "SPIRIT OF THE RED HORSE":
             this.sponsorId = "sponsorSpiritOfTheRedHorse";
             break;
-        case "talie":
+        case "TALIE":
             this.sponsorId = "sponsorTalie";
             break;
         default:
@@ -564,7 +590,7 @@ game.playLetterSpaces = {
         this.divArray = [];
         this.keyArray = [];
         this.lettersFound = 0;
-		this.dict = {};
+        this.dict = {};
     },
     buildKeypad: function () {
         var letter = "";
@@ -612,7 +638,7 @@ game.playLetterSpaces = {
         }
     },
     testLetter: function (input) {
-		var increaseBy = 0;
+        var increaseBy = 0;
         for (var i = 0; i < this.keyArray.length; i++) {
             if (input == this.dict[this.keyArray[i]]) {
 
@@ -625,17 +651,17 @@ game.playLetterSpaces = {
 
                 // Draw plane parts
                 game.planeManager.draw();
-				
-				// Increment score
-				if (this.lettersFound == this.keyArray.length) {
-					increaseBy = Math.floor(12/(12-this.lettersFound))*3;
-					game.playScoreBox.updateScore("Plane", increaseBy);
-				} else {
-					increaseBy = 10;
-					game.playScoreBox.updateScore("Letter", increaseBy);
-				}
-				game.score += increaseBy;
-				game.playScore.updateScore();
+
+                // Increment score
+                if (this.lettersFound == this.keyArray.length) {
+                    increaseBy = Math.floor(12 / (12 - this.lettersFound)) * 3;
+                    game.playScoreBox.updateScore("Plane", increaseBy);
+                } else {
+                    increaseBy = 10;
+                    game.playScoreBox.updateScore("Letter", increaseBy);
+                }
+                game.score += increaseBy;
+                game.playScore.updateScore();
             }
         }
 
@@ -1011,7 +1037,7 @@ game.planeManager = {
             this.planeParts.push(game.playPlaneFuselage);
             this.planeParts.push(game.playPlaneTail);
             this.planeParts.push(game.playPlaneDorsalFin);
-			this.initialized = true;
+            this.initialized = true;
         }
     },
     draw: function () {
@@ -1056,20 +1082,20 @@ game.planeManager = {
         }
     },
     resetElements: function () {
-		// Reset plane manager
-		this.initialized = false;
-		this.planeParts = [];
-		this.animAcceleration = 0.01;
-		this.animVelocity = 0.0;
-		this.animNewX = 0.0;
-		
-		// Reset plane canvas
+        // Reset plane manager
+        this.initialized = false;
+        this.planeParts = [];
+        this.animAcceleration = 0.01;
+        this.animVelocity = 0.0;
+        this.animNewX = 0.0;
+
+        // Reset plane canvas
         game.planeCanvasBG.posX = 0;
         game.planeCanvasBG.posY = 0;
         game.planeCanvasBG.animPosX = 0;
         game.planeCanvasBG.animPosY = 0;
 
-		// Reset all plane parts
+        // Reset all plane parts
         game.planeManager.planeParts.forEach(function (item, index) {
 
             item.posX = 0.0;
@@ -1078,8 +1104,8 @@ game.planeManager = {
 };
 
 game.playTimerBox = {
-	div: document.getElementById("timerBox"),
-	org_width: 200 * game.scale,
+    div: document.getElementById("timerBox"),
+    org_width: 200 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
     height: 0,
@@ -1087,8 +1113,8 @@ game.playTimerBox = {
     org_posY: 82,
     posX: 0,
     posY: 0,
-	org_font_size: 74,
-	font_size: 0,
+    org_font_size: 74,
+    font_size: 0,
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1097,9 +1123,9 @@ game.playTimerBox = {
         // Attach Left Side
         this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
         this.posY = game.playTimer.posY + this.org_posY * (1 - engine.widthProportion);
-		
-		// Adjust font size
-		this.font_size = this.org_font_size * (1 - engine.widthProportion);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     draw: function () {
         this.adjustStyle();
@@ -1112,14 +1138,14 @@ game.playTimerBox = {
         this.div.style.top = this.posY.toString() + "px";
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
-		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     }
 }
 
 game.playScore = {
-	div: document.getElementById("scoreBox"),
-	org_width: 325 * game.scale,
+    div: document.getElementById("scoreBox"),
+    org_width: 325 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
     height: 0,
@@ -1127,9 +1153,9 @@ game.playScore = {
     org_posY: 82,
     posX: 0,
     posY: 0,
-	org_font_size: 74,
-	font_size: 0,
-	score: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1138,12 +1164,12 @@ game.playScore = {
         // Attach Left Side
         this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
         this.posY = game.playTimer.posY + this.org_posY * (1 - engine.widthProportion);
-		
-		// Adjust font size
-		this.font_size = this.org_font_size * (1 - engine.widthProportion);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     draw: function () {
-		this.updateScore();
+        this.updateScore();
         this.adjustStyle();
     },
     adjustStyle: function () {
@@ -1154,18 +1180,18 @@ game.playScore = {
         this.div.style.top = this.posY.toString() + "px";
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
-		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
-	updateScore: function() {
-		this.score = Math.max(0, game.score);
-		this.div.innerHTML = this.score;
-	}
+    updateScore: function () {
+        this.score = Math.max(0, game.score);
+        this.div.innerHTML = this.score;
+    }
 }
 
 game.playScoreBox = {
-	div: document.getElementById("newScore"),
-	org_width: 325 * game.scale,
+    div: document.getElementById("newScore"),
+    org_width: 325 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
     height: 0,
@@ -1173,16 +1199,16 @@ game.playScoreBox = {
     org_posY: 82,
     posX: 0,
     posY: 0,
-	org_destX: 550,
-	org_destY: 240,
-	org_font_size: 74,
-	font_size: 0,
-	animSpeed: 0,
-	animStartX: 0,
-	animStartY: 0,
-	animEndX: 0,
-	animEndY: 0,
-	animActive: false,
+    org_destX: 550,
+    org_destY: 240,
+    org_font_size: 74,
+    font_size: 0,
+    animSpeed: 0,
+    animStartX: 0,
+    animStartY: 0,
+    animEndX: 0,
+    animEndY: 0,
+    animActive: false,
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1191,16 +1217,16 @@ game.playScoreBox = {
         // Attach Left Side
         this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
         this.posY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
-		
-		// Adjust font size
-		this.font_size = this.org_font_size * (1 - engine.widthProportion);
-		
-		// Animation adjustments
-		this.animStartX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
-		this.animStartY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
-		this.animEndX = game.playTimer.posX + this.org_destX * (1 - engine.widthProportion);
-		this.animEndY = game.playTimer.posY - this.org_destY * (1 - engine.widthProportion);
-		
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+
+        // Animation adjustments
+        this.animStartX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
+        this.animStartY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
+        this.animEndX = game.playTimer.posX + this.org_destX * (1 - engine.widthProportion);
+        this.animEndY = game.playTimer.posY - this.org_destY * (1 - engine.widthProportion);
+
     },
     draw: function () {
         this.adjustStyle();
@@ -1210,39 +1236,39 @@ game.playScoreBox = {
         this.div.style.top = this.posY.toString() + "px";
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
-		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
-	updateScore: function(type, value) {
-		var displayString = "";
-		displayString += type + "<br>";
-		if (value > 0) {
-			displayString += "+" + value;
-		} else {
-			displayString += value;
-		}
-		this.div.innerHTML = displayString;
-		this.div.style.display = "block";
-		this.animActive = true;
-	},
-	resetElements: function() {
-		this.resize();
-		this.animSpeed = 0;
-		this.div.style.display = "none";
-	},
-	animate: function(dt) {
-		this.animSpeed += dt / (this.animEndX - this.animStartX);
-		this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
-		this.posY += (this.animEndY - this.animStartY) * this.animSpeed;
-		
-		// Force redraw
-		this.draw();
-		// Deactivate animation
-		if(this.posX > this.animEndX) {
-			this.animActive = false;
-			this.resetElements();
-		}
-	}
+    updateScore: function (type, value) {
+        var displayString = "";
+        displayString += type + "<br>";
+        if (value > 0) {
+            displayString += "+" + value;
+        } else {
+            displayString += value;
+        }
+        this.div.innerHTML = displayString;
+        this.div.style.display = "block";
+        this.animActive = true;
+    },
+    resetElements: function () {
+        this.resize();
+        this.animSpeed = 0;
+        this.div.style.display = "none";
+    },
+    animate: function (dt) {
+        this.animSpeed += dt / (this.animEndX - this.animStartX);
+        this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
+        this.posY += (this.animEndY - this.animStartY) * this.animSpeed;
+
+        // Force redraw
+        this.draw();
+        // Deactivate animation
+        if (this.posX > this.animEndX) {
+            this.animActive = false;
+            this.resetElements();
+        }
+    }
 }
 
 //   - Buttons
@@ -1512,8 +1538,8 @@ game.endGameOver = {
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width/2 - this.width/2;
-        this.poxY = engine.height/2 - this.height/2;
+        this.posX = engine.width / 2 - this.width / 2;
+        this.poxY = engine.height / 2 - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -1530,16 +1556,16 @@ game.endGamePoints = {
     height: 0,
     posX: 0,
     posY: 0,
-     resize: function () {
+    resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width/2 - this.width/2;
-        this.posY = game.endKeyboardBackground.posY/2 - this.height/2;
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = game.endKeyboardBackground.posY / 2 - this.height / 2;
     },
     draw: function () {
         this.resize();
         //drawImage(source, posX, posY, width, height)
-         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1554,8 +1580,8 @@ game.endInitials = {
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width/2 - this.width/2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height + this.height/2;
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height + this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -1648,8 +1674,8 @@ game.submitButton = {
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = game.endKeyboardBackground.posX + (game.endKeyboardBackground.width - this.width)-10;
-        this.posY = game.endKeyboardBackground.posY + (game.endKeyboardBackground.height - this.height)/2;
+        this.posX = game.endKeyboardBackground.posX + (game.endKeyboardBackground.width - this.width) - 10;
+        this.posY = game.endKeyboardBackground.posY + (game.endKeyboardBackground.height - this.height) / 2;
     },
     draw: function () {
         this.adjustStyle();
@@ -1821,26 +1847,26 @@ game.LeadboardSponsorLogo = {
 };
 
 game.top10players = {
-	div: document.getElementById("top10table"),
-	org_width: 0,
-	org_height: 0,
-	width: 0,
-	height: 0,
-	posX: 0,
-	posY: 0,
-	resize: function() {
-		this.width = game.leaderboardClipboard.posX - 20;
+    div: document.getElementById("top10table"),
+    org_width: 0,
+    org_height: 0,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    resize: function () {
+        this.width = game.leaderboardClipboard.posX - 20;
         this.height = (engine.height - (game.leaderboardClipboard.posY + game.leaderboardClipboard.height)) * 0.8;
-		
+
         // Attach Left Side with Buffer
-        this.posX = Math.max(10, Math.min(40, game.leaderboardClipboard.posX/2 - this.width/2));
+        this.posX = Math.max(10, Math.min(40, game.leaderboardClipboard.posX / 2 - this.width / 2));
         this.posY = Math.min(game.leaderboardClipboard.height + game.leaderboardClipboard.posY + 40, engine.height - this.height - 40);
 
-	},
-	adjustStyle: function() {
-		this.buildTable();
-		this.resize();
-		this.div.style.position = "absolute";
+    },
+    adjustStyle: function () {
+        this.buildTable();
+        this.resize();
+        this.div.style.position = "absolute";
         this.div.style.display = "block";
         this.div.style.left = this.posX.toString() + "px";
         this.div.style.top = this.posY.toString() + "px";
@@ -1851,38 +1877,38 @@ game.top10players = {
     hideTable: function () {
         this.divArray = [];
     },
-	buildTable: function() {
+    buildTable: function () {
         var place = "";
-		var divPrefix = '<div id="containerDiv_';
-		var tablePrefix = '<table>';
-		var rowPrefix = '<tr>';
-		var dataPrefix = '<td>';
-		var tableBuilder = '';
+        var divPrefix = '<div id="containerDiv_';
+        var tablePrefix = '<table>';
+        var rowPrefix = '<tr>';
+        var dataPrefix = '<td>';
+        var tableBuilder = '';
 
         //AJAX query
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "leaderboard.php", true);
         ajax.send();
 
-        ajax.onreadystatechange = function() {
+        ajax.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var leaders = JSON.parse(this.responseText);
-                
-                for (var i=0; i < leaders.length; i++) {
+
+                for (var i = 0; i < leaders.length; i++) {
                     place = i + 1;
-                    
+
                     //open div
                     tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.div.width) + 'px">';
-                    
+
                     //build table row
                     tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + "leaders[i].user</td>" + dataPrefix + "leaders[i].score</td><tr>";
-                    
+
                     //close table
                     tableBuilder += "</table>"
-                    
+
                     //close div
                     tableBuilder += "</div>"
-                    
+
                     this.divArray.push("containerDiv_" + place);
                 }
 
@@ -1992,7 +2018,12 @@ game.hideElements = {
 game.gameController = {
     gsStart: function (dt) {
         // Start Scene
-
+		
+		// Initialize word/sponsor pairs from database
+		if (game.word === "") {
+			game.updateWords.update();
+		}
+		
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
@@ -2006,44 +2037,45 @@ game.gameController = {
     },
     gsPlay: function (dt) {
         // Play Scene
-		
-		// Check whether a word is complete
+
+        // Check whether a word is complete
         if (game.readyForNextWord) {
 
             if (game.planeManager.animate(dt)) {
-				
-				// Query new word and sponsor
-				game.databaseQuery();
-				
-				// Hide all elements - prepare for redraw
-				game.hideElements.hideAll();
-				
-				// Reset keypad
-				game.inputKeypad.hideKeypad();
-				game.inputKeypad.adjustStyle();
-				
-				// Reset letter spaces
-				game.playLetterSpaces.hideKeypad();
-				game.playLetterSpaces.adjustStyle();
-				
-				// Reset plane
-				game.planeManager.resetElements();
-				
-				// Prepare for the next word
+
+                // Query new word and sponsor
+                game.updateWords.update();
+
+                // Hide all elements - prepare for redraw
+                game.hideElements.hideAll();
+
+                // Reset keypad
+                game.inputKeypad.hideKeypad();
+                game.inputKeypad.adjustStyle();
+
+                // Reset letter spaces
+                game.playLetterSpaces.hideKeypad();
+                game.playLetterSpaces.adjustStyle();
+
+                // Reset plane
+                game.planeManager.resetElements();
+
+                // Prepare for the next word
                 game.readyForNextWord = false;
-                
+
                 game.drawOnce();
             }
         }
-		
-		// Animate score box
-		if(game.playScoreBox.animActive) {
-			game.playScoreBox.animate(dt);
-		}
+
+        // Animate score box
+        if (game.playScoreBox.animActive) {
+            game.playScoreBox.animate(dt);
+        }
 
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				game.updateWords.update();
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
@@ -2138,7 +2170,7 @@ game.drawOnce = function () {
     // Draw based on the GameState
     switch (this.currState) {
         case 'start':
-            // Draw images on the canvas
+			// Draw images on the canvas
             this.startRunway.draw();
             this.startHangar.draw();
             this.wordFlightTitle.draw();
@@ -2156,9 +2188,9 @@ game.drawOnce = function () {
             this.playSponsorLogo.draw();
             this.playTimer.draw();
             this.playLetterSpace.draw();
-			this.playTimerBox.draw();
-			this.playScore.draw();
-			this.playScoreBox.resize();
+            this.playTimerBox.draw();
+            this.playScore.draw();
+            this.playScoreBox.resize();
             // Display plane parts
             this.planeCanvasBG.draw();
             this.playPlaneNose.resize();
@@ -2176,7 +2208,7 @@ game.drawOnce = function () {
 
             // Initialize plane manager
             this.planeManager.initialize();
-			this.planeManager.draw();
+            this.planeManager.draw();
 
             /*this.playPlaneLeftInnerEngine.draw();
             this.playPlaneLeftOuterEngine.draw();
