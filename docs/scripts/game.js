@@ -66,13 +66,16 @@ game.databaseQuery = function() {
                 var sponsorname = selection[a].sponsor_name;
             }
 
+
         }
+
     }
-	// Set word variable
-	game.word = ("chai").toUpperCase();
-	
-	// Set sponsor variable
-	game.sponsor = "argo";
+
+        // Set word variable
+        game.word = "greentea";  //gameword
+        
+        // Set sponsor variable
+        game.sponsor = "argo"; //sponsorname
 }
 
 //Database - Pull top 10 players
@@ -633,7 +636,6 @@ game.playLetterSpaces = {
 				}
 				game.score += increaseBy;
 				game.playScore.updateScore();
-				// console.log("Game Score: " + game.score + " | Play Score:" + game.playScore.score);
             }
         }
 
@@ -1025,7 +1027,6 @@ game.planeManager = {
 
         // Get the number of parts to render
         var parts = Math.round((game.playLetterSpaces.lettersFound / game.playLetterSpaces.keyArray.length) * this.planeParts.length);
-        // console.log("parts: " + parts);
 
         // Draw all necessary parts
         for (var i = 0; i < parts; i++) {
@@ -1048,7 +1049,6 @@ game.planeManager = {
         game.planeCanvasBG.animPosX += this.animNewX;
 
         this.draw();
-        //console.log("bgX: " + game.planeCanvasBG.posX);
         if (game.playPlaneTail.posX > engine.width + 100) {
             return true;
         } else {
@@ -1073,9 +1073,6 @@ game.planeManager = {
         game.planeManager.planeParts.forEach(function (item, index) {
 
             item.posX = 0.0;
-            //console.log("Parts: " + game.planeManager.partsDisplayed + " | animAcceleration: " + game.planeManager.animAcceleration + " | dt: " + dt);
-            //console.log("["+index+"]" + item.description + " | posX: " + item.posX + " | animX: " + item.animPosX);
-            //console.log("[" + index + "] PosX: " + item.posX + " | AnimX: " + item.animPosX);
         })
     }
 };
@@ -1203,7 +1200,6 @@ game.playScoreBox = {
 		this.animStartY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
 		this.animEndX = game.playTimer.posX + this.org_destX * (1 - engine.widthProportion);
 		this.animEndY = game.playTimer.posY - this.org_destY * (1 - engine.widthProportion);
-		console.log("<ScoreBox> posX: " + this.posX + "\nsX: " + this.animStartX + " | eX: " + game.playScoreBox.animEndX + "\nsY: " + game.playScoreBox.animStartY + " | eY: " + game.playScoreBox.animEndY);
 		
     },
     draw: function () {
@@ -1233,13 +1229,11 @@ game.playScoreBox = {
 		this.resize();
 		this.animSpeed = 0;
 		this.div.style.display = "none";
-		console.log("Animation complete");
 	},
 	animate: function(dt) {
 		this.animSpeed += dt / (this.animEndX - this.animStartX);
 		this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
 		this.posY += (this.animEndY - this.animStartY) * this.animSpeed;
-		console.log("Animating... Spd: " + this.animSpeed + " | posX: " + this.posX + " | aniX: " + this.animEndX);
 		
 		// Force redraw
 		this.draw();
@@ -1409,8 +1403,6 @@ game.inputKeypad = {
                     if (imgElement[i].id == letter) {
                         imgElement[i].name = String.fromCharCode(65 + j);
                         imgElement[i].addEventListener("click", function (e) {
-                            // console.log("Clicked: " + e.srcElement.id);
-                            // game.playLetterSpaces.showLetters();
 
                             if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
 
@@ -1442,8 +1434,6 @@ game.inputKeypad = {
                     if (divElement[i].id == letter) {
                         divElement[i].name = String.fromCharCode(65 + j);
                         divElement[i].addEventListener("click", function (e) {
-                            // console.log("Clicked: " + e.srcElement.id);
-                            // game.playLetterSpaces.showLetters();
 
                             if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
 
@@ -1710,7 +1700,6 @@ game.leaderboardPlane = {
         this.height = 364 * (1 - engine.widthProportion);
         this.posX = engine.width - (2300 * (1 - engine.widthProportion));
         this.posY = engine.height - (600 * (1 - engine.heightProportion));
-        console.log("Display Plane");
     },
     draw: function () {
         this.resize();
@@ -1859,28 +1848,49 @@ game.top10players = {
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
     },
+    hideTable: function () {
+        this.divArray = [];
+    },
 	buildTable: function() {
+        var place = "";
+		var divPrefix = '<div id="containerDiv_';
+		var tablePrefix = '<table>';
+		var rowPrefix = '<tr>';
+		var dataPrefix = '<td>';
+		var tableBuilder = '';
+
         //AJAX query
-        var txt= "";
-        var rank = 1;
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", "leaderboard.php", true);
+        ajax.send();
 
-        var xml = new XMLHttpRequest();
-        xml.open("GET", "leaderboard.php", true);
-        xml.send();
-
-        xml.onreadystatechange = function () {
+        ajax.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                var table_data = JSON.parse(this.responseText);
-                console.log(table_data);
-            
-            for (i=0; i<table_data.length; i++) {
-                    txt += "<table><tr><td>" + rank++ + "</td><td>" + table_data[i].user + "</td><td>" + table_data[i].score + "</td></tr></table>"
-                }
+                var leaders = JSON.parse(this.responseText);
                 
-            }
-        }
+                for (var i=0; i < leaders.length; i++) {
+                    place = i + 1;
+                    
+                    //open div
+                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.div.width) + 'px">';
+                    
+                    //build table row
+                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + "leaders[i].user</td>" + dataPrefix + "leaders[i].score</td><tr>";
+                    
+                    //close table
+                    tableBuilder += "</table>"
+                    
+                    //close div
+                    tableBuilder += "</div>"
+                    
+                    this.divArray.push("containerDiv_" + place);
+                }
 
-    
+                this.div.innerHTML = tableBuilder;
+
+            }
+
+        }
     }
 };
 
@@ -1999,14 +2009,8 @@ game.gameController = {
 		
 		// Check whether a word is complete
         if (game.readyForNextWord) {
-			
-			// DEBUG
-            console.log("Time to switch words! dt:" + dt);
 
             if (game.planeManager.animate(dt)) {
-				// DEBUG
-				// - Animation complete
-                console.log("reset ready");
 				
 				// Query new word and sponsor
 				game.databaseQuery();
@@ -2035,7 +2039,6 @@ game.gameController = {
 		// Animate score box
 		if(game.playScoreBox.animActive) {
 			game.playScoreBox.animate(dt);
-			console.log("<GameContoller> Animating...");
 		}
 
         // Toggle next state

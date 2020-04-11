@@ -415,3 +415,9 @@ a:active {
     transition: 0.5s ease;
     background-color: #341d5b;
 }
+
+.table-container {
+	position: relative;
+	display: inline-block;
+	padding: 5px;
+}
