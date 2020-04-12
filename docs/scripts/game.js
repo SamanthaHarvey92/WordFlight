@@ -128,7 +128,7 @@ game.getSponsor = function () {
         case "AUNTIE ANNES":
             this.sponsorId = "sponsorAuntieAnnes";
             break;
-        case "BROOK STONE":
+        case "BROOKSTONE":
             this.sponsorId = "sponsorBrookstone";
             break;
         case "BSMOOTH":
