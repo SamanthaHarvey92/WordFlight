@@ -104,21 +104,6 @@ game.databaseQuery = function () {
     }
 }
 
-//Database - Pull top 10 players
-/*game.pullTop10 = function() {
-    //AJAX query
-    var ajax = new XMLHttpRequest();
-    ajax.open("GET", "leaderboard.php", true);
-    ajax.send();
-
-    ajax.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var leaders = JSON.parse(this.responseText);
-
-        }
-    };
-}*/
-
 // Get the sponsor
 game.getSponsor = function () {
     switch (this.sponsor) {
@@ -1536,10 +1521,10 @@ game.endGameOver = {
     posX: 0,
     poxY: 0,
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
-        this.poxY = engine.height / 2 - this.height / 2;
+        this.width = this.org_width * (1-engine.widthProportion);
+        this.height = this.org_height * (1-engine.widthProportion);
+        this.posX = 10 * (1 - engine.widthProportion);
+        this.poxY = 10 * (1 - engine.widthProportion);
     },
     draw: function () {
         this.resize();
@@ -1629,6 +1614,52 @@ game.endKeyboardKeys = {
         this.resize();
         //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.endPlayerScore = {
+	div: document.getElementById("endPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width/2 - this.width/2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height/2 - this.height/2;
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.score);
+        this.div.innerHTML = this.score;
     }
 };
 
@@ -1918,6 +1949,52 @@ game.top10players = {
             }
 
         }
+    }
+};
+
+game.finalPlayerScore = {
+	div: document.getElementById("finalPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.leaderboardPlayerScore.posX + game.leaderboardPlayerScore.width/2 - this.width/2;
+        this.posY = game.leaderboardPlayerScore.posY + game.leaderboardPlayerScore.height/2 - this.height/2;
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.score);
+        this.div.innerHTML = this.score;
     }
 };
 
@@ -2241,6 +2318,7 @@ game.drawOnce = function () {
             this.endKeyboardKeys.draw();
             this.wordFlightTitleSmall.draw();
             this.endGameOver.draw();
+            this.endPlayerScore.draw();
             // Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
@@ -2255,6 +2333,7 @@ game.drawOnce = function () {
             this.leaderboardPlane.draw();
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
+            this.finalPlayerScore.draw();
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
