@@ -1126,7 +1126,7 @@ game.playTimerBox = {
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     }
-}
+};
 
 game.playScore = {
     div: document.getElementById("scoreBox"),
@@ -1172,7 +1172,7 @@ game.playScore = {
         this.score = Math.max(0, game.score);
         this.div.innerHTML = this.score;
     }
-}
+};
 
 game.playScoreBox = {
     div: document.getElementById("newScore"),
@@ -1254,7 +1254,7 @@ game.playScoreBox = {
             this.resetElements();
         }
     }
-}
+};
 
 //   - Buttons
 game.playMenuButton = {
@@ -1663,6 +1663,51 @@ game.endPlayerScore = {
     }
 };
 
+game.endPlayerInitials = {
+	div: document.getElementById("endPlayerInitials"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 48,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.endInitials.posX + (game.endInitials.width * .7);
+        this.posY = game.endInitials.posY + (game.endInitials.height * .15);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateInitials();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateInitials: function () {
+        
+    }
+};
+
 
 //   - Buttons
 game.menuButton = {
@@ -1885,6 +1930,8 @@ game.top10players = {
     height: 0,
     posX: 0,
     posY: 0,
+    org_font_size: 36,
+    font_size: 0,
     divArray: [],
     resize: function () {
         this.width = game.leaderboardClipboard.width * .80;
@@ -1905,6 +1952,9 @@ game.top10players = {
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     hideTable: function () {
         this.divArray = [];
@@ -2319,6 +2369,7 @@ game.drawOnce = function () {
             this.wordFlightTitleSmall.draw();
             this.endGameOver.draw();
             this.endPlayerScore.draw();
+            this.endPlayerInitials.draw();
             // Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
