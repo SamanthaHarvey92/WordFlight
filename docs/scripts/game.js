@@ -128,7 +128,7 @@ game.getSponsor = function () {
         case "AUNTIE ANNES":
             this.sponsorId = "sponsorAuntieAnnes";
             break;
-        case "BROOKSTONE":
+        case "BROOK STONE":
             this.sponsorId = "sponsorBrookstone";
             break;
         case "BSMOOTH":
@@ -1725,7 +1725,7 @@ game.leaderboardPlane = {
         this.width = 876 * (1 - engine.widthProportion);
         this.height = 364 * (1 - engine.widthProportion);
         this.posX = engine.width - (2300 * (1 - engine.widthProportion));
-        this.posY = engine.height - (600 * (1 - engine.heightProportion));
+        this.posY = engine.height - (550 * (1 - engine.heightProportion));
     },
     draw: function () {
         this.resize();
@@ -1764,8 +1764,8 @@ game.leaderboardClipboard = {
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * .90 * (1 - engine.widthProportion);
+        this.height = this.org_height * .90 * (1 - engine.widthProportion);
         this.posX = engine.width - this.width - (375 * (1 - engine.widthProportion));
         this.posY = 25;
     },
@@ -1854,13 +1854,14 @@ game.top10players = {
     height: 0,
     posX: 0,
     posY: 0,
+    divArray: [],
     resize: function () {
-        this.width = game.leaderboardClipboard.posX - 20;
-        this.height = (engine.height - (game.leaderboardClipboard.posY + game.leaderboardClipboard.height)) * 0.8;
+        this.width = game.leaderboardClipboard.width * .80;
+        this.height = game.leaderboardClipboard.height * .80;
 
         // Attach Left Side with Buffer
-        this.posX = Math.max(10, Math.min(40, game.leaderboardClipboard.posX / 2 - this.width / 2));
-        this.posY = Math.min(game.leaderboardClipboard.height + game.leaderboardClipboard.posY + 40, engine.height - this.height - 40);
+        this.posX = game.leaderboardClipboard.posX + (game.leaderboardClipboard.width - this.width) / 2;
+        this.posY = game.leaderboardClipboard.posY + game.leaderboardClipboard.height / 2 - (this.height * .28);
 
     },
     adjustStyle: function () {
@@ -1887,7 +1888,7 @@ game.top10players = {
 
         //AJAX query
         var ajax = new XMLHttpRequest();
-        ajax.open("GET", "leaderboard.php", true);
+        ajax.open("GET", "scripts/leaderboard.php", true);
         ajax.send();
 
         ajax.onreadystatechange = function () {
@@ -1898,21 +1899,21 @@ game.top10players = {
                     place = i + 1;
 
                     //open div
-                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.div.width) + 'px">';
+                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.width) + 'px">';
 
                     //build table row
-                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + "leaders[i].user</td>" + dataPrefix + "leaders[i].score</td><tr>";
+                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";
 
+
+                }
                     //close table
                     tableBuilder += "</table>"
 
                     //close div
                     tableBuilder += "</div>"
 
-                    this.divArray.push("containerDiv_" + place);
-                }
-
-                this.div.innerHTML = tableBuilder;
+                    game.top10players.divArray.push("containerDiv_" + place);
+                game.top10players.div.innerHTML = tableBuilder;
 
             }
 
@@ -2248,10 +2249,10 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
-            this.leaderboardPlane.draw();
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
+            this.leaderboardPlane.draw();
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             // Display buttons

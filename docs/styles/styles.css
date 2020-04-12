@@ -417,7 +417,39 @@ a:active {
 }
 
 .table-container {
-	position: relative;
+	position: absolute;
 	display: inline-block;
-	padding: 5px;
+	padding: 0px;
+}
+
+.table-container table {
+    table-layout: fixed;
+    width: 100%;
+    text-align: center;
+    vertical-align: center;
+    border-collapse: separate;
+    border-spacing: 25px 5px;
+}
+
+.table-container td:nth-child(1) {
+    width: 10%;
+}
+
+.table-container td:nth-child(2) {
+    width: 30%;
+}
+
+.table-container td:nth-child(3) {
+    width: 30%;
+}
+
+.table-container td {
+    text-align: center;
+    font-family: roboto-bold;
+    font-size: 36pt;
+    color: #fff;
+    background-color: #2581af;
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 0 #999999;
+
 }
