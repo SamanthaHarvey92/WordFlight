@@ -80,6 +80,8 @@
 		<img id="endInitials" src="images/end_scene/end_initials_empty.png" alt="End Initials" style="display:none;">
 		<img id="endKeyboardBackground" src="images/end_scene/end_keyboard_background.png" alt="End Keyboard Background" style="display:none;">
 		<img id="endKeyboardKeys" src="images/end_scene/end_keyboard_keys.png" alt="End Keyboard Keys" style="display:none;">
+		<div id="endPlayerScore" class= "score-box" style="display:none;position:absolute;z-index:4;align:center;">500</div>
+		<div id="endPlayerInitials" class= "Initials" style="display:none;position:absolute;z-index:4;align:center;">AB</div>
 		
 		<!-- Buttons -->
 		<img id="submitButton" src="images/end_scene/end_submit_button.png" alt="Submit Button" style="display:none;" onClick="alert('hi')">
@@ -91,11 +93,15 @@
 		<img id="leaderboardPlane" src="images/leaderboard_scene/leaderboard_plane.png" alt="Leaderboard Scene Background Plane" style="display:none;">
 		<img id="leaderboardClipboard" src="images/leaderboard_scene/leaderboard_clipboard.png" alt="Leaderboard Scene Clipboard" style="display:none;">
 		<img id="leaderboardScore" src="images/leaderboard_scene/leaderboard_player_results_empty.png" alt="Leaderboard Scene Score" style="display:none;">
-		<div id="top10table" style="display:none;position:absolute;align:center;z-index:4;">Rank | User | Score</div>
+
+		<!-- Table -->
+		<div id="top10table" style="display:none;position:absolute;z-index:4;align:center;">Rank | User | Score</div>
+
+		<!-- Score -->
+		<div id="finalPlayerScore" class= "score-box" style="display:none;position:absolute;z-index:4;align:center;">500</div>
 
 		<!-- Buttons -->
 		<img id="leaderboardRetryButton" src="images/leaderboard_scene/leaderboard_retry_button.png" alt="Leaderboard Scene Retry Button" style="display:none;">
-		
   
 	<!-- Canvas -->
 	<canvas id="baseCanvas" style="z-index: 0"></canvas>

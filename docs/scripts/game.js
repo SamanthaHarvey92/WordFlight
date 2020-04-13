@@ -71,6 +71,7 @@ game.oldHeight = 0;
 game.updateWords = {
     lastWord: function () {
         game.lastWord = game.word;
+		game.lastSponsor = game.sponsor;
     },
     word: function () {
         game.word = game.nextWord;
@@ -80,29 +81,26 @@ game.updateWords = {
         game.databaseQuery();
     },
     update: function () {
-        this.lastWord();
         if (game.word == game.lastWord) {
             this.nextWord();
-        }
-        this.word();
-        this.nextWord();
+			this.word();
+			this.nextWord();
+        } else {
+			this.lastWord();
+			this.word();
+			this.nextWord();
+		}
     }
 }
 
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
-    // Update previous word/sponsor pair
-    game.lastWord = game.word;
-    game.lastSponsor = game.sponsor;
-
     // AJAX query
     var ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var selection = JSON.parse(this.responseText);
-
-
             for (var a = 0; a < selection.length; a++) {
                 game.nextWord = selection[a].word.toUpperCase();
                 game.nextSponsor = selection[a].sponsor_name.toUpperCase();
@@ -110,7 +108,11 @@ game.databaseQuery = function () {
 
             // Remove all spaces from the word
             game.nextWord = game.nextWord.replace(/\s+/g, '');
-            console.log("Word: " + game.nextWord + " | Sponsor: " + game.nextSponsor);
+			
+			// DEBUG
+			// console.log("\n(dbq)LastWord: " + game.lastWord + " | LastSponsor: " + game.lastSponsor);
+			// console.log("(dbq)Word: " + game.word + " | Sponsor: " + game.sponsor);
+			// console.log("(dbq)NextWord: " + game.nextWord + " | NextSponsor: " + game.nextSponsor);
         }
 
     }
@@ -1944,8 +1946,6 @@ game.top10players = {
     height: 0,
     posX: 0,
     posY: 0,
-    org_font_size: 36,
-    font_size: 0,
     divArray: [],
     resize: function () {
         this.width = game.leaderboardClipboard.width * .80;
@@ -1966,9 +1966,6 @@ game.top10players = {
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
-
-        // Adjust font size
-        this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     hideTable: function () {
         this.divArray = [];
@@ -1997,9 +1994,7 @@ game.top10players = {
                     tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.width) + 'px">';
 
                     //build table row
-                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";
-
-
+                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";										
                 }
                 //close table
                 tableBuilder += "</table>"
@@ -2161,11 +2156,11 @@ game.gameController = {
     gsStart: function (dt) {
         // Start Scene
 
-        // Initialize word/sponsor pairs from database
+		// Initialize word/sponsor pairs from database
         if (game.word === "") {
             game.updateWords.update();
         }
-
+		
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
@@ -2179,45 +2174,45 @@ game.gameController = {
     },
     gsPlay: function (dt) {
         // Play Scene
-
-        // Check whether a word is complete
+		
+		// Check whether a word is complete
         if (game.readyForNextWord) {
 
             if (game.planeManager.animate(dt)) {
-
-                // Query new word and sponsor
-                game.updateWords.update();
-
-                // Hide all elements - prepare for redraw
-                game.hideElements.hideAll();
-
-                // Reset keypad
-                game.inputKeypad.hideKeypad();
-                game.inputKeypad.adjustStyle();
-
-                // Reset letter spaces
-                game.playLetterSpaces.hideKeypad();
-                game.playLetterSpaces.adjustStyle();
-
-                // Reset plane
-                game.planeManager.resetElements();
-
-                // Prepare for the next word
+				
+				// Query new word and sponsor
+				game.updateWords.update();
+				
+				// Hide all elements - prepare for redraw
+				game.hideElements.hideAll();
+				
+				// Reset keypad
+				game.inputKeypad.hideKeypad();
+				game.inputKeypad.adjustStyle();
+				
+				// Reset letter spaces
+				game.playLetterSpaces.hideKeypad();
+				game.playLetterSpaces.adjustStyle();
+				
+				// Reset plane
+				game.planeManager.resetElements();
+				
+				// Prepare for the next word
                 game.readyForNextWord = false;
-
+                
                 game.drawOnce();
             }
         }
-
-        // Animate score box
-        if (game.playScoreBox.animActive) {
-            game.playScoreBox.animate(dt);
-        }
+		
+		// Animate score box
+		if(game.playScoreBox.animActive) {
+			game.playScoreBox.animate(dt);
+		}
 
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-                game.updateWords.update();
+				game.updateWords.update();				  
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
@@ -2392,13 +2387,13 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
+            
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-            this.leaderboardPlane.draw();
+			      this.leaderboardPlane.draw();							 
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
-            this.finalPlayerScore.draw();
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
