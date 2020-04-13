@@ -51,10 +51,10 @@ game.readyForNextWord = false;
 game.player = {
     score: 250,
     initials: "CD",
-	reset: function() {
-		this.score = 0;
-		this.initials = "";
-	}
+    reset: function () {
+        this.score = 0;
+        this.initials = "";
+    }
 };
 // - Browser size monitors
 game.oldWidth = 0;
@@ -600,7 +600,7 @@ game.playLetterSpaces = {
         this.divArray = [];
         this.keyArray = [];
         this.lettersFound = 0;
-		this.dict = {};
+        this.dict = {};
     },
     buildKeypad: function () {
         var letter = "";
@@ -648,7 +648,7 @@ game.playLetterSpaces = {
         }
     },
     testLetter: function (input) {
-		var increaseBy = 0;
+        var increaseBy = 0;
         for (var i = 0; i < this.keyArray.length; i++) {
             if (input == this.dict[this.keyArray[i]]) {
 
@@ -661,17 +661,17 @@ game.playLetterSpaces = {
 
                 // Draw plane parts
                 game.planeManager.draw();
-				
-				// Increment score
-				if (this.lettersFound == this.keyArray.length) {
-					increaseBy = Math.floor(12/(12-this.lettersFound))*3;
-					game.playScoreBox.updateScore("Plane", increaseBy);
-				} else {
-					increaseBy = 10;
-					game.playScoreBox.updateScore("Letter", increaseBy);
-				}
-				game.score += increaseBy;
-				game.playScore.updateScore();
+
+                // Increment score
+                if (this.lettersFound == this.keyArray.length) {
+                    increaseBy = Math.floor(12 / (12 - this.lettersFound)) * 3;
+                    game.playScoreBox.updateScore("Plane", increaseBy);
+                } else {
+                    increaseBy = 10;
+                    game.playScoreBox.updateScore("Letter", increaseBy);
+                }
+                game.score += increaseBy;
+                game.playScore.updateScore();
             }
         }
 
@@ -1047,7 +1047,7 @@ game.planeManager = {
             this.planeParts.push(game.playPlaneFuselage);
             this.planeParts.push(game.playPlaneTail);
             this.planeParts.push(game.playPlaneDorsalFin);
-			this.initialized = true;
+            this.initialized = true;
         }
     },
     draw: function () {
@@ -1092,20 +1092,20 @@ game.planeManager = {
         }
     },
     resetElements: function () {
-		// Reset plane manager
-		this.initialized = false;
-		this.planeParts = [];
-		this.animAcceleration = 0.01;
-		this.animVelocity = 0.0;
-		this.animNewX = 0.0;
-		
-		// Reset plane canvas
+        // Reset plane manager
+        this.initialized = false;
+        this.planeParts = [];
+        this.animAcceleration = 0.01;
+        this.animVelocity = 0.0;
+        this.animNewX = 0.0;
+
+        // Reset plane canvas
         game.planeCanvasBG.posX = 0;
         game.planeCanvasBG.posY = 0;
         game.planeCanvasBG.animPosX = 0;
         game.planeCanvasBG.animPosY = 0;
 
-		// Reset all plane parts
+        // Reset all plane parts
         game.planeManager.planeParts.forEach(function (item, index) {
 
             item.posX = 0.0;
@@ -1114,8 +1114,8 @@ game.planeManager = {
 };
 
 game.playTimerBox = {
-	div: document.getElementById("timerBox"),
-	org_width: 200 * game.scale,
+    div: document.getElementById("timerBox"),
+    org_width: 200 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
     height: 0,
@@ -1123,8 +1123,8 @@ game.playTimerBox = {
     org_posY: 82,
     posX: 0,
     posY: 0,
-	org_font_size: 74,
-	font_size: 0,
+    org_font_size: 74,
+    font_size: 0,
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1133,9 +1133,9 @@ game.playTimerBox = {
         // Attach Left Side
         this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
         this.posY = game.playTimer.posY + this.org_posY * (1 - engine.widthProportion);
-		
-		// Adjust font size
-		this.font_size = this.org_font_size * (1 - engine.widthProportion);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     draw: function () {
         this.adjustStyle();
@@ -1148,14 +1148,14 @@ game.playTimerBox = {
         this.div.style.top = this.posY.toString() + "px";
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
-		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     }
 }
 
 game.playScore = {
-	div: document.getElementById("scoreBox"),
-	org_width: 325 * game.scale,
+    div: document.getElementById("scoreBox"),
+    org_width: 325 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
     height: 0,
@@ -1163,9 +1163,9 @@ game.playScore = {
     org_posY: 82,
     posX: 0,
     posY: 0,
-	org_font_size: 74,
-	font_size: 0,
-	score: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1174,12 +1174,12 @@ game.playScore = {
         // Attach Left Side
         this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
         this.posY = game.playTimer.posY + this.org_posY * (1 - engine.widthProportion);
-		
-		// Adjust font size
-		this.font_size = this.org_font_size * (1 - engine.widthProportion);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     draw: function () {
-		this.updateScore();
+        this.updateScore();
         this.adjustStyle();
     },
     adjustStyle: function () {
@@ -1190,18 +1190,18 @@ game.playScore = {
         this.div.style.top = this.posY.toString() + "px";
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
-		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
-	updateScore: function() {
-		this.score = Math.max(0, game.score);
-		this.div.innerHTML = this.score;
-	}
+    updateScore: function () {
+        this.score = Math.max(0, game.score);
+        this.div.innerHTML = this.score;
+    }
 }
 
 game.playScoreBox = {
-	div: document.getElementById("newScore"),
-	org_width: 325 * game.scale,
+    div: document.getElementById("newScore"),
+    org_width: 325 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
     height: 0,
@@ -1209,16 +1209,16 @@ game.playScoreBox = {
     org_posY: 82,
     posX: 0,
     posY: 0,
-	org_destX: 550,
-	org_destY: 240,
-	org_font_size: 74,
-	font_size: 0,
-	animSpeed: 0,
-	animStartX: 0,
-	animStartY: 0,
-	animEndX: 0,
-	animEndY: 0,
-	animActive: false,
+    org_destX: 550,
+    org_destY: 240,
+    org_font_size: 74,
+    font_size: 0,
+    animSpeed: 0,
+    animStartX: 0,
+    animStartY: 0,
+    animEndX: 0,
+    animEndY: 0,
+    animActive: false,
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1227,16 +1227,16 @@ game.playScoreBox = {
         // Attach Left Side
         this.posX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
         this.posY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
-		
-		// Adjust font size
-		this.font_size = this.org_font_size * (1 - engine.widthProportion);
-		
-		// Animation adjustments
-		this.animStartX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
-		this.animStartY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
-		this.animEndX = game.playTimer.posX + this.org_destX * (1 - engine.widthProportion);
-		this.animEndY = game.playTimer.posY - this.org_destY * (1 - engine.widthProportion);
-		
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+
+        // Animation adjustments
+        this.animStartX = game.playTimer.posX + this.org_posX * (1 - engine.widthProportion);
+        this.animStartY = game.playTimer.posY - this.org_posY * (1 - engine.widthProportion);
+        this.animEndX = game.playTimer.posX + this.org_destX * (1 - engine.widthProportion);
+        this.animEndY = game.playTimer.posY - this.org_destY * (1 - engine.widthProportion);
+
     },
     draw: function () {
         this.adjustStyle();
@@ -1246,39 +1246,39 @@ game.playScoreBox = {
         this.div.style.top = this.posY.toString() + "px";
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
-		this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
-	updateScore: function(type, value) {
-		var displayString = "";
-		displayString += type + "<br>";
-		if (value > 0) {
-			displayString += "+" + value;
-		} else {
-			displayString += value;
-		}
-		this.div.innerHTML = displayString;
-		this.div.style.display = "block";
-		this.animActive = true;
-	},
-	resetElements: function() {
-		this.resize();
-		this.animSpeed = 0;
-		this.div.style.display = "none";
-	},
-	animate: function(dt) {
-		this.animSpeed += dt / (this.animEndX - this.animStartX);
-		this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
-		this.posY += (this.animEndY - this.animStartY) * this.animSpeed;
-		
-		// Force redraw
-		this.draw();
-		// Deactivate animation
-		if(this.posX > this.animEndX) {
-			this.animActive = false;
-			this.resetElements();
-		}
-	}
+    updateScore: function (type, value) {
+        var displayString = "";
+        displayString += type + "<br>";
+        if (value > 0) {
+            displayString += "+" + value;
+        } else {
+            displayString += value;
+        }
+        this.div.innerHTML = displayString;
+        this.div.style.display = "block";
+        this.animActive = true;
+    },
+    resetElements: function () {
+        this.resize();
+        this.animSpeed = 0;
+        this.div.style.display = "none";
+    },
+    animate: function (dt) {
+        this.animSpeed += dt / (this.animEndX - this.animStartX);
+        this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
+        this.posY += (this.animEndY - this.animStartY) * this.animSpeed;
+
+        // Force redraw
+        this.draw();
+        // Deactivate animation
+        if (this.posX > this.animEndX) {
+            this.animActive = false;
+            this.resetElements();
+        }
+    }
 }
 
 //   - Buttons
@@ -1548,13 +1548,13 @@ game.endGameOver = {
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-<<<<<<< Updated upstream
-        this.posX = engine.width/2 - this.width/2;
-        this.poxY = engine.height/2 - this.height/2;
-=======
+
+        this.posX = engine.width / 2 - this.width / 2;
+        this.poxY = engine.height / 2 - this.height / 2;
+
         this.posX = 10 * (1 - engine.widthProportion);
         this.poxY = 10 * (1 - engine.widthProportion);
->>>>>>> Stashed changes
+
     },
     draw: function () {
         this.resize();
@@ -1571,16 +1571,16 @@ game.endGamePoints = {
     height: 0,
     posX: 0,
     posY: 0,
-     resize: function () {
+    resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width/2 - this.width/2;
-        this.posY = game.endKeyboardBackground.posY/2 - this.height/2;
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = game.endKeyboardBackground.posY / 2 - this.height / 2;
     },
     draw: function () {
         this.resize();
         //drawImage(source, posX, posY, width, height)
-         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
@@ -1595,8 +1595,8 @@ game.endInitials = {
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width/2 - this.width/2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height + this.height/2;
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height + this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -1647,53 +1647,52 @@ game.endKeyboardKeys = {
     }
 };
 
-<<<<<<< Updated upstream
-=======
-game.endPlayerScore = {
-    div: document.getElementById("endPlayerScore"),
-    org_width: 150 * game.scale,
-    org_height: 95 * game.scale,
-    width: 0,
-    height: 0,
-    org_posX: 325,
-    org_posY: 82,
-    posX: 0,
-    posY: 0,
-    org_font_size: 74,
-    font_size: 0,
-    score: 0,
-    resize: function () {
 
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+    game.endPlayerScore = {
+        div: document.getElementById("endPlayerScore"),
+        org_width: 150 * game.scale,
+        org_height: 95 * game.scale,
+        width: 0,
+        height: 0,
+        org_posX: 325,
+        org_posY: 82,
+        posX: 0,
+        posY: 0,
+        org_font_size: 74,
+        font_size: 0,
+        score: 0,
+        resize: function () {
 
-        // Attach Left Side
-        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
+            this.width = this.org_width * (1 - engine.widthProportion);
+            this.height = this.org_height * (1 - engine.widthProportion);
 
-        // Adjust font size
-        this.font_size = this.org_font_size * (1 - engine.widthProportion);
-    },
-    draw: function () {
-        this.updateScore();
-        this.adjustStyle();
-    },
-    adjustStyle: function () {
-        this.resize();
-        this.div.style.position = "absolute";
-        this.div.style.display = "block";
-        this.div.style.left = this.posX.toString() + "px";
-        this.div.style.top = this.posY.toString() + "px";
-        this.div.style.width = this.width + "px";
-        this.div.style.height = this.height + "px";
-        this.div.style.fontSize = this.font_size + "pt";
-        this.div.style.zIndex = 4;
-    },
-    updateScore: function () {
-        this.score = Math.max(0, game.score);
-        this.div.innerHTML = this.score;
-    }
-};
+            // Attach Left Side
+            this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+            this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
+
+            // Adjust font size
+            this.font_size = this.org_font_size * (1 - engine.widthProportion);
+        },
+        draw: function () {
+            this.updateScore();
+            this.adjustStyle();
+        },
+        adjustStyle: function () {
+            this.resize();
+            this.div.style.position = "absolute";
+            this.div.style.display = "block";
+            this.div.style.left = this.posX.toString() + "px";
+            this.div.style.top = this.posY.toString() + "px";
+            this.div.style.width = this.width + "px";
+            this.div.style.height = this.height + "px";
+            this.div.style.fontSize = this.font_size + "pt";
+            this.div.style.zIndex = 4;
+        },
+        updateScore: function () {
+            this.score = Math.max(0, game.score);
+            this.div.innerHTML = this.score;
+        }
+    };
 
 game.endPlayerInitials = {
     div: document.getElementById("endPlayerInitials"),
@@ -1740,8 +1739,6 @@ game.endPlayerInitials = {
     }
 };
 
->>>>>>> Stashed changes
-
 //   - Buttons
 game.menuButton = {
     image: document.getElementById("wordFlightMenuButton"),
@@ -1783,8 +1780,8 @@ game.submitButton = {
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = game.endKeyboardBackground.posX + (game.endKeyboardBackground.width - this.width)-10;
-        this.posY = game.endKeyboardBackground.posY + (game.endKeyboardBackground.height - this.height)/2;
+        this.posX = game.endKeyboardBackground.posX + (game.endKeyboardBackground.width - this.width) - 10;
+        this.posY = game.endKeyboardBackground.posY + (game.endKeyboardBackground.height - this.height) / 2;
     },
     draw: function () {
         this.adjustStyle();
@@ -1994,8 +1991,8 @@ game.top10players = {
         var rowPrefix = '<tr>';
         var dataPrefix = '<td';
         var tableBuilder = '';
-		var placeHolder = '';
-		var scoreHolder = '';
+        var placeHolder = '';
+        var scoreHolder = '';
 
         //AJAX query
         var ajax = new XMLHttpRequest();
@@ -2008,31 +2005,23 @@ game.top10players = {
 
                 for (var i = 0; i < leaders.length; i++) {
                     place = i + 1;
-					
-					placeHolder = leaders[i].user.toString();
-					scoreHolder = leaders[i].score.toString();
+
+                    placeHolder = leaders[i].user.toString();
+                    scoreHolder = leaders[i].score.toString();
 
                     //open div
-					tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.width) + 'px">';
-					
+                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.width) + 'px">';
+
                     //build table row
-<<<<<<< Updated upstream
+
                     tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";
 
+                    if (game.player.initials.toString() == placeHolder && game.player.score.toString() == scoreHolder) {
+                        tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
+                    } else {
+                        tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
+                    }
 
-											  
-					
-							   
-											
-					
-																
-=======
-					if (game.player.initials.toString() == placeHolder && game.player.score.toString() == scoreHolder) {
-                    	tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
-					} else {
-						tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
-					}
->>>>>>> Stashed changes
                 }
                 //close table
                 tableBuilder += "</table>"
@@ -2049,8 +2038,6 @@ game.top10players = {
     }
 };
 
-<<<<<<< Updated upstream
-=======
 game.finalPlayerScore = {
     div: document.getElementById("finalPlayerScore"),
     org_width: 150 * game.scale,
@@ -2096,8 +2083,6 @@ game.finalPlayerScore = {
         this.div.innerHTML = this.score;
     }
 };
-
->>>>>>> Stashed changes
 
 //   - Buttons
 game.leaderboardMenuButton = {
@@ -2156,10 +2141,10 @@ game.leaderboardRetryButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
-	retry: function() {
-		game.currState = game.gameState[1];
-		game.player.reset();
-	}
+    retry: function () {
+        game.currState = game.gameState[1];
+        game.player.reset();
+    }
 };
 
 /* Game States and transitions
@@ -2209,7 +2194,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				// game.player.reset();
+                // game.player.reset();
                 game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
@@ -2370,9 +2355,9 @@ game.drawOnce = function () {
             this.playSponsorLogo.draw();
             this.playTimer.draw();
             this.playLetterSpace.draw();
-			this.playTimerBox.draw();
-			this.playScore.draw();
-			this.playScoreBox.resize();
+            this.playTimerBox.draw();
+            this.playScore.draw();
+            this.playScoreBox.resize();
             // Display plane parts
             this.planeCanvasBG.draw();
             this.playPlaneNose.resize();
@@ -2390,7 +2375,7 @@ game.drawOnce = function () {
 
             // Initialize plane manager
             this.planeManager.initialize();
-			this.planeManager.draw();
+            this.planeManager.draw();
 
             /*this.playPlaneLeftInnerEngine.draw();
             this.playPlaneLeftOuterEngine.draw();
@@ -2422,6 +2407,8 @@ game.drawOnce = function () {
             this.endKeyboardKeys.draw();
             this.wordFlightTitleSmall.draw();
             this.endGameOver.draw();
+			this.endPlayerScore.draw();
+            this.endPlayerInitials.draw();
             // Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
@@ -2434,14 +2421,11 @@ game.drawOnce = function () {
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-<<<<<<< Updated upstream
-			this.leaderboardPlane.draw();							 
-=======
             this.leaderboardPlane.draw();
->>>>>>> Stashed changes
+            this.leaderboardPlane.draw();
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
-			this.finalPlayerScore.draw();
+            this.finalPlayerScore.draw();
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
