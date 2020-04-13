@@ -1,15 +1,23 @@
 <?php
-include 'db_connection.php';
+// include('db_connection.php');
 
-$conn= $pdo;
+include("../includes/db_admin.php");
 
-$stmt = $conn->prepare("SELECT word, sponsor_name from words A JOIN sponsors B ON A.sponsor_id=B.sponsor_id ORDER BY RAND() LIMIT 1");
-$stmt->execute();
+$conn = $pdo;
 
-$result=$stmt->fetchAll();
+if ($conn) {
+	// echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] successful.');</script>";
 
-echo json_encode($result);
+	$stmt = $conn->prepare("SELECT word, sponsor_name from flywithbutchoharedb_copy.wordflightwords A JOIN flywithbutchoharedb_copy.wordflightsponsors B ON A.sponsor_id=B.sponsor_id ORDER BY RAND() LIMIT 1");
+	$stmt->execute();
 
+	$result=$stmt->fetchAll();
+
+	echo json_encode($result);
+} else {
+	echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
+}
+	
 $conn = null;
 
 ?>

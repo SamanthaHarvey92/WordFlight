@@ -1,0 +1,11 @@
+
+docs/includes/db_admin.php
+docs/includes/hexed_settings.ini
+docs/includes/wordflight.inc.php
+docs/scripts/db_connection.php
+docs/scripts/insert_score.php
+docs/scripts/leaderboard.php
+docs/scripts/leaderboard.php
+docs/scripts/wftest.php
+*.ini
+*.php

@@ -47,44 +47,56 @@ game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
+// - Player information
+game.player = {
+    score: 0,
+    initials: ""
+};
 // - Browser size monitors
 game.oldWidth = 0;
 game.oldHeight = 0;
+
+/*score
+ - Play scene
+     - Game over: update game.player.score
+   - End scene
+       - Update game.player.initials
+     - Leaderboard scene
+	   -- Reset score
+*/
 
 // Game functions
 
 // Update words
 game.updateWords = {
-	lastWord: function() {
-		game.lastWord = game.word;
-	},
-	word: function() {
-		game.word = game.nextWord;
-		game.sponsor = game.nextSponsor;
-	},
-	nextWord: function() {
-		game.databaseQuery();
-	},
-	update: function() {
-		this.lastWord();
-		if (game.word == game.lastWord) {
-			this.nextWord();
-		}
-		this.word();
-		this.nextWord();
-	}
+    lastWord: function () {
+        game.lastWord = game.word;
+    },
+    word: function () {
+        game.word = game.nextWord;
+        game.sponsor = game.nextSponsor;
+    },
+    nextWord: function () {
+        game.databaseQuery();
+    },
+    update: function () {
+        this.lastWord();
+        if (game.word == game.lastWord) {
+            this.nextWord();
+        }
+        this.word();
+        this.nextWord();
+    }
 }
 
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
-	// Update previous word/sponsor pair
-	game.lastWord = game.word;
-	game.lastSponsor = game.sponsor;
-	
+    // Update previous word/sponsor pair
+    game.lastWord = game.word;
+    game.lastSponsor = game.sponsor;
+
     // AJAX query
     var ajax = new XMLHttpRequest();
-    ajax.open("GET", "scripts/word_generator.php", true);
-    ajax.send();
 
     ajax.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -96,12 +108,14 @@ game.databaseQuery = function () {
                 game.nextSponsor = selection[a].sponsor_name.toUpperCase();
             }
 
-			// Remove all spaces from the word
-			game.nextWord = game.nextWord.replace(/\s+/g, '');
-			console.log("Word: " + game.nextWord + " | Sponsor: " + game.nextSponsor);
-        } 
+            // Remove all spaces from the word
+            game.nextWord = game.nextWord.replace(/\s+/g, '');
+            console.log("Word: " + game.nextWord + " | Sponsor: " + game.nextSponsor);
+        }
 
     }
+    ajax.open("GET", "scripts/word_generator.php", true);
+    ajax.send();
 }
 
 //Database - Pull top 10 players
@@ -1906,13 +1920,13 @@ game.top10players = {
 
 
                 }
-                    //close table
-                    tableBuilder += "</table>"
+                //close table
+                tableBuilder += "</table>"
 
-                    //close div
-                    tableBuilder += "</div>"
+                //close div
+                tableBuilder += "</div>"
 
-                    game.top10players.divArray.push("containerDiv_" + place);
+                game.top10players.divArray.push("containerDiv_" + place);
                 game.top10players.div.innerHTML = tableBuilder;
 
             }
@@ -2019,12 +2033,12 @@ game.hideElements = {
 game.gameController = {
     gsStart: function (dt) {
         // Start Scene
-		
-		// Initialize word/sponsor pairs from database
-		if (game.word === "") {
-			game.updateWords.update();
-		}
-		
+
+        // Initialize word/sponsor pairs from database
+        if (game.word === "") {
+            game.updateWords.update();
+        }
+
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
@@ -2076,7 +2090,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.updateWords.update();
+                game.updateWords.update();
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
@@ -2171,7 +2185,7 @@ game.drawOnce = function () {
     // Draw based on the GameState
     switch (this.currState) {
         case 'start':
-			// Draw images on the canvas
+            // Draw images on the canvas
             this.startRunway.draw();
             this.startHangar.draw();
             this.wordFlightTitle.draw();
