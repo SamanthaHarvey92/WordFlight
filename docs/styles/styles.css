@@ -427,6 +427,8 @@ a:active {
     width: 100%;
     text-align: center;
     vertical-align: center;
+    font-size: 36pt;
+
     border-collapse: separate;
     border-spacing: 25px 5px;
 }
@@ -446,10 +448,19 @@ a:active {
 .table-container td {
     text-align: center;
     font-family: roboto-bold;
-    font-size: 36pt;
-    color: #fff;
+    color: #fff;    
     background-color: #2581af;
     border-radius: 4px;
-    box-shadow: 3px 3px 0 0 #999999;
+    -moz-box-shadow: 2px 4px 0px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 2px 4px 0px rgba(0, 0, 0, 0.4);
+    box-shadow: 2px 4px 0px rgba(0, 0, 0, 0.4);
+}
 
+.Initials {
+	position: absolute;
+	margin: 0px;
+	text-align: center;
+	font-size: 16pt;
+	font-family: roboto-bold;
+	color: #f41c63;
 }
