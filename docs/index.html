@@ -63,17 +63,25 @@
 			<img id="playPlaneRightWing" src="images/play_scene/play_plane_right_wing.png" alt="Play Plane Right Wing" style="display:none;">
 			<img id="playPlaneTail" src="images/play_scene/play_plane_tail.png" alt="Play Plane Tail" style="display:none;">
 		<!-- Buttons -->
+		<!-- Letter Spaces -->
+		<div id="letterSpaces" style="display:none;position:absolute;"></div>
+		<!-- Timer -->
+		<div id="timerBox" class="timer-box pulse" style="display:none;position:absolute;z-index:4">3:30</div>
+		<!-- Scores -->
+		<div id="scoreBox" class="score-box pulse" style="display:none;position:absolute;z-index: 4">1,000,000</div>
+		<div id="newScore" class="score-alert-box glow" style="display:none;position:absolute;z-index: 50">Letter +20</div>
 		
 	
 	<!-- End Scene -->
 		<!-- Images -->
-		<img id="wordFlightTitleSmall" src="images/WordFlight_Title_Small.png" alt="Word Flight Title Small" style="display:none;">
 		<img id="endBackground" src="images/end_scene/end_bg.png" alt="End Background" style="display:none;">
 		<img id="endGameOver" src="images/end_scene/end_game_over_message.png" alt="End Game Over" style="display:none;">
 		<img id="endGamePoints" src="images/end_scene/end_game_points_block_empty.png" alt="End Game Points" style="display:none;">
 		<img id="endInitials" src="images/end_scene/end_initials_empty.png" alt="End Initials" style="display:none;">
 		<img id="endKeyboardBackground" src="images/end_scene/end_keyboard_background.png" alt="End Keyboard Background" style="display:none;">
 		<img id="endKeyboardKeys" src="images/end_scene/end_keyboard_keys.png" alt="End Keyboard Keys" style="display:none;">
+		<div id="endPlayerScore" class= "score-box" style="display:none;position:absolute;z-index:4;align:center;">500</div>
+		<div id="endPlayerInitials" class= "Initials" style="display:none;position:absolute;z-index:4;align:center;">AB</div>
 		
 		<!-- Buttons -->
 		<img id="submitButton" src="images/end_scene/end_submit_button.png" alt="Submit Button" style="display:none;" onClick="alert('hi')">
@@ -86,9 +94,14 @@
 		<img id="leaderboardClipboard" src="images/leaderboard_scene/leaderboard_clipboard.png" alt="Leaderboard Scene Clipboard" style="display:none;">
 		<img id="leaderboardScore" src="images/leaderboard_scene/leaderboard_player_results_empty.png" alt="Leaderboard Scene Score" style="display:none;">
 
+		<!-- Table -->
+		<div id="top10table" style="display:none;position:absolute;z-index:4;align:center;">Rank | User | Score</div>
+
+		<!-- Score -->
+		<div id="finalPlayerScore" class= "score-box" style="display:none;position:absolute;z-index:4;align:center;">500</div>
+
 		<!-- Buttons -->
 		<img id="leaderboardRetryButton" src="images/leaderboard_scene/leaderboard_retry_button.png" alt="Leaderboard Scene Retry Button" style="display:none;">
-		
   
 	<!-- Canvas -->
 	<canvas id="baseCanvas" style="z-index: 0"></canvas>
