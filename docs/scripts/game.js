@@ -1548,8 +1548,7 @@ game.endGameOver = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         this.posX = engine.width / 2 - this.width / 2;
-        this.poxY = engine.height / 2 - this.height / 2;
-
+        this.posY = engine.height / 2 - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -1643,7 +1642,7 @@ game.endKeyboardKeys = {
 };
 
 game.endPlayerScore = {
-	div: document.getElementById("endPlayerScore"),
+    div: document.getElementById("endPlayerScore"),
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1661,8 +1660,8 @@ game.endPlayerScore = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side
-        this.posX = game.endGamePoints.posX + game.endGamePoints.width/2 - this.width/2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height/2 - this.height/2;
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
 
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
@@ -1689,7 +1688,7 @@ game.endPlayerScore = {
 };
 
 game.endPlayerInitials = {
-	div: document.getElementById("endPlayerInitials"),
+    div: document.getElementById("endPlayerInitials"),
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1729,56 +1728,55 @@ game.endPlayerInitials = {
         this.div.style.zIndex = 4;
     },
     updateInitials: function () {
-        
+
     }
 };
 
+game.endPlayerScore = {
+    div: document.getElementById("endPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
 
-    game.endPlayerScore = {
-        div: document.getElementById("endPlayerScore"),
-        org_width: 150 * game.scale,
-        org_height: 95 * game.scale,
-        width: 0,
-        height: 0,
-        org_posX: 325,
-        org_posY: 82,
-        posX: 0,
-        posY: 0,
-        org_font_size: 74,
-        font_size: 0,
-        score: 0,
-        resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
 
-            this.width = this.org_width * (1 - engine.widthProportion);
-            this.height = this.org_height * (1 - engine.widthProportion);
+        // Attach Left Side
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
 
-            // Attach Left Side
-            this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
-            this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
-
-            // Adjust font size
-            this.font_size = this.org_font_size * (1 - engine.widthProportion);
-        },
-        draw: function () {
-            this.updateScore();
-            this.adjustStyle();
-        },
-        adjustStyle: function () {
-            this.resize();
-            this.div.style.position = "absolute";
-            this.div.style.display = "block";
-            this.div.style.left = this.posX.toString() + "px";
-            this.div.style.top = this.posY.toString() + "px";
-            this.div.style.width = this.width + "px";
-            this.div.style.height = this.height + "px";
-            this.div.style.fontSize = this.font_size + "pt";
-            this.div.style.zIndex = 4;
-        },
-        updateScore: function () {
-            this.score = Math.max(0, game.score);
-            this.div.innerHTML = this.score;
-        }
-    };
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.score);
+        this.div.innerHTML = this.score;
+    }
+};
 
 game.endPlayerInitials = {
     div: document.getElementById("endPlayerInitials"),
@@ -2107,7 +2105,7 @@ game.top10players = {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
                     } else {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
-                    }								
+                    }
 
                 }
                 //close table
@@ -2321,11 +2319,6 @@ game.gameController = {
             }
         }
 
-        // Animate score box
-        if (game.playScoreBox.animActive) {
-            game.playScoreBox.animate(dt);
-        }
-
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
@@ -2464,20 +2457,6 @@ game.drawOnce = function () {
             this.planeManager.initialize();
             this.planeManager.draw();
 
-            /*this.playPlaneLeftInnerEngine.draw();
-            this.playPlaneLeftOuterEngine.draw();
-            this.playPlaneRightInnerEngine.draw();
-            this.playPlaneRightOuterEngine.draw();
-
-            this.playPlaneLeftRearWing.draw();
-            this.playPlaneLeftWing.draw();
-            this.playPlaneRightRearWing.draw();
-            this.playPlaneRightWing.draw();
-
-            this.playPlaneNose.draw();
-            this.playPlaneFuselage.draw();
-            this.playPlaneTail.draw();
-            this.playPlaneDorsalFin.draw();*/
             // Display buttons
             this.playMenuButton.adjustStyle();
             this.playKeyPadSpace.adjustStyle();
@@ -2493,10 +2472,12 @@ game.drawOnce = function () {
             this.endInitials.draw();
             this.endKeyboardKeys.draw();
             this.wordFlightTitleSmall.draw();
-            this.endGameOver.draw();
+            
             this.endPlayerScore.draw();
             this.endPlayerInitials.draw();
-            // Display buttons
+            
+			this.endGameOver.draw();
+			// Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
             break;
@@ -2508,7 +2489,7 @@ game.drawOnce = function () {
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-			      this.leaderboardPlane.draw();							 
+            this.leaderboardPlane.draw();
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
@@ -2536,6 +2517,10 @@ game.draw = function () {
         case 'start':
             break;
         case 'play':
+            // Animate score box
+            if (game.playScoreBox.animActive) {
+                game.playScoreBox.animate(dt);
+            }
             break;
         case 'end':
             break;
