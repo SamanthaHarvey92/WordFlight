@@ -99,10 +99,6 @@ game.updateWords = {
 
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
-    // Update previous word/sponsor pair
-    //game.lastWord = game.word;
-    //game.lastSponsor = game.sponsor;
-
     // AJAX query
 
     var ajax = new XMLHttpRequest();
@@ -1151,7 +1147,7 @@ game.playTimerBox = {
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     }
-}
+};
 
 game.playScore = {
     div: document.getElementById("scoreBox"),
@@ -1197,7 +1193,8 @@ game.playScore = {
         this.score = Math.max(0, game.score);
         this.div.innerHTML = this.score;
     }
-}
+};
+
 
 game.playScoreBox = {
     div: document.getElementById("newScore"),
@@ -1279,7 +1276,7 @@ game.playScoreBox = {
             this.resetElements();
         }
     }
-}
+};
 
 //   - Buttons
 game.playMenuButton = {
@@ -1546,14 +1543,12 @@ game.endGameOver = {
     posX: 0,
     poxY: 0,
     resize: function () {
+
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
 
         this.posX = engine.width / 2 - this.width / 2;
         this.poxY = engine.height / 2 - this.height / 2;
-
-        this.posX = 10 * (1 - engine.widthProportion);
-        this.poxY = 10 * (1 - engine.widthProportion);
 
     },
     draw: function () {
@@ -1644,6 +1639,97 @@ game.endKeyboardKeys = {
         this.resize();
         //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    }
+};
+
+game.endPlayerScore = {
+	div: document.getElementById("endPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width/2 - this.width/2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height/2 - this.height/2;
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.score);
+        this.div.innerHTML = this.score;
+    }
+};
+
+game.endPlayerInitials = {
+	div: document.getElementById("endPlayerInitials"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 48,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.endInitials.posX + (game.endInitials.width * .7);
+        this.posY = game.endInitials.posY + (game.endInitials.height * .15);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateInitials();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateInitials: function () {
+        
     }
 };
 
@@ -2014,13 +2100,14 @@ game.top10players = {
 
                     //build table row
 
+
                     tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";
 
                     if (game.player.initials.toString() == placeHolder && game.player.score.toString() == scoreHolder) {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
                     } else {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
-                    }
+                    }								
 
                 }
                 //close table
@@ -2407,7 +2494,7 @@ game.drawOnce = function () {
             this.endKeyboardKeys.draw();
             this.wordFlightTitleSmall.draw();
             this.endGameOver.draw();
-			this.endPlayerScore.draw();
+            this.endPlayerScore.draw();
             this.endPlayerInitials.draw();
             // Display buttons
             this.submitButton.adjustStyle();
@@ -2421,8 +2508,7 @@ game.drawOnce = function () {
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-            this.leaderboardPlane.draw();
-            this.leaderboardPlane.draw();
+			      this.leaderboardPlane.draw();							 
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
