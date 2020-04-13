@@ -2049,7 +2049,7 @@ game.top10players = {
     divArray: [],
     resize: function () {
         this.width = game.leaderboardClipboard.width * .80;
-        this.height = game.leaderboardClipboard.height * .80;
+        this.height = game.leaderboardClipboard.height * .75;
 
         // Attach Left Side with Buffer
         this.posX = game.leaderboardClipboard.posX + (game.leaderboardClipboard.width - this.width) / 2;
@@ -2515,7 +2515,6 @@ game.drawOnce = function () {
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
-
             break;
         default:
             break;
