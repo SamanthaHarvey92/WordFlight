@@ -1929,13 +1929,17 @@ game.top10players = {
     width: 0,
     height: 0,
     posX: 0,
+<<<<<<< Updated upstream
     posY: 0,
     org_font_size: 36,
     font_size: 0,
+=======
+    posY: 0,    
+>>>>>>> Stashed changes
     divArray: [],
     resize: function () {
         this.width = game.leaderboardClipboard.width * .80;
-        this.height = game.leaderboardClipboard.height * .80;
+        this.height = game.leaderboardClipboard.height * .75;
 
         // Attach Left Side with Buffer
         this.posX = game.leaderboardClipboard.posX + (game.leaderboardClipboard.width - this.width) / 2;
@@ -2381,7 +2385,11 @@ game.drawOnce = function () {
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
+<<<<<<< Updated upstream
             this.leaderboardPlane.draw();
+=======
+			this.leaderboardPlane.draw();							 
+>>>>>>> Stashed changes
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
