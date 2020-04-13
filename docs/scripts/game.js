@@ -47,61 +47,82 @@ game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
+// - Player information
+game.player = {
+    score: 250,
+    initials: "CD",
+    reset: function () {
+        this.score = 0;
+        this.initials = "";
+    }
+};
 // - Browser size monitors
 game.oldWidth = 0;
 game.oldHeight = 0;
+
+/*score
+ - Play scene
+     - Game over: update game.player.score
+   - End scene
+       - Update game.player.initials
+     - Leaderboard scene
+	   -- Reset score
+*/
 
 // Game functions
 
 // Update words
 game.updateWords = {
-	lastWord: function() {
-		game.lastWord = game.word;
-	},
-	word: function() {
-		game.word = game.nextWord;
-		game.sponsor = game.nextSponsor;
-	},
-	nextWord: function() {
-		game.databaseQuery();
-	},
-	update: function() {
-		this.lastWord();
-		if (game.word == game.lastWord) {
-			this.nextWord();
-		}
-		this.word();
-		this.nextWord();
-	}
+    lastWord: function () {
+        game.lastWord = game.word;
+        game.lastSponsor = game.sponsor;
+    },
+    word: function () {
+        game.word = game.nextWord;
+        game.sponsor = game.nextSponsor;
+    },
+    nextWord: function () {
+        game.databaseQuery();
+    },
+    update: function () {
+        if (game.word == game.lastWord) {
+            this.nextWord();
+            this.word();
+            this.nextWord();
+        } else {
+            this.lastWord();
+            this.word();
+            this.nextWord();
+        }
+    }
 }
 
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
-	// Update previous word/sponsor pair
-	game.lastWord = game.word;
-	game.lastSponsor = game.sponsor;
-	
     // AJAX query
+
     var ajax = new XMLHttpRequest();
-    ajax.open("GET", "scripts/word_generator.php", true);
-    ajax.send();
 
     ajax.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var selection = JSON.parse(this.responseText);
-
-
             for (var a = 0; a < selection.length; a++) {
                 game.nextWord = selection[a].word.toUpperCase();
                 game.nextSponsor = selection[a].sponsor_name.toUpperCase();
             }
 
-			// Remove all spaces from the word
-			game.nextWord = game.nextWord.replace(/\s+/g, '');
-			console.log("Word: " + game.nextWord + " | Sponsor: " + game.nextSponsor);
-        } 
+            // Remove all spaces from the word
+            game.nextWord = game.nextWord.replace(/\s+/g, '');
+
+            // DEBUG
+            // console.log("\n(dbq)LastWord: " + game.lastWord + " | LastSponsor: " + game.lastSponsor);
+            // console.log("(dbq)Word: " + game.word + " | Sponsor: " + game.sponsor);
+            // console.log("(dbq)NextWord: " + game.nextWord + " | NextSponsor: " + game.nextSponsor);
+        }
 
     }
+    ajax.open("GET", "scripts/word_generator.php", true);
+    ajax.send();
 }
 
 // Get the sponsor
@@ -1174,6 +1195,7 @@ game.playScore = {
     }
 };
 
+
 game.playScoreBox = {
     div: document.getElementById("newScore"),
     org_width: 325 * game.scale,
@@ -1521,10 +1543,13 @@ game.endGameOver = {
     posX: 0,
     poxY: 0,
     resize: function () {
-        this.width = this.org_width * (1-engine.widthProportion);
-        this.height = this.org_height * (1-engine.widthProportion);
-        this.posX = engine.width/2 - this.width/2;
-        this.poxY = 10 * (1 - engine.widthProportion);
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        this.posX = engine.width / 2 - this.width / 2;
+        this.poxY = engine.height / 2 - this.height / 2;
+
     },
     draw: function () {
         this.resize();
@@ -1708,6 +1733,97 @@ game.endPlayerInitials = {
     }
 };
 
+
+    game.endPlayerScore = {
+        div: document.getElementById("endPlayerScore"),
+        org_width: 150 * game.scale,
+        org_height: 95 * game.scale,
+        width: 0,
+        height: 0,
+        org_posX: 325,
+        org_posY: 82,
+        posX: 0,
+        posY: 0,
+        org_font_size: 74,
+        font_size: 0,
+        score: 0,
+        resize: function () {
+
+            this.width = this.org_width * (1 - engine.widthProportion);
+            this.height = this.org_height * (1 - engine.widthProportion);
+
+            // Attach Left Side
+            this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+            this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
+
+            // Adjust font size
+            this.font_size = this.org_font_size * (1 - engine.widthProportion);
+        },
+        draw: function () {
+            this.updateScore();
+            this.adjustStyle();
+        },
+        adjustStyle: function () {
+            this.resize();
+            this.div.style.position = "absolute";
+            this.div.style.display = "block";
+            this.div.style.left = this.posX.toString() + "px";
+            this.div.style.top = this.posY.toString() + "px";
+            this.div.style.width = this.width + "px";
+            this.div.style.height = this.height + "px";
+            this.div.style.fontSize = this.font_size + "pt";
+            this.div.style.zIndex = 4;
+        },
+        updateScore: function () {
+            this.score = Math.max(0, game.score);
+            this.div.innerHTML = this.score;
+        }
+    };
+
+game.endPlayerInitials = {
+    div: document.getElementById("endPlayerInitials"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 48,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.endInitials.posX + (game.endInitials.width * .7);
+        this.posY = game.endInitials.posY + (game.endInitials.height * .15);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateInitials();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateInitials: function () {
+
+    }
+};
 
 //   - Buttons
 game.menuButton = {
@@ -1929,7 +2045,7 @@ game.top10players = {
     width: 0,
     height: 0,
     posX: 0,
-    posY: 0,    
+    posY: 0,
     divArray: [],
     resize: function () {
         this.width = game.leaderboardClipboard.width * .80;
@@ -1950,9 +2066,6 @@ game.top10players = {
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
-
-        // Adjust font size
-        this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     hideTable: function () {
         this.divArray = [];
@@ -1962,8 +2075,10 @@ game.top10players = {
         var divPrefix = '<div id="containerDiv_';
         var tablePrefix = '<table>';
         var rowPrefix = '<tr>';
-        var dataPrefix = '<td>';
+        var dataPrefix = '<td';
         var tableBuilder = '';
+        var placeHolder = '';
+        var scoreHolder = '';
 
         //AJAX query
         var ajax = new XMLHttpRequest();
@@ -1977,21 +2092,31 @@ game.top10players = {
                 for (var i = 0; i < leaders.length; i++) {
                     place = i + 1;
 
+                    placeHolder = leaders[i].user.toString();
+                    scoreHolder = leaders[i].score.toString();
+
                     //open div
                     tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.width) + 'px">';
 
                     //build table row
+
+
                     tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";
 
+                    if (game.player.initials.toString() == placeHolder && game.player.score.toString() == scoreHolder) {
+                        tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
+                    } else {
+                        tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
+                    }								
 
                 }
-                    //close table
-                    tableBuilder += "</table>"
+                //close table
+                tableBuilder += "</table>"
 
-                    //close div
-                    tableBuilder += "</div>"
+                //close div
+                tableBuilder += "</div>"
 
-                    game.top10players.divArray.push("containerDiv_" + place);
+                game.top10players.divArray.push("containerDiv_" + place);
                 game.top10players.div.innerHTML = tableBuilder;
 
             }
@@ -2001,7 +2126,7 @@ game.top10players = {
 };
 
 game.finalPlayerScore = {
-	div: document.getElementById("finalPlayerScore"),
+    div: document.getElementById("finalPlayerScore"),
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -2019,8 +2144,8 @@ game.finalPlayerScore = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side
-        this.posX = game.leaderboardPlayerScore.posX + game.leaderboardPlayerScore.width/2 - this.width/2;
-        this.posY = game.leaderboardPlayerScore.posY + game.leaderboardPlayerScore.height/2 - this.height/2;
+        this.posX = game.leaderboardPlayerScore.posX + game.leaderboardPlayerScore.width / 2 - this.width / 2;
+        this.posY = game.leaderboardPlayerScore.posY + game.leaderboardPlayerScore.height / 2 - this.height / 2;
 
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
@@ -2045,7 +2170,6 @@ game.finalPlayerScore = {
         this.div.innerHTML = this.score;
     }
 };
-
 
 //   - Buttons
 game.leaderboardMenuButton = {
@@ -2103,6 +2227,10 @@ game.leaderboardRetryButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
+    },
+    retry: function () {
+        game.currState = game.gameState[1];
+        game.player.reset();
     }
 };
 
@@ -2144,16 +2272,16 @@ game.hideElements = {
 game.gameController = {
     gsStart: function (dt) {
         // Start Scene
-		
-		// Initialize word/sponsor pairs from database
-		if (game.word === "") {
-			game.updateWords.update();
-		}
-		
+
+        // Initialize word/sponsor pairs from database
+        if (game.word === "") {
+            game.updateWords.update();
+        }
+
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-                game.databaseQuery();
+                // game.player.reset();
                 game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
@@ -2201,7 +2329,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.updateWords.update();
+                game.updateWords.update();
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
@@ -2296,7 +2424,7 @@ game.drawOnce = function () {
     // Draw based on the GameState
     switch (this.currState) {
         case 'start':
-			// Draw images on the canvas
+            // Draw images on the canvas
             this.startRunway.draw();
             this.startHangar.draw();
             this.wordFlightTitle.draw();
@@ -2376,10 +2504,11 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
+
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-            this.leaderboardPlane.draw();
+			      this.leaderboardPlane.draw();							 
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
