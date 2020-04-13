@@ -1523,7 +1523,7 @@ game.endGameOver = {
     resize: function () {
         this.width = this.org_width * (1-engine.widthProportion);
         this.height = this.org_height * (1-engine.widthProportion);
-        this.posX = 10 * (1 - engine.widthProportion);
+        this.posX = engine.width/2 - this.width/2;
         this.poxY = 10 * (1 - engine.widthProportion);
     },
     draw: function () {
