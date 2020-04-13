@@ -38,119 +38,150 @@ for (var i = 0; i < game.mouse.length; i++) {
 // - Globals
 game.scale = 1.0;
 game.planeScale = 1.0;
+game.lastWord = "";
 game.word = "";
+game.nextWord = "";
+game.lastSponsor = "";
 game.sponsor = "";
+game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
+// - Player information
+game.player = {
+    score: 0,
+    initials: ""
+};
 // - Browser size monitors
 game.oldWidth = 0;
 game.oldHeight = 0;
 
+/*score
+ - Play scene
+     - Game over: update game.player.score
+   - End scene
+       - Update game.player.initials
+     - Leaderboard scene
+	   -- Reset score
+*/
+
 // Game functions
 
+// Update words
+game.updateWords = {
+    lastWord: function () {
+        game.lastWord = game.word;
+		game.lastSponsor = game.sponsor;
+    },
+    word: function () {
+        game.word = game.nextWord;
+        game.sponsor = game.nextSponsor;
+    },
+    nextWord: function () {
+        game.databaseQuery();
+    },
+    update: function () {
+        if (game.word == game.lastWord) {
+            this.nextWord();
+			this.word();
+			this.nextWord();
+        } else {
+			this.lastWord();
+			this.word();
+			this.nextWord();
+		}
+    }
+}
+
 // Database - Pull random word with its sponsor
-game.databaseQuery = function() {
+game.databaseQuery = function () {
+    // Update previous word/sponsor pair
+    //game.lastWord = game.word;
+    //game.lastSponsor = game.sponsor;
+
     // AJAX query
     var ajax = new XMLHttpRequest();
-    ajax.open("GET", "word_generator.php", true);
-    ajax.send();
 
-    ajax.onreadystatechange = function() {
+    ajax.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             var selection = JSON.parse(this.responseText);
-
-
-            for(var a=0; a<selection.length; a++) {
-                var gameword = selection[a].word;
-                var sponsorname = selection[a].sponsor_name;
+            for (var a = 0; a < selection.length; a++) {
+                game.nextWord = selection[a].word.toUpperCase();
+                game.nextSponsor = selection[a].sponsor_name.toUpperCase();
             }
 
-
+            // Remove all spaces from the word
+            game.nextWord = game.nextWord.replace(/\s+/g, '');
+			
+			// DEBUG
+			// console.log("\n(dbq)LastWord: " + game.lastWord + " | LastSponsor: " + game.lastSponsor);
+			// console.log("(dbq)Word: " + game.word + " | Sponsor: " + game.sponsor);
+			// console.log("(dbq)NextWord: " + game.nextWord + " | NextSponsor: " + game.nextSponsor);
         }
 
     }
-
-        // Set word variable
-        game.word = "greentea";  //gameword
-        
-        // Set sponsor variable
-        game.sponsor = "argo"; //sponsorname
-}
-
-//Database - Pull top 10 players
-/*game.pullTop10 = function() {
-    //AJAX query
-    var ajax = new XMLHttpRequest();
-    ajax.open("GET", "leaderboard.php", true);
+    ajax.open("GET", "scripts/word_generator.php", true);
     ajax.send();
-
-    ajax.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var leaders = JSON.parse(this.responseText);
-
-        }
-    };
-}*/
+}
 
 // Get the sponsor
 game.getSponsor = function () {
     switch (this.sponsor) {
-        case "argo":
+        case "ARGO TEA":
             this.sponsorId = "sponsorArgo";
             break;
-        case "auntieannes":
+        case "AUNTIE ANNES":
             this.sponsorId = "sponsorAuntieAnnes";
             break;
-        case "brookstone":
+        case "BROOKSTONE":
             this.sponsorId = "sponsorBrookstone";
             break;
-        case "bsmooth":
+        case "BSMOOTH":
             this.sponsorId = "sponsorBSmooth";
             break;
-        case "burritobeach":
+        case "BURRITO BEACH":
             this.sponsorId = "sponsorBurritoBeach";
             break;
-        case "chicagosports":
+        case "CHICAGO SPORTS":
             this.sponsorId = "sponsorChicagoSports";
             break;
-        case "cnn":
+        case "CNN":
             this.sponsorId = "sponsorCNN";
             break;
-        case "coach":
+        case "COACH":
             this.sponsorId = "sponsorCoach";
             break;
-        case "dunkindonuts":
+        case "DUNKIN DONUTS":
             this.sponsorId = "sponsorDunkinDonuts";
             break;
-        case "dutyfreestore":
+        case "DUTY FREE STORE":
             this.sponsorId = "sponsorDutyFreeStore";
             break;
-        case "field":
+        case "FIELD":
             this.sponsorId = "sponsorField";
             break;
-        case "hudson":
+        case "HUDSON":
             this.sponsorId = "sponsorHudson";
             break;
-        case "maccosmetics":
+        case "MAC COSMETICS":
             this.sponsorId = "sponsorMacCosmetics";
             break;
-        case "nutsonclark":
+        case "NUTS ON CLARK":
             this.sponsorId = "sponsorNutsOnClark";
             break;
-        case "rockymountainchocolate":
+        case "ROCKY MOUNTAIN CHOCOLATE":
             this.sponsorId = "sponsorRockyMountainChocolate";
             break;
-        case "sarahscandies":
+        case "SARAHS CANDIES":
             this.sponsorId = "sponsorSarahsCandies";
             break;
-        case "shoehospital":
+        case "SHOE HOSPITAL":
             this.sponsorId = "sponsorShoeHospital";
             break;
-        case "spiritoftheredhorse":
+        case "SPIRIT OF THE RED HORSE":
             this.sponsorId = "sponsorSpiritOfTheRedHorse";
             break;
-        case "talie":
+        case "TALIE":
             this.sponsorId = "sponsorTalie";
             break;
         default:
@@ -1699,7 +1730,7 @@ game.leaderboardPlane = {
         this.width = 876 * (1 - engine.widthProportion);
         this.height = 364 * (1 - engine.widthProportion);
         this.posX = engine.width - (2300 * (1 - engine.widthProportion));
-        this.posY = engine.height - (600 * (1 - engine.heightProportion));
+        this.posY = engine.height - (550 * (1 - engine.heightProportion));
     },
     draw: function () {
         this.resize();
@@ -1738,8 +1769,8 @@ game.leaderboardClipboard = {
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * .90 * (1 - engine.widthProportion);
+        this.height = this.org_height * .90 * (1 - engine.widthProportion);
         this.posX = engine.width - this.width - (375 * (1 - engine.widthProportion));
         this.posY = 25;
     },
@@ -1821,26 +1852,27 @@ game.LeadboardSponsorLogo = {
 };
 
 game.top10players = {
-	div: document.getElementById("top10table"),
-	org_width: 0,
-	org_height: 0,
-	width: 0,
-	height: 0,
-	posX: 0,
-	posY: 0,
-	resize: function() {
-		this.width = game.leaderboardClipboard.posX - 20;
-        this.height = (engine.height - (game.leaderboardClipboard.posY + game.leaderboardClipboard.height)) * 0.8;
-		
-        // Attach Left Side with Buffer
-        this.posX = Math.max(10, Math.min(40, game.leaderboardClipboard.posX/2 - this.width/2));
-        this.posY = Math.min(game.leaderboardClipboard.height + game.leaderboardClipboard.posY + 40, engine.height - this.height - 40);
+    div: document.getElementById("top10table"),
+    org_width: 0,
+    org_height: 0,
+    width: 0,
+    height: 0,
+    posX: 0,
+    posY: 0,
+    divArray: [],
+    resize: function () {
+        this.width = game.leaderboardClipboard.width * .80;
+        this.height = game.leaderboardClipboard.height * .80;
 
-	},
-	adjustStyle: function() {
-		this.buildTable();
-		this.resize();
-		this.div.style.position = "absolute";
+        // Attach Left Side with Buffer
+        this.posX = game.leaderboardClipboard.posX + (game.leaderboardClipboard.width - this.width) / 2;
+        this.posY = game.leaderboardClipboard.posY + game.leaderboardClipboard.height / 2 - (this.height * .28);
+
+    },
+    adjustStyle: function () {
+        this.buildTable();
+        this.resize();
+        this.div.style.position = "absolute";
         this.div.style.display = "block";
         this.div.style.left = this.posX.toString() + "px";
         this.div.style.top = this.posY.toString() + "px";
@@ -1851,42 +1883,48 @@ game.top10players = {
     hideTable: function () {
         this.divArray = [];
     },
-	buildTable: function() {
+    buildTable: function () {
         var place = "";
-		var divPrefix = '<div id="containerDiv_';
-		var tablePrefix = '<table>';
-		var rowPrefix = '<tr>';
-		var dataPrefix = '<td>';
-		var tableBuilder = '';
+        var divPrefix = '<div id="containerDiv_';
+        var tablePrefix = '<table>';
+        var rowPrefix = '<tr>';
+        var dataPrefix = '<td>';
+        var tableBuilder = '';
 
         //AJAX query
         var ajax = new XMLHttpRequest();
-        ajax.open("GET", "leaderboard.php", true);
+        ajax.open("GET", "scripts/leaderboard.php", true);
         ajax.send();
 
-        ajax.onreadystatechange = function() {
+        ajax.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var leaders = JSON.parse(this.responseText);
-                
-                for (var i=0; i < leaders.length; i++) {
-                    place = i + 1;
-                    
-                    //open div
-                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.div.width) + 'px">';
-                    
-                    //build table row
-                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + "leaders[i].user</td>" + dataPrefix + "leaders[i].score</td><tr>";
-                    
-                    //close table
-                    tableBuilder += "</table>"
-                    
-                    //close div
-                    tableBuilder += "</div>"
-                    
-                    this.divArray.push("containerDiv_" + place);
-                }
 
-                this.div.innerHTML = tableBuilder;
+                for (var i = 0; i < leaders.length; i++) {
+                    place = i + 1;
+
+                    //open div
+                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.width) + 'px">';
+
+                    //build table row
+                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";
+
+
+											  
+					
+							   
+											
+					
+																
+                }
+                //close table
+                tableBuilder += "</table>"
+
+                //close div
+                tableBuilder += "</div>"
+
+                game.top10players.divArray.push("containerDiv_" + place);
+                game.top10players.div.innerHTML = tableBuilder;
 
             }
 
@@ -1993,6 +2031,11 @@ game.gameController = {
     gsStart: function (dt) {
         // Start Scene
 
+		// Initialize word/sponsor pairs from database
+        if (game.word === "") {
+            game.updateWords.update();
+        }
+		
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
@@ -2013,7 +2056,7 @@ game.gameController = {
             if (game.planeManager.animate(dt)) {
 				
 				// Query new word and sponsor
-				game.databaseQuery();
+				game.updateWords.update();
 				
 				// Hide all elements - prepare for redraw
 				game.hideElements.hideAll();
@@ -2044,6 +2087,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				game.updateWords.update();				  
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
@@ -2216,10 +2260,11 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
-            this.leaderboardPlane.draw();
+            
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
+			this.leaderboardPlane.draw();							 
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             // Display buttons
