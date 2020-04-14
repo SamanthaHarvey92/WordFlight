@@ -47,7 +47,8 @@ game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
-game.playTime = (11)*1000;// (3 * 60 + 30) * 1000; // (3:30)
+game.playTime = (3 * 60 + 30) * 1000; // (3:30)
+game.timeoutTime = 120;
 // - Player information
 game.player = {
     score: 250,
@@ -71,6 +72,98 @@ game.oldHeight = 0;
 */
 
 // Game functions
+game.timeoutOverlay = {
+    div: document.getElementById("timeoutOverlay"),
+    divHeader: document.getElementById("timeoutHeader"),
+    divInstructions: document.getElementById("timeoutInstructions"),
+    divTimer: document.getElementById("timeoutTimer"),
+    initialTime: null,
+    finalTime: null,
+    currentTime: null,
+    initialTimerExpired: false,
+    finalTimerExpired: false,
+    init: function () {
+        // Hide the overlay
+        this.hideOverlay();
+
+        // Add event listener to the main overlay div element
+        this.div.addEventListener("click", function (e) {
+            game.timeoutOverlay.refreshTimer();
+        });
+
+        // Initialize all variables
+        this.resetTimer();
+    },
+    showOverlay: function () {
+        this.div.style.display = "block";
+        this.divHeader.style.display = "block";
+        this.divInstructions.style.display = "block";
+        this.divTimer.style.display = "block";
+    },
+    hideOverlay: function () {
+        this.div.style.display = "none";
+    },
+    update: function (dt) {
+        if (this.currentTime != null) {
+            // Update the current time
+            this.updateTime(dt);
+
+            // console.log("Initial: " + this.initialTimerExpired + " | Final: " + this.finalTimerExpired + " | Time: " + this.currentTime.toFixed(0));
+
+            // Update the active timer
+            if (!this.initialTimerExpired) {
+                this.initialTimer(dt);
+            } else if (!this.finalTimerExpired) {
+                this.finalTimer(dt);
+            }
+        } else if (this.initialTimerExpired && this.finalTimerExpired) {
+            // All timers expired - redirect
+            this.expireTimer();
+        }
+    },
+    initialTimer: function (dt) {
+        // Check whether the time is greater than the limit
+        if (this.currentTime >= this.initialTime) {
+            // Reset the timer to zero
+            this.currentTime = 0;
+            // Flag the initial timer as complete
+            this.initialTimerExpired = true;
+            // Display the overlay
+            this.showOverlay();
+        }
+    },
+    finalTimer: function (dt) {
+        // Update the time left
+        this.divTimer.innerHTML = ". . . " + Math.ceil(this.finalTime - this.currentTime) + " . . .";
+
+        // Check whether the time is greater than the limit
+        if (this.currentTime >= this.finalTime) {
+            // Set the timer to null, stopping execution
+            this.currentTime = null;
+            // Flag the final timer as complete
+            this.finalTimerExpired = true;
+        }
+    },
+    updateTime: function (dt) {
+        this.currentTime += dt;
+    },
+    refreshTimer: function () {
+        console.log("Refresh timer");
+        this.resetTimer();
+    },
+    resetTimer: function () {
+        this.hideOverlay();
+        this.initialTime = game.timeoutTime;
+        this.finalTime = game.timeoutTime / 10;
+        this.currentTime = 0;
+        this.initialTimerExpired = false;
+        this.finalTimerExpired = false;
+    },
+    expireTimer: function () {
+        window.location.replace("http://www.flywithbutchohare.com/");
+    }
+};
+game.timeoutOverlay.init();
 
 // Update words
 game.updateWords = {
@@ -1155,13 +1248,13 @@ game.playTimerBox = {
         this.div.style.zIndex = 4;
     },
     update: function () {
-		// Handle timer events
+        // Handle timer events
         if (!this.timerStarted) {
             // Start the timer if it hasn't been started yet
             this.startTimer();
         } else {
-			// Update the time
-			this.updateTime();
+            // Update the time
+            this.updateTime();
             // Display the timer
             this.displayTimer();
             // Expire the timer if less than 0 seconds remain
@@ -1185,7 +1278,7 @@ game.playTimerBox = {
         } else {
             this.timerDisplay = "00:00";
         }
-		// Display the time
+        // Display the time
         this.div.innerHTML = this.timerDisplay;
 
         // Flash the timer when less than 10 seconds are left
@@ -1196,10 +1289,10 @@ game.playTimerBox = {
             this.div.classList.remove("glow");
         }
     },
-	updateTime: function() {
-		// Set the countdown in seconds
+    updateTime: function () {
+        // Set the countdown in seconds
         this.timeSeconds = Math.round((this.timeEnd - Date.now()) / 1000);
-	},
+    },
     resetTimer: function () {
         // Reset all timer variables
         this.timeStart = null;
@@ -1503,6 +1596,9 @@ game.inputKeypad = {
                         imgElement[i].name = String.fromCharCode(65 + j);
                         imgElement[i].addEventListener("click", function (e) {
 
+                            // Reset timeout overlay timer
+                            game.timeoutOverlay.refreshTimer();
+
                             if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
 
                                 // Set key letter to inactve
@@ -1533,6 +1629,9 @@ game.inputKeypad = {
                     if (divElement[i].id == letter) {
                         divElement[i].name = String.fromCharCode(65 + j);
                         divElement[i].addEventListener("click", function (e) {
+
+                            // Reset timeout overlay timer
+                            game.timeoutOverlay.refreshTimer();
 
                             if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
 
@@ -2346,7 +2445,7 @@ game.gameController = {
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
                 game.score = 0;
-		    game.player.reset();
+                game.player.reset();
                 game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
@@ -2361,9 +2460,9 @@ game.gameController = {
         if (!game.playTimerBox.timerExpired) {
             game.playTimerBox.update();
         } else {
-			// Update the player object's score
-			game.player.score = game.score;
-			
+            // Update the player object's score
+            game.player.score = game.score;
+
             // Reset Play Scene objects
             game.updateWords.update();
             game.inputKeypad.hideKeypad();
@@ -2469,13 +2568,6 @@ game.gameController = {
                 game.drawOnce();
             }
         }
-
-        // Handle mouse clicks
-        for (var i = 0; i < game.mouse.length; i++) {
-            if (engine.input.pressed(game.mouse[i])) {
-                // alert("Event: " + game.mouse[i].toString());
-            }
-        }
     }
 };
 
@@ -2505,6 +2597,16 @@ game.update = function (dt) {
         this.drawOnce();
         this.oldWidth = engine.width;
         this.oldHeight = engine.height;
+    }
+
+    // Maintain Game Timeout
+    game.timeoutOverlay.update(dt);
+
+    // Handle mouse clicks
+    for (var i = 0; i < game.mouse.length; i++) {
+        if (engine.input.pressed(game.mouse[i])) {
+            game.timeoutOverlay.refreshTimer();
+        }
     }
 };
 
