@@ -47,6 +47,8 @@ game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
+game.playTime = (3 * 60 + 30) * 1000; // (3:30)
+game.timeoutTime = 120;
 // - Player information
 game.player = {
     score: 250,
@@ -70,6 +72,98 @@ game.oldHeight = 0;
 */
 
 // Game functions
+game.timeoutOverlay = {
+    div: document.getElementById("timeoutOverlay"),
+    divHeader: document.getElementById("timeoutHeader"),
+    divInstructions: document.getElementById("timeoutInstructions"),
+    divTimer: document.getElementById("timeoutTimer"),
+    initialTime: null,
+    finalTime: null,
+    currentTime: null,
+    initialTimerExpired: false,
+    finalTimerExpired: false,
+    init: function () {
+        // Hide the overlay
+        this.hideOverlay();
+
+        // Add event listener to the main overlay div element
+        this.div.addEventListener("click", function (e) {
+            game.timeoutOverlay.refreshTimer();
+        });
+
+        // Initialize all variables
+        this.resetTimer();
+    },
+    showOverlay: function () {
+        this.div.style.display = "block";
+        this.divHeader.style.display = "block";
+        this.divInstructions.style.display = "block";
+        this.divTimer.style.display = "block";
+    },
+    hideOverlay: function () {
+        this.div.style.display = "none";
+    },
+    update: function (dt) {
+        if (this.currentTime != null) {
+            // Update the current time
+            this.updateTime(dt);
+
+            // console.log("Initial: " + this.initialTimerExpired + " | Final: " + this.finalTimerExpired + " | Time: " + this.currentTime.toFixed(0));
+
+            // Update the active timer
+            if (!this.initialTimerExpired) {
+                this.initialTimer(dt);
+            } else if (!this.finalTimerExpired) {
+                this.finalTimer(dt);
+            }
+        } else if (this.initialTimerExpired && this.finalTimerExpired) {
+            // All timers expired - redirect
+            this.expireTimer();
+        }
+    },
+    initialTimer: function (dt) {
+        // Check whether the time is greater than the limit
+        if (this.currentTime >= this.initialTime) {
+            // Reset the timer to zero
+            this.currentTime = 0;
+            // Flag the initial timer as complete
+            this.initialTimerExpired = true;
+            // Display the overlay
+            this.showOverlay();
+        }
+    },
+    finalTimer: function (dt) {
+        // Update the time left
+        this.divTimer.innerHTML = ". . . " + Math.ceil(this.finalTime - this.currentTime) + " . . .";
+
+        // Check whether the time is greater than the limit
+        if (this.currentTime >= this.finalTime) {
+            // Set the timer to null, stopping execution
+            this.currentTime = null;
+            // Flag the final timer as complete
+            this.finalTimerExpired = true;
+        }
+    },
+    updateTime: function (dt) {
+        this.currentTime += dt;
+    },
+    refreshTimer: function () {
+        console.log("Refresh timer");
+        this.resetTimer();
+    },
+    resetTimer: function () {
+        this.hideOverlay();
+        this.initialTime = game.timeoutTime;
+        this.finalTime = game.timeoutTime / 10;
+        this.currentTime = 0;
+        this.initialTimerExpired = false;
+        this.finalTimerExpired = false;
+    },
+    expireTimer: function () {
+        window.location.replace("http://www.flywithbutchohare.com/");
+    }
+};
+game.timeoutOverlay.init();
 
 // Update words
 game.updateWords = {
@@ -1121,6 +1215,12 @@ game.playTimerBox = {
     posY: 0,
     org_font_size: 74,
     font_size: 0,
+    timeStart: null,
+    timeEnd: null,
+    timeSeconds: null,
+    timerStarted: false,
+    timerExpired: false,
+    timerDisplay: '',
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1146,6 +1246,65 @@ game.playTimerBox = {
         this.div.style.height = this.height + "px";
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
+    },
+    update: function () {
+        // Handle timer events
+        if (!this.timerStarted) {
+            // Start the timer if it hasn't been started yet
+            this.startTimer();
+        } else {
+            // Update the time
+            this.updateTime();
+            // Display the timer
+            this.displayTimer();
+            // Expire the timer if less than 0 seconds remain
+            if ((this.timeSeconds) <= 0) {
+                this.expireTimer();
+            }
+        }
+    },
+    startTimer: function () {
+        // Flag timer as started
+        this.timerStarted = true;
+        // Set the start time
+        this.timeStart = Date.now();
+        // Set the end time
+        this.timeEnd = Date.now() + game.playTime;
+    },
+    displayTimer: function () {
+        // Display time in MM:SS format
+        if ((this.timeSeconds) >= 0) {
+            this.timerDisplay = "0" + Math.floor(this.timeSeconds / 60) + ":" + ((this.timeSeconds % 60) < 10 ? "0" : "") + (this.timeSeconds % 60);
+        } else {
+            this.timerDisplay = "00:00";
+        }
+        // Display the time
+        this.div.innerHTML = this.timerDisplay;
+
+        // Flash the timer when less than 10 seconds are left
+        if ((this.timeSeconds) <= 10) {
+            this.div.classList.remove("pulse");
+            this.div.classList.add("glow");
+        } else if (this.div.getAttribute("class") === 'glow') {
+            this.div.classList.remove("glow");
+        }
+    },
+    updateTime: function () {
+        // Set the countdown in seconds
+        this.timeSeconds = Math.round((this.timeEnd - Date.now()) / 1000);
+    },
+    resetTimer: function () {
+        // Reset all timer variables
+        this.timeStart = null;
+        this.timeEnd = null;
+        this.timeSeconds = null;
+        this.timerStarted = false;
+        this.timerExpired = false;
+        this.timerDisplay = '';
+    },
+    expireTimer: function () {
+        // Flag the timer as expired
+        this.timerExpired = true;
     }
 };
 
@@ -1437,6 +1596,9 @@ game.inputKeypad = {
                         imgElement[i].name = String.fromCharCode(65 + j);
                         imgElement[i].addEventListener("click", function (e) {
 
+                            // Reset timeout overlay timer
+                            game.timeoutOverlay.refreshTimer();
+
                             if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
 
                                 // Set key letter to inactve
@@ -1467,6 +1629,9 @@ game.inputKeypad = {
                     if (divElement[i].id == letter) {
                         divElement[i].name = String.fromCharCode(65 + j);
                         divElement[i].addEventListener("click", function (e) {
+
+                            // Reset timeout overlay timer
+                            game.timeoutOverlay.refreshTimer();
 
                             if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
 
@@ -1548,8 +1713,7 @@ game.endGameOver = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         this.posX = engine.width / 2 - this.width / 2;
-        this.poxY = engine.height / 2 - this.height / 2;
-
+        this.posY = engine.height / 2 - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -1643,7 +1807,7 @@ game.endKeyboardKeys = {
 };
 
 game.endPlayerScore = {
-	div: document.getElementById("endPlayerScore"),
+    div: document.getElementById("endPlayerScore"),
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1661,8 +1825,8 @@ game.endPlayerScore = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side
-        this.posX = game.endGamePoints.posX + game.endGamePoints.width/2 - this.width/2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height/2 - this.height/2;
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
 
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
@@ -1689,7 +1853,7 @@ game.endPlayerScore = {
 };
 
 game.endPlayerInitials = {
-	div: document.getElementById("endPlayerInitials"),
+    div: document.getElementById("endPlayerInitials"),
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1729,56 +1893,55 @@ game.endPlayerInitials = {
         this.div.style.zIndex = 4;
     },
     updateInitials: function () {
-        
+
     }
 };
 
+game.endPlayerScore = {
+    div: document.getElementById("endPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
 
-    game.endPlayerScore = {
-        div: document.getElementById("endPlayerScore"),
-        org_width: 150 * game.scale,
-        org_height: 95 * game.scale,
-        width: 0,
-        height: 0,
-        org_posX: 325,
-        org_posY: 82,
-        posX: 0,
-        posY: 0,
-        org_font_size: 74,
-        font_size: 0,
-        score: 0,
-        resize: function () {
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
 
-            this.width = this.org_width * (1 - engine.widthProportion);
-            this.height = this.org_height * (1 - engine.widthProportion);
+        // Attach Left Side
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
 
-            // Attach Left Side
-            this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
-            this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
-
-            // Adjust font size
-            this.font_size = this.org_font_size * (1 - engine.widthProportion);
-        },
-        draw: function () {
-            this.updateScore();
-            this.adjustStyle();
-        },
-        adjustStyle: function () {
-            this.resize();
-            this.div.style.position = "absolute";
-            this.div.style.display = "block";
-            this.div.style.left = this.posX.toString() + "px";
-            this.div.style.top = this.posY.toString() + "px";
-            this.div.style.width = this.width + "px";
-            this.div.style.height = this.height + "px";
-            this.div.style.fontSize = this.font_size + "pt";
-            this.div.style.zIndex = 4;
-        },
-        updateScore: function () {
-            this.score = Math.max(0, game.score);
-            this.div.innerHTML = this.score;
-        }
-    };
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.score);
+        this.div.innerHTML = this.score;
+    }
+};
 
 game.endPlayerInitials = {
     div: document.getElementById("endPlayerInitials"),
@@ -2107,7 +2270,7 @@ game.top10players = {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
                     } else {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
-                    }								
+                    }
 
                 }
                 //close table
@@ -2281,7 +2444,8 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-                // game.player.reset();
+                game.score = 0;
+                game.player.reset();
                 game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
@@ -2291,6 +2455,32 @@ game.gameController = {
     },
     gsPlay: function (dt) {
         // Play Scene
+
+        // Run the timer
+        if (!game.playTimerBox.timerExpired) {
+            game.playTimerBox.update();
+        } else {
+            // Update the player object's score
+            game.player.score = game.score;
+
+            // Reset Play Scene objects
+            game.updateWords.update();
+            game.inputKeypad.hideKeypad();
+            game.playLetterSpaces.hideKeypad();
+            game.readyForNextWord = false;
+            game.planeManager.resetElements();
+            game.playTimerBox.resetTimer();
+
+            // Change to the End Scene state
+            game.currState = game.gameState[2];
+
+            // Wipe the canvas
+            game.hideElements.hideAll();
+
+            // Draw new objects
+            game.drawOnce();
+        }
+
 
         // Check whether a word is complete
         if (game.readyForNextWord) {
@@ -2334,6 +2524,7 @@ game.gameController = {
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
+                game.playTimerBox.resetTimer();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2377,13 +2568,6 @@ game.gameController = {
                 game.drawOnce();
             }
         }
-
-        // Handle mouse clicks
-        for (var i = 0; i < game.mouse.length; i++) {
-            if (engine.input.pressed(game.mouse[i])) {
-                // alert("Event: " + game.mouse[i].toString());
-            }
-        }
     }
 };
 
@@ -2413,6 +2597,16 @@ game.update = function (dt) {
         this.drawOnce();
         this.oldWidth = engine.width;
         this.oldHeight = engine.height;
+    }
+
+    // Maintain Game Timeout
+    game.timeoutOverlay.update(dt);
+
+    // Handle mouse clicks
+    for (var i = 0; i < game.mouse.length; i++) {
+        if (engine.input.pressed(game.mouse[i])) {
+            game.timeoutOverlay.refreshTimer();
+        }
     }
 };
 
@@ -2464,20 +2658,6 @@ game.drawOnce = function () {
             this.planeManager.initialize();
             this.planeManager.draw();
 
-            /*this.playPlaneLeftInnerEngine.draw();
-            this.playPlaneLeftOuterEngine.draw();
-            this.playPlaneRightInnerEngine.draw();
-            this.playPlaneRightOuterEngine.draw();
-
-            this.playPlaneLeftRearWing.draw();
-            this.playPlaneLeftWing.draw();
-            this.playPlaneRightRearWing.draw();
-            this.playPlaneRightWing.draw();
-
-            this.playPlaneNose.draw();
-            this.playPlaneFuselage.draw();
-            this.playPlaneTail.draw();
-            this.playPlaneDorsalFin.draw();*/
             // Display buttons
             this.playMenuButton.adjustStyle();
             this.playKeyPadSpace.adjustStyle();
@@ -2493,9 +2673,11 @@ game.drawOnce = function () {
             this.endInitials.draw();
             this.endKeyboardKeys.draw();
             this.wordFlightTitleSmall.draw();
-            this.endGameOver.draw();
+
             this.endPlayerScore.draw();
             this.endPlayerInitials.draw();
+
+            this.endGameOver.draw();
             // Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
@@ -2508,7 +2690,7 @@ game.drawOnce = function () {
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-			      this.leaderboardPlane.draw();							 
+            this.leaderboardPlane.draw();
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
