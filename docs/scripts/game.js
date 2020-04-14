@@ -2425,7 +2425,7 @@ game.gameController = {
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
-                game.playTimer.resetTimer();
+                game.playTimerBox.resetTimer();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
