@@ -2345,7 +2345,8 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-                // game.player.reset();
+                game.score = 0;
+		    game.player.reset();
                 game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
