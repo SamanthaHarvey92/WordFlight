@@ -165,3 +165,53 @@
 	color: #f41c63;
 }
 
+#timeoutOverlay {
+	position: fixed;
+	display: block;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 100;
+	cursor: pointer;
+	text-align: center;
+	-moz-text-shadow: 2px 4px 0px rgba(90, 90, 90, 0.9);
+    -webkit-text-shadow: 2px 4px 0px rgba(90, 90, 90, 0.9);
+    text-shadow: 2px 4px 0px rgba(90, 90, 90, 0.9);
+}
+
+#timeoutHeader {
+	position: absolute;
+	top: 35%;
+	left: 50%;
+	font-size: 5vw;
+	font-family: Roboto-Bold;
+	color: #fff;
+	transform: translate(-50%, -65%);
+	-ms-transform: translate(-50%, -65%);
+}
+
+#timeoutInstructions {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	font-size: 3vw;
+	font-family: Roboto-Bold;
+	color: #fff;
+	transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+}
+
+#timeoutTimer {
+	position: absolute;
+	top: 65%;
+	left: 50%;
+	font-size: 4vw;
+	font-family: Roboto-Bold;
+	color: #fff;
+	transform: translate(-50%, -35%);
+	-ms-transform: translate(-50%, -35%);
+}
