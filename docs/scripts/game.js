@@ -47,6 +47,7 @@ game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
+game.playTime = (11)*1000;// (3 * 60 + 30) * 1000; // (3:30)
 // - Player information
 game.player = {
     score: 250,
@@ -1121,6 +1122,12 @@ game.playTimerBox = {
     posY: 0,
     org_font_size: 74,
     font_size: 0,
+    timeStart: null,
+    timeEnd: null,
+    timeSeconds: null,
+    timerStarted: false,
+    timerExpired: false,
+    timerDisplay: '',
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1146,6 +1153,65 @@ game.playTimerBox = {
         this.div.style.height = this.height + "px";
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
+    },
+    update: function () {
+		// Handle timer events
+        if (!this.timerStarted) {
+            // Start the timer if it hasn't been started yet
+            this.startTimer();
+        } else {
+			// Update the time
+			this.updateTime();
+            // Display the timer
+            this.displayTimer();
+            // Expire the timer if less than 0 seconds remain
+            if ((this.timeSeconds) <= 0) {
+                this.expireTimer();
+            }
+        }
+    },
+    startTimer: function () {
+        // Flag timer as started
+        this.timerStarted = true;
+        // Set the start time
+        this.timeStart = Date.now();
+        // Set the end time
+        this.timeEnd = Date.now() + game.playTime;
+    },
+    displayTimer: function () {
+        // Display time in MM:SS format
+        if ((this.timeSeconds) >= 0) {
+            this.timerDisplay = "0" + Math.floor(this.timeSeconds / 60) + ":" + ((this.timeSeconds % 60) < 10 ? "0" : "") + (this.timeSeconds % 60);
+        } else {
+            this.timerDisplay = "00:00";
+        }
+		// Display the time
+        this.div.innerHTML = this.timerDisplay;
+
+        // Flash the timer when less than 10 seconds are left
+        if ((this.timeSeconds) <= 10) {
+            this.div.classList.remove("pulse");
+            this.div.classList.add("glow");
+        } else if (this.div.getAttribute("class") === 'glow') {
+            this.div.classList.remove("glow");
+        }
+    },
+	updateTime: function() {
+		// Set the countdown in seconds
+        this.timeSeconds = Math.round((this.timeEnd - Date.now()) / 1000);
+	},
+    resetTimer: function () {
+        // Reset all timer variables
+        this.timeStart = null;
+        this.timeEnd = null;
+        this.timeSeconds = null;
+        this.timerStarted = false;
+        this.timerExpired = false;
+        this.timerDisplay = '';
+    },
+    expireTimer: function () {
+        // Flag the timer as expired
+        this.timerExpired = true;
     }
 };
 
@@ -2279,7 +2345,8 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-                // game.player.reset();
+                game.score = 0;
+		    game.player.reset();
                 game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
@@ -2289,6 +2356,32 @@ game.gameController = {
     },
     gsPlay: function (dt) {
         // Play Scene
+
+        // Run the timer
+        if (!game.playTimerBox.timerExpired) {
+            game.playTimerBox.update();
+        } else {
+			// Update the player object's score
+			game.player.score = game.score;
+			
+            // Reset Play Scene objects
+            game.updateWords.update();
+            game.inputKeypad.hideKeypad();
+            game.playLetterSpaces.hideKeypad();
+            game.readyForNextWord = false;
+            game.planeManager.resetElements();
+            game.playTimerBox.resetTimer();
+
+            // Change to the End Scene state
+            game.currState = game.gameState[2];
+
+            // Wipe the canvas
+            game.hideElements.hideAll();
+
+            // Draw new objects
+            game.drawOnce();
+        }
+
 
         // Check whether a word is complete
         if (game.readyForNextWord) {
@@ -2319,6 +2412,11 @@ game.gameController = {
             }
         }
 
+        // Animate score box
+        if (game.playScoreBox.animActive) {
+            game.playScoreBox.animate(dt);
+        }
+
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
@@ -2327,6 +2425,7 @@ game.gameController = {
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
+                game.playTimerBox.resetTimer();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2472,12 +2571,12 @@ game.drawOnce = function () {
             this.endInitials.draw();
             this.endKeyboardKeys.draw();
             this.wordFlightTitleSmall.draw();
-            
+
             this.endPlayerScore.draw();
             this.endPlayerInitials.draw();
-            
-			this.endGameOver.draw();
-			// Display buttons
+
+            this.endGameOver.draw();
+            // Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
             break;
@@ -2517,10 +2616,6 @@ game.draw = function () {
         case 'start':
             break;
         case 'play':
-            // Animate score box
-            if (game.playScoreBox.animActive) {
-                game.playScoreBox.animate(dt);
-            }
             break;
         case 'end':
             break;
