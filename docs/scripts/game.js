@@ -1713,7 +1713,7 @@ game.endGameOver = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         this.posX = engine.width / 2 - this.width / 2;
-        this.posY = engine.height / 2 - this.height / 2;
+        this.posY = game.endGamePoints.posY / 3 ;
     },
     draw: function () {
         this.resize();
@@ -1722,7 +1722,7 @@ game.endGameOver = {
     }
 };
 
-game.endGamePoints = {
+game.endGamePoints = { 
     image: document.getElementById("endGamePoints"),
     org_width: 613 * game.scale,
     org_height: 342 * game.scale,
@@ -1734,7 +1734,7 @@ game.endGamePoints = {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
-        this.posY = game.endKeyboardBackground.posY / 2 - this.height / 2;
+        this.posY = (game.endKeyboardBackground.posY * .6) - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -1755,7 +1755,7 @@ game.endInitials = {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height + this.height / 2;
+        this.posY = game.endKeyboardBackground.posY - (game.endKeyboardBackground.posY - (game.endGamePoints.posY + game.endGamePoints.height));
     },
     draw: function () {
         this.resize();
@@ -1847,7 +1847,7 @@ game.endPlayerScore = {
         this.div.style.zIndex = 4;
     },
     updateScore: function () {
-        this.score = Math.max(0, game.score);
+        this.score = Math.max(0, game.player.score);
         this.div.innerHTML = this.score;
     }
 };
@@ -1938,7 +1938,7 @@ game.endPlayerScore = {
         this.div.style.zIndex = 4;
     },
     updateScore: function () {
-        this.score = Math.max(0, game.score);
+        this.score = Math.max(0, game.player.score);
         this.div.innerHTML = this.score;
     }
 };
@@ -2201,6 +2201,54 @@ game.LeadboardSponsorLogo = {
     }
 };
 
+game.finalPlayerScore = {
+    div: document.getElementById("finalPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.leaderboardPlayerScore.posX + game.leaderboardPlayerScore.width / 2 - this.width / 2;
+        this.posY = game.leaderboardPlayerScore.posY + game.leaderboardPlayerScore.height / 2 - this.height / 2;
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.player.score);
+        this.div.innerHTML = this.score;
+    }
+};
+
+//Leaderboard Table
+
 game.top10players = {
     div: document.getElementById("top10table"),
     org_width: 0,
@@ -2288,51 +2336,7 @@ game.top10players = {
     }
 };
 
-game.finalPlayerScore = {
-    div: document.getElementById("finalPlayerScore"),
-    org_width: 150 * game.scale,
-    org_height: 95 * game.scale,
-    width: 0,
-    height: 0,
-    org_posX: 325,
-    org_posY: 82,
-    posX: 0,
-    posY: 0,
-    org_font_size: 74,
-    font_size: 0,
-    score: 0,
-    resize: function () {
 
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-
-        // Attach Left Side
-        this.posX = game.leaderboardPlayerScore.posX + game.leaderboardPlayerScore.width / 2 - this.width / 2;
-        this.posY = game.leaderboardPlayerScore.posY + game.leaderboardPlayerScore.height / 2 - this.height / 2;
-
-        // Adjust font size
-        this.font_size = this.org_font_size * (1 - engine.widthProportion);
-    },
-    draw: function () {
-        this.updateScore();
-        this.adjustStyle();
-    },
-    adjustStyle: function () {
-        this.resize();
-        this.div.style.position = "absolute";
-        this.div.style.display = "block";
-        this.div.style.left = this.posX.toString() + "px";
-        this.div.style.top = this.posY.toString() + "px";
-        this.div.style.width = this.width + "px";
-        this.div.style.height = this.height + "px";
-        this.div.style.fontSize = this.font_size + "pt";
-        this.div.style.zIndex = 4;
-    },
-    updateScore: function () {
-        this.score = Math.max(0, game.score);
-        this.div.innerHTML = this.score;
-    }
-};
 
 //   - Buttons
 game.leaderboardMenuButton = {
