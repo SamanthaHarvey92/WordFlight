@@ -1,9 +1,9 @@
 <?php
-include('db_connection.php');
+include 'db_connection.php';
 
 $conn = $pdo;
 
-$stmt = $conn->prepare("SELECT user, score from wordflightleaderboard ORDER BY score DESC LIMIT 7");
+$stmt = $conn->prepare("SELECT user, score from Leaderboard ORDER BY score DESC LIMIT 7");
 $stmt->execute();
 
 $result = $stmt->fetchAll();
