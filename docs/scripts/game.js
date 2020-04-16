@@ -108,8 +108,6 @@ game.timeoutOverlay = {
             // Update the current time
             this.updateTime(dt);
 
-            // console.log("Initial: " + this.initialTimerExpired + " | Final: " + this.finalTimerExpired + " | Time: " + this.currentTime.toFixed(0));
-
             // Update the active timer
             if (!this.initialTimerExpired) {
                 this.initialTimer(dt);
@@ -148,7 +146,6 @@ game.timeoutOverlay = {
         this.currentTime += dt;
     },
     refreshTimer: function () {
-        console.log("Refresh timer");
         this.resetTimer();
     },
     resetTimer: function () {
@@ -376,13 +373,21 @@ game.menuButton = {
     org_height: 138 * game.scale,
     width: 0,
     height: 0,
+    org_posX: 1645,
+    org_posY: 942,
     posX: 0,
     posY: 0,
+	init: function () {
+        // Add event listener to the button
+        this.image.addEventListener("click", game.menuButton.clickMe);
+    },
     resize: function () {
-        this.width = this.org_width * 2 * (1 - engine.dimensionProportion);
-        this.height = this.org_height * 2 * (1 - engine.dimensionProportion);
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Top-Right Side
         this.posX = engine.width - this.width;
-        this.posY = 50 * (1 - engine.dimensionProportion);
+        this.posY = Math.max(5, Math.min(5, this.org_posY - engine.heightDifference));
     },
     draw: function () {
         this.adjustStyle();
@@ -396,8 +401,28 @@ game.menuButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
-    }
-};
+    },
+	clickMe: function() {
+		switch(game.currState) {
+			case 'start':
+				window.location.replace("http://www.flywithbutchohare.com/");
+				break;
+			default:
+				game.hideElements.hideAll();
+				game.player.reset();
+				game.updateWords.update();
+                game.inputKeypad.hideKeypad();
+                game.playLetterSpaces.hideKeypad();
+                game.readyForNextWord = false;
+                game.planeManager.resetElements();
+                game.playTimerBox.resetTimer();
+				game.currState = game.gameState[0];
+				game.drawOnce();
+				break;
+		}
+	}
+}
+game.menuButton.init();
 
 game.startButton = {
     image: document.getElementById("startButton"),
@@ -407,6 +432,10 @@ game.startButton = {
     height: 0,
     posX: 0,
     posY: 0,
+	init: function () {
+        // Add event listener to the button
+        this.image.addEventListener("click", game.menuButton.clickMe);
+    },
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -425,8 +454,12 @@ game.startButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
-    }
+    },
+	clickMe: function () {
+		
+	}
 };
+game.startButton.init();
 
 game.leaderboardButton = {
     image: document.getElementById("leaderboardButton"),
@@ -436,6 +469,10 @@ game.leaderboardButton = {
     height: 0,
     posX: 0,
     posY: 0,
+	init: function () {
+        // Add event listener to the button
+        this.image.addEventListener("click", game.leaderboardButton.clickMe);
+    },
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -454,8 +491,12 @@ game.leaderboardButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
-    }
+    },
+	clickMe: function () {
+		
+	}
 };
+game.leaderboardButton.init();
 
 game.quitButton = {
     image: document.getElementById("quitButton"),
@@ -465,6 +506,10 @@ game.quitButton = {
     height: 0,
     posX: 0,
     posY: 0,
+	init: function () {
+        // Add event listener to the button
+        this.image.addEventListener("click", game.quitButton.clickMe);
+    },
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -483,8 +528,12 @@ game.quitButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
-    }
+    },
+	clickMe: function() {
+		
+	}
 };
+game.quitButton.init();
 
 // - Play Scene
 //   - Images
@@ -786,12 +835,12 @@ game.planeCanvasBG = {
     animPosX: 0,
     animPosY: 0,
     resize: function () {
-        this.height = Math.max(engine.height * 0.5, (game.playSponsor.posY - 20) - (game.menuButton.posY + game.menuButton.height + 20));
+        this.height = Math.max(engine.height * 0.5, (game.playSponsor.posY - 20) - (game.playMenuButton.posY + game.playMenuButton.height + 20));
         this.width = Math.min(this.height, (engine.width - 20) - (game.playTimer.width + 20));
         this.height = this.width;
 
         this.posX = engine.width - this.width - 20;
-        this.posY = ((game.playSponsor.posY - 20) + (game.menuButton.posY + game.menuButton.height + 20)) / 2 - this.height / 2;
+        this.posY = ((game.playSponsor.posY - 20) + (game.playMenuButton.posY + game.playMenuButton.height + 20)) / 2 - this.height / 2;
 
         // Check for animation
         this.posX = Math.max(this.posX, this.posX + this.animPosX);
@@ -1351,7 +1400,7 @@ game.playScore = {
     updateScore: function () {
         this.score = Math.max(0, game.score);
         this.div.innerHTML = this.score;
-		game.player.score = this.score;
+        game.player.score = this.score;
     }
 };
 
@@ -1501,7 +1550,7 @@ game.playKeyPadSpace = {
 
 game.inputKeypad = {
     div: document.getElementById("inputKeypad"),
-	initials: document.getElementById("endPlayerInitials"),
+    initials: document.getElementById("endPlayerInitials"),
     org_width: 0,
     org_height: 0,
     width: 0,
@@ -1515,46 +1564,46 @@ game.inputKeypad = {
     btnHeight: 0,
     btnPerRow: 0,
     resize: function () {
-		switch (game.currState) {
-			case 'play':
-				this.width = game.playSponsor.posX - 40;
-				this.height = (game.playKeyPadSpace.org_height * (1 - engine.widthProportion) + this.btnMargin) * 2; // (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
+        switch (game.currState) {
+            case 'play':
+                this.width = game.playSponsor.posX - 40;
+                this.height = (game.playKeyPadSpace.org_height * (1 - engine.widthProportion) + this.btnMargin) * 2; // (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
 
-				// Attach Left Side with Buffer
-				this.posX = Math.max(10, (game.playSponsor.posX - this.width) / 2);
-				this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
+                // Attach Left Side with Buffer
+                this.posX = Math.max(10, (game.playSponsor.posX - this.width) / 2);
+                this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
 
-				this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
-				this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
+                this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
+                this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
 
-				for (var i = 0; i < this.keyArray.length; i++) {
-					var domElement = document.getElementById(this.keyArray[i]);
-					domElement.style.width = this.btnWidth + "px";
-					domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
-					domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
-				}
-				break;
-			case 'end':
-				this.width = (game.submitButton.posX - 40) - (game.endKeyboardBackground.posX + 10);
-				this.height = engine.height - game.endKeyboardBackground.posY - 15;
+                for (var i = 0; i < this.keyArray.length; i++) {
+                    var domElement = document.getElementById(this.keyArray[i]);
+                    domElement.style.width = this.btnWidth + "px";
+                    domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
+                    domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
+                }
+                break;
+            case 'end':
+                this.width = (game.endSubmitButton.posX - 40) - (game.endKeyboardBackground.posX + 10);
+                this.height = engine.height - game.endKeyboardBackground.posY - 15;
 
-				// Attach to Top-Left of Keyboard Background
-				this.posX = game.endKeyboardBackground.posX + 10;
-				this.posY = game.endKeyboardBackground.posY + 10;
+                // Attach to Top-Left of Keyboard Background
+                this.posX = game.endKeyboardBackground.posX + 10;
+                this.posY = game.endKeyboardBackground.posY + 10;
 
-				this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
-				this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
+                this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
+                this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
 
-				for (var i = 0; i < this.keyArray.length; i++) {
-					var domElement = document.getElementById(this.keyArray[i]);
-					domElement.style.width = this.btnWidth + "px";
-					domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
-					domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
-				}
-				break;
-			default:
-				break;
-		}
+                for (var i = 0; i < this.keyArray.length; i++) {
+                    var domElement = document.getElementById(this.keyArray[i]);
+                    domElement.style.width = this.btnWidth + "px";
+                    domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
+                    domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
+                }
+                break;
+            default:
+                break;
+        }
     },
     adjustStyle: function () {
         if (this.keyArray.length == 0) this.buildKeypad();
@@ -1584,16 +1633,14 @@ game.inputKeypad = {
             letter = String.fromCharCode(65 + i);
 
             // Open outer div
-			switch (game.currState) {
-				case 'play':
-					console.log('W: ' + this.div.width + " | " + (this.div.width/13) + " | " + this.width);
-					buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.width / 13) + 'px">';
-					break;
-				case 'end':
-					console.log('W: ' + this.div.width + " | " + (game.inputKeypad.div.width/13) + " | " + this.width);
-					buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (game.inputKeypad.width / 13) + 'px">';
-					break;
-			}
+            switch (game.currState) {
+                case 'play':
+                    buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.width / 13) + 'px">';
+                    break;
+                case 'end':
+                    buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (game.inputKeypad.width / 13) + 'px">';
+                    break;
+            }
 
             // Inner Image
             buttonBuilder += btnPrefix + letter + '" class="keypad-image" src="images/key_blank.png">';
@@ -1632,26 +1679,26 @@ game.inputKeypad = {
                             // Reset timeout overlay timer
                             game.timeoutOverlay.refreshTimer();
 
-							switch (game.currState) {
-								case 'play':
-									if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
+                            switch (game.currState) {
+                                case 'play':
+                                    if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
 
-										// Set key letter to inactve
-										e.srcElement.parentNode.childNodes[1].classList.remove("keypad-center-letter");
-										e.srcElement.parentNode.childNodes[1].classList.add("keypad-center-letter-inactive");
+                                        // Set key letter to inactve
+                                        e.srcElement.parentNode.childNodes[1].classList.remove("keypad-center-letter");
+                                        e.srcElement.parentNode.childNodes[1].classList.add("keypad-center-letter-inactive");
 
-										// Set key image to inactive
-										e.srcElement.classList.remove("keypad-image");
-										e.srcElement.classList.add("keypad-image-inactive");
+                                        // Set key image to inactive
+                                        e.srcElement.classList.remove("keypad-image");
+                                        e.srcElement.classList.add("keypad-image-inactive");
 
-										// Test letter with chosen word
-										game.playLetterSpaces.testLetter(e.srcElement.name);
-									}
-									break;
-								case 'end':
-									game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[1].name);
-									break;
-							}
+                                        // Test letter with chosen word
+                                        game.playLetterSpaces.testLetter(e.srcElement.name);
+                                    }
+                                    break;
+                                case 'end':
+                                    game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[1].name);
+                                    break;
+                            }
                         });
                         continue;
                     }
@@ -1671,26 +1718,26 @@ game.inputKeypad = {
                             // Reset timeout overlay timer
                             game.timeoutOverlay.refreshTimer();
 
-							switch (game.currState) {
-								case 'play':
-									if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
+                            switch (game.currState) {
+                                case 'play':
+                                    if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
 
-										// Set key letter to inactve
-										e.srcElement.classList.remove("keypad-center-letter");
-										e.srcElement.classList.add("keypad-center-letter-inactive");
+                                        // Set key letter to inactve
+                                        e.srcElement.classList.remove("keypad-center-letter");
+                                        e.srcElement.classList.add("keypad-center-letter-inactive");
 
-										// Set key image to inactive
-										e.srcElement.parentNode.childNodes[0].classList.remove("keypad-image");
-										e.srcElement.parentNode.childNodes[0].classList.add("keypad-image-inactive");
+                                        // Set key image to inactive
+                                        e.srcElement.parentNode.childNodes[0].classList.remove("keypad-image");
+                                        e.srcElement.parentNode.childNodes[0].classList.add("keypad-image-inactive");
 
-										// Test letter with chosen word
-										game.playLetterSpaces.testLetter(e.srcElement.name);
-									}
-									break;
-								case 'end':
-									game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[0].name);
-									break;
-							}
+                                        // Test letter with chosen word
+                                        game.playLetterSpaces.testLetter(e.srcElement.name);
+                                    }
+                                    break;
+                                case 'end':
+                                    game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[0].name);
+                                    break;
+                            }
                         });
                         continue;
                     }
@@ -1756,7 +1803,7 @@ game.endGameOver = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         this.posX = engine.width / 2 - this.width / 2;
-        this.posY = game.endGamePoints.posY / 3 ;
+        this.posY = game.endGamePoints.posY / 3;
     },
     draw: function () {
         this.resize();
@@ -1765,7 +1812,7 @@ game.endGameOver = {
     }
 };
 
-game.endGamePoints = { 
+game.endGamePoints = {
     image: document.getElementById("endGamePoints"),
     org_width: 613 * game.scale,
     org_height: 342 * game.scale,
@@ -1908,7 +1955,7 @@ game.endPlayerInitials = {
     org_font_size: 48,
     font_size: 0,
     score: 0,
-	initials: "",
+    initials: "",
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1937,22 +1984,22 @@ game.endPlayerInitials = {
         this.div.style.zIndex = 4;
     },
     updateInitials: function (letter) {
-		if (this.initials.length < 2 && this.initials != "") {
-			this.initials += letter;
-		} else {
-			this.initials = letter;
-		}
-		this.div.innerHTML = this.initials;
-		game.player.initials = this.initials;
+        if (this.initials.length < 2 && this.initials != "") {
+            this.initials += letter;
+        } else {
+            this.initials = letter;
+        }
+        this.div.innerHTML = this.initials;
+        game.player.initials = this.initials;
     },
-	clearInitials: function () {
-		this.initials = "";
-		this.div.innerHTML = this.initials;
-	}
+    clearInitials: function () {
+        this.initials = "";
+        this.div.innerHTML = this.initials;
+    }
 };
 
 //   - Buttons
-game.menuButton = {
+game.endMenuButton = {
     image: document.getElementById("wordFlightMenuButton"),
     org_width: 275 * game.scale,
     org_height: 138 * game.scale,
@@ -1981,7 +2028,7 @@ game.menuButton = {
     }
 };
 
-game.submitButton = {
+game.endSubmitButton = {
     image: document.getElementById("submitButton"),
     org_width: 265 * game.scale,
     org_height: 107 * game.scale,
@@ -2137,6 +2184,7 @@ game.leaderboardSponsor = {
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
+
 game.LeadboardSponsorLogo = {
     image: function () {
         return document.getElementById(game.getSponsor());
@@ -2299,8 +2347,6 @@ game.top10players = {
     }
 };
 
-
-
 //   - Buttons
 game.leaderboardMenuButton = {
     image: document.getElementById("wordFlightMenuButton"),
@@ -2438,9 +2484,9 @@ game.gameController = {
             game.planeManager.resetElements();
             game.playTimerBox.resetTimer();
 
-			// Clear the initials on the End Scene
-			game.endPlayerInitials.clearInitials();
-			
+            // Clear the initials on the End Scene
+            game.endPlayerInitials.clearInitials();
+
             // Change to the End Scene state
             game.currState = game.gameState[2];
 
@@ -2495,7 +2541,7 @@ game.gameController = {
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
                 game.playTimerBox.resetTimer();
-				game.endPlayerInitials.clearInitials();
+                game.endPlayerInitials.clearInitials();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2515,7 +2561,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.inputKeypad.hideKeypad();
+                game.inputKeypad.hideKeypad();
                 game.currState = game.gameState[3];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2535,7 +2581,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.player.reset();
+                game.player.reset();
                 game.currState = game.gameState[0];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2644,9 +2690,9 @@ game.drawOnce = function () {
             this.endKeyboardBackground.draw();
             this.endGamePoints.draw();
             this.endInitials.draw();
-            
-			// this.endKeyboardKeys.draw();
-			
+
+            // this.endKeyboardKeys.draw();
+
             this.wordFlightTitleSmall.draw();
 
             this.endPlayerScore.draw();
@@ -2654,9 +2700,9 @@ game.drawOnce = function () {
 
             this.endGameOver.draw();
             // Display buttons
-            this.submitButton.adjustStyle();
-            this.menuButton.adjustStyle();
-			this.inputKeypad.adjustStyle();
+            this.endSubmitButton.adjustStyle();
+            this.endMenuButton.adjustStyle();
+            this.inputKeypad.adjustStyle();
             break;
         case 'leaderboard':
             // Draw images on the canvas
