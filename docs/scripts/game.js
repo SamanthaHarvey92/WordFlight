@@ -47,10 +47,16 @@ game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
+game.playTime = (3 * 60 + 30) * 1000; // (3:30)
+game.timeoutTime = 120;
 // - Player information
 game.player = {
-    score: 0,
-    initials: ""
+    score: 250,
+    initials: "CD",
+    reset: function () {
+        this.score = 0;
+        this.initials = "";
+    }
 };
 // - Browser size monitors
 game.oldWidth = 0;
@@ -66,12 +72,104 @@ game.oldHeight = 0;
 */
 
 // Game functions
+game.timeoutOverlay = {
+    div: document.getElementById("timeoutOverlay"),
+    divHeader: document.getElementById("timeoutHeader"),
+    divInstructions: document.getElementById("timeoutInstructions"),
+    divTimer: document.getElementById("timeoutTimer"),
+    initialTime: null,
+    finalTime: null,
+    currentTime: null,
+    initialTimerExpired: false,
+    finalTimerExpired: false,
+    init: function () {
+        // Hide the overlay
+        this.hideOverlay();
+
+        // Add event listener to the main overlay div element
+        this.div.addEventListener("click", function (e) {
+            game.timeoutOverlay.refreshTimer();
+        });
+
+        // Initialize all variables
+        this.resetTimer();
+    },
+    showOverlay: function () {
+        this.div.style.display = "block";
+        this.divHeader.style.display = "block";
+        this.divInstructions.style.display = "block";
+        this.divTimer.style.display = "block";
+    },
+    hideOverlay: function () {
+        this.div.style.display = "none";
+    },
+    update: function (dt) {
+        if (this.currentTime != null) {
+            // Update the current time
+            this.updateTime(dt);
+
+            // console.log("Initial: " + this.initialTimerExpired + " | Final: " + this.finalTimerExpired + " | Time: " + this.currentTime.toFixed(0));
+
+            // Update the active timer
+            if (!this.initialTimerExpired) {
+                this.initialTimer(dt);
+            } else if (!this.finalTimerExpired) {
+                this.finalTimer(dt);
+            }
+        } else if (this.initialTimerExpired && this.finalTimerExpired) {
+            // All timers expired - redirect
+            this.expireTimer();
+        }
+    },
+    initialTimer: function (dt) {
+        // Check whether the time is greater than the limit
+        if (this.currentTime >= this.initialTime) {
+            // Reset the timer to zero
+            this.currentTime = 0;
+            // Flag the initial timer as complete
+            this.initialTimerExpired = true;
+            // Display the overlay
+            this.showOverlay();
+        }
+    },
+    finalTimer: function (dt) {
+        // Update the time left
+        this.divTimer.innerHTML = ". . . " + Math.ceil(this.finalTime - this.currentTime) + " . . .";
+
+        // Check whether the time is greater than the limit
+        if (this.currentTime >= this.finalTime) {
+            // Set the timer to null, stopping execution
+            this.currentTime = null;
+            // Flag the final timer as complete
+            this.finalTimerExpired = true;
+        }
+    },
+    updateTime: function (dt) {
+        this.currentTime += dt;
+    },
+    refreshTimer: function () {
+        console.log("Refresh timer");
+        this.resetTimer();
+    },
+    resetTimer: function () {
+        this.hideOverlay();
+        this.initialTime = game.timeoutTime;
+        this.finalTime = game.timeoutTime / 10;
+        this.currentTime = 0;
+        this.initialTimerExpired = false;
+        this.finalTimerExpired = false;
+    },
+    expireTimer: function () {
+        window.location.replace("http://www.flywithbutchohare.com/");
+    }
+};
+game.timeoutOverlay.init();
 
 // Update words
 game.updateWords = {
     lastWord: function () {
         game.lastWord = game.word;
-		game.lastSponsor = game.sponsor;
+        game.lastSponsor = game.sponsor;
     },
     word: function () {
         game.word = game.nextWord;
@@ -83,19 +181,20 @@ game.updateWords = {
     update: function () {
         if (game.word == game.lastWord) {
             this.nextWord();
-			this.word();
-			this.nextWord();
+            this.word();
+            this.nextWord();
         } else {
-			this.lastWord();
-			this.word();
-			this.nextWord();
-		}
+            this.lastWord();
+            this.word();
+            this.nextWord();
+        }
     }
 }
 
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
     // AJAX query
+
     var ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function () {
@@ -108,11 +207,11 @@ game.databaseQuery = function () {
 
             // Remove all spaces from the word
             game.nextWord = game.nextWord.replace(/\s+/g, '');
-			
-			// DEBUG
-			// console.log("\n(dbq)LastWord: " + game.lastWord + " | LastSponsor: " + game.lastSponsor);
-			// console.log("(dbq)Word: " + game.word + " | Sponsor: " + game.sponsor);
-			// console.log("(dbq)NextWord: " + game.nextWord + " | NextSponsor: " + game.nextSponsor);
+
+            // DEBUG
+            // console.log("\n(dbq)LastWord: " + game.lastWord + " | LastSponsor: " + game.lastSponsor);
+            // console.log("(dbq)Word: " + game.word + " | Sponsor: " + game.sponsor);
+            // console.log("(dbq)NextWord: " + game.nextWord + " | NextSponsor: " + game.nextSponsor);
         }
 
     }
@@ -1116,6 +1215,12 @@ game.playTimerBox = {
     posY: 0,
     org_font_size: 74,
     font_size: 0,
+    timeStart: null,
+    timeEnd: null,
+    timeSeconds: null,
+    timerStarted: false,
+    timerExpired: false,
+    timerDisplay: '',
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1141,6 +1246,65 @@ game.playTimerBox = {
         this.div.style.height = this.height + "px";
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
+    },
+    update: function () {
+        // Handle timer events
+        if (!this.timerStarted) {
+            // Start the timer if it hasn't been started yet
+            this.startTimer();
+        } else {
+            // Update the time
+            this.updateTime();
+            // Display the timer
+            this.displayTimer();
+            // Expire the timer if less than 0 seconds remain
+            if ((this.timeSeconds) <= 0) {
+                this.expireTimer();
+            }
+        }
+    },
+    startTimer: function () {
+        // Flag timer as started
+        this.timerStarted = true;
+        // Set the start time
+        this.timeStart = Date.now();
+        // Set the end time
+        this.timeEnd = Date.now() + game.playTime;
+    },
+    displayTimer: function () {
+        // Display time in MM:SS format
+        if ((this.timeSeconds) >= 0) {
+            this.timerDisplay = "0" + Math.floor(this.timeSeconds / 60) + ":" + ((this.timeSeconds % 60) < 10 ? "0" : "") + (this.timeSeconds % 60);
+        } else {
+            this.timerDisplay = "00:00";
+        }
+        // Display the time
+        this.div.innerHTML = this.timerDisplay;
+
+        // Flash the timer when less than 10 seconds are left
+        if ((this.timeSeconds) <= 10) {
+            this.div.classList.remove("pulse");
+            this.div.classList.add("glow");
+        } else if (this.div.getAttribute("class") === 'glow') {
+            this.div.classList.remove("glow");
+        }
+    },
+    updateTime: function () {
+        // Set the countdown in seconds
+        this.timeSeconds = Math.round((this.timeEnd - Date.now()) / 1000);
+    },
+    resetTimer: function () {
+        // Reset all timer variables
+        this.timeStart = null;
+        this.timeEnd = null;
+        this.timeSeconds = null;
+        this.timerStarted = false;
+        this.timerExpired = false;
+        this.timerDisplay = '';
+    },
+    expireTimer: function () {
+        // Flag the timer as expired
+        this.timerExpired = true;
     }
 };
 
@@ -1189,6 +1353,7 @@ game.playScore = {
         this.div.innerHTML = this.score;
     }
 };
+
 
 game.playScoreBox = {
     div: document.getElementById("newScore"),
@@ -1431,6 +1596,9 @@ game.inputKeypad = {
                         imgElement[i].name = String.fromCharCode(65 + j);
                         imgElement[i].addEventListener("click", function (e) {
 
+                            // Reset timeout overlay timer
+                            game.timeoutOverlay.refreshTimer();
+
                             if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
 
                                 // Set key letter to inactve
@@ -1461,6 +1629,9 @@ game.inputKeypad = {
                     if (divElement[i].id == letter) {
                         divElement[i].name = String.fromCharCode(65 + j);
                         divElement[i].addEventListener("click", function (e) {
+
+                            // Reset timeout overlay timer
+                            game.timeoutOverlay.refreshTimer();
 
                             if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
 
@@ -1537,10 +1708,12 @@ game.endGameOver = {
     posX: 0,
     poxY: 0,
     resize: function () {
-        this.width = this.org_width * (1-engine.widthProportion);
-        this.height = this.org_height * (1-engine.widthProportion);
-        this.posX = 10 * (1 - engine.widthProportion);
-        this.poxY = 10 * (1 - engine.widthProportion);
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY / 3 ;
     },
     draw: function () {
         this.resize();
@@ -1549,7 +1722,7 @@ game.endGameOver = {
     }
 };
 
-game.endGamePoints = {
+game.endGamePoints = { 
     image: document.getElementById("endGamePoints"),
     org_width: 613 * game.scale,
     org_height: 342 * game.scale,
@@ -1561,7 +1734,7 @@ game.endGamePoints = {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
-        this.posY = game.endKeyboardBackground.posY / 2 - this.height / 2;
+        this.posY = (game.endKeyboardBackground.posY * .6) - this.height / 2;
     },
     draw: function () {
         this.resize();
@@ -1582,7 +1755,7 @@ game.endInitials = {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height + this.height / 2;
+        this.posY = game.endKeyboardBackground.posY - (game.endKeyboardBackground.posY - (game.endGamePoints.posY + game.endGamePoints.height));
     },
     draw: function () {
         this.resize();
@@ -1634,7 +1807,7 @@ game.endKeyboardKeys = {
 };
 
 game.endPlayerScore = {
-	div: document.getElementById("endPlayerScore"),
+    div: document.getElementById("endPlayerScore"),
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1652,8 +1825,8 @@ game.endPlayerScore = {
         this.height = this.org_height * (1 - engine.widthProportion);
 
         // Attach Left Side
-        this.posX = game.endGamePoints.posX + game.endGamePoints.width/2 - this.width/2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height/2 - this.height/2;
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
 
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
@@ -1674,13 +1847,13 @@ game.endPlayerScore = {
         this.div.style.zIndex = 4;
     },
     updateScore: function () {
-        this.score = Math.max(0, game.score);
+        this.score = Math.max(0, game.player.score);
         this.div.innerHTML = this.score;
     }
 };
 
 game.endPlayerInitials = {
-	div: document.getElementById("endPlayerInitials"),
+    div: document.getElementById("endPlayerInitials"),
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1720,10 +1893,100 @@ game.endPlayerInitials = {
         this.div.style.zIndex = 4;
     },
     updateInitials: function () {
-        
+
     }
 };
 
+game.endPlayerScore = {
+    div: document.getElementById("endPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
+        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.player.score);
+        this.div.innerHTML = this.score;
+    }
+};
+
+game.endPlayerInitials = {
+    div: document.getElementById("endPlayerInitials"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 48,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.endInitials.posX + (game.endInitials.width * .7);
+        this.posY = game.endInitials.posY + (game.endInitials.height * .15);
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateInitials();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateInitials: function () {
+
+    }
+};
 
 //   - Buttons
 game.menuButton = {
@@ -1938,6 +2201,54 @@ game.LeadboardSponsorLogo = {
     }
 };
 
+game.finalPlayerScore = {
+    div: document.getElementById("finalPlayerScore"),
+    org_width: 150 * game.scale,
+    org_height: 95 * game.scale,
+    width: 0,
+    height: 0,
+    org_posX: 325,
+    org_posY: 82,
+    posX: 0,
+    posY: 0,
+    org_font_size: 74,
+    font_size: 0,
+    score: 0,
+    resize: function () {
+
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+
+        // Attach Left Side
+        this.posX = game.leaderboardPlayerScore.posX + game.leaderboardPlayerScore.width / 2 - this.width / 2;
+        this.posY = game.leaderboardPlayerScore.posY + game.leaderboardPlayerScore.height / 2 - this.height / 2;
+
+        // Adjust font size
+        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    },
+    draw: function () {
+        this.updateScore();
+        this.adjustStyle();
+    },
+    adjustStyle: function () {
+        this.resize();
+        this.div.style.position = "absolute";
+        this.div.style.display = "block";
+        this.div.style.left = this.posX.toString() + "px";
+        this.div.style.top = this.posY.toString() + "px";
+        this.div.style.width = this.width + "px";
+        this.div.style.height = this.height + "px";
+        this.div.style.fontSize = this.font_size + "pt";
+        this.div.style.zIndex = 4;
+    },
+    updateScore: function () {
+        this.score = Math.max(0, game.player.score);
+        this.div.innerHTML = this.score;
+    }
+};
+
+//Leaderboard Table
+
 game.top10players = {
     div: document.getElementById("top10table"),
     org_width: 0,
@@ -1949,7 +2260,7 @@ game.top10players = {
     divArray: [],
     resize: function () {
         this.width = game.leaderboardClipboard.width * .80;
-        this.height = game.leaderboardClipboard.height * .80;
+        this.height = game.leaderboardClipboard.height * .75;
 
         // Attach Left Side with Buffer
         this.posX = game.leaderboardClipboard.posX + (game.leaderboardClipboard.width - this.width) / 2;
@@ -1975,8 +2286,10 @@ game.top10players = {
         var divPrefix = '<div id="containerDiv_';
         var tablePrefix = '<table>';
         var rowPrefix = '<tr>';
-        var dataPrefix = '<td>';
+        var dataPrefix = '<td';
         var tableBuilder = '';
+        var placeHolder = '';
+        var scoreHolder = '';
 
         //AJAX query
         var ajax = new XMLHttpRequest();
@@ -1990,11 +2303,23 @@ game.top10players = {
                 for (var i = 0; i < leaders.length; i++) {
                     place = i + 1;
 
+                    placeHolder = leaders[i].user.toString();
+                    scoreHolder = leaders[i].score.toString();
+
                     //open div
                     tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (this.width) + 'px">';
 
                     //build table row
-                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";										
+
+
+                    tableBuilder += tablePrefix + rowPrefix + dataPrefix + place + "</td>" + dataPrefix + leaders[i].user + "</td>" + dataPrefix + leaders[i].score + "</td></tr>";
+
+                    if (game.player.initials.toString() == placeHolder && game.player.score.toString() == scoreHolder) {
+                        tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
+                    } else {
+                        tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
+                    }
+
                 }
                 //close table
                 tableBuilder += "</table>"
@@ -2011,51 +2336,6 @@ game.top10players = {
     }
 };
 
-game.finalPlayerScore = {
-	div: document.getElementById("finalPlayerScore"),
-    org_width: 150 * game.scale,
-    org_height: 95 * game.scale,
-    width: 0,
-    height: 0,
-    org_posX: 325,
-    org_posY: 82,
-    posX: 0,
-    posY: 0,
-    org_font_size: 74,
-    font_size: 0,
-    score: 0,
-    resize: function () {
-
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-
-        // Attach Left Side
-        this.posX = game.leaderboardPlayerScore.posX + game.leaderboardPlayerScore.width/2 - this.width/2;
-        this.posY = game.leaderboardPlayerScore.posY + game.leaderboardPlayerScore.height/2 - this.height/2;
-
-        // Adjust font size
-        this.font_size = this.org_font_size * (1 - engine.widthProportion);
-    },
-    draw: function () {
-        this.updateScore();
-        this.adjustStyle();
-    },
-    adjustStyle: function () {
-        this.resize();
-        this.div.style.position = "absolute";
-        this.div.style.display = "block";
-        this.div.style.left = this.posX.toString() + "px";
-        this.div.style.top = this.posY.toString() + "px";
-        this.div.style.width = this.width + "px";
-        this.div.style.height = this.height + "px";
-        this.div.style.fontSize = this.font_size + "pt";
-        this.div.style.zIndex = 4;
-    },
-    updateScore: function () {
-        this.score = Math.max(0, game.score);
-        this.div.innerHTML = this.score;
-    }
-};
 
 
 //   - Buttons
@@ -2114,6 +2394,10 @@ game.leaderboardRetryButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
+    },
+    retry: function () {
+        game.currState = game.gameState[1];
+        game.player.reset();
     }
 };
 
@@ -2156,15 +2440,16 @@ game.gameController = {
     gsStart: function (dt) {
         // Start Scene
 
-		// Initialize word/sponsor pairs from database
+        // Initialize word/sponsor pairs from database
         if (game.word === "") {
             game.updateWords.update();
         }
-		
+
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-                game.databaseQuery();
+                game.score = 0;
+                game.player.reset();
                 game.getSponsor();
                 game.currState = game.gameState[1];
                 game.hideElements.hideAll();
@@ -2174,49 +2459,76 @@ game.gameController = {
     },
     gsPlay: function (dt) {
         // Play Scene
-		
-		// Check whether a word is complete
+
+        // Run the timer
+        if (!game.playTimerBox.timerExpired) {
+            game.playTimerBox.update();
+        } else {
+            // Update the player object's score
+            game.player.score = game.score;
+
+            // Reset Play Scene objects
+            game.updateWords.update();
+            game.inputKeypad.hideKeypad();
+            game.playLetterSpaces.hideKeypad();
+            game.readyForNextWord = false;
+            game.planeManager.resetElements();
+            game.playTimerBox.resetTimer();
+
+            // Change to the End Scene state
+            game.currState = game.gameState[2];
+
+            // Wipe the canvas
+            game.hideElements.hideAll();
+
+            // Draw new objects
+            game.drawOnce();
+        }
+
+
+        // Check whether a word is complete
         if (game.readyForNextWord) {
 
             if (game.planeManager.animate(dt)) {
-				
-				// Query new word and sponsor
-				game.updateWords.update();
-				
-				// Hide all elements - prepare for redraw
-				game.hideElements.hideAll();
-				
-				// Reset keypad
-				game.inputKeypad.hideKeypad();
-				game.inputKeypad.adjustStyle();
-				
-				// Reset letter spaces
-				game.playLetterSpaces.hideKeypad();
-				game.playLetterSpaces.adjustStyle();
-				
-				// Reset plane
-				game.planeManager.resetElements();
-				
-				// Prepare for the next word
+
+                // Query new word and sponsor
+                game.updateWords.update();
+
+                // Hide all elements - prepare for redraw
+                game.hideElements.hideAll();
+
+                // Reset keypad
+                game.inputKeypad.hideKeypad();
+                game.inputKeypad.adjustStyle();
+
+                // Reset letter spaces
+                game.playLetterSpaces.hideKeypad();
+                game.playLetterSpaces.adjustStyle();
+
+                // Reset plane
+                game.planeManager.resetElements();
+
+                // Prepare for the next word
                 game.readyForNextWord = false;
-                
+
                 game.drawOnce();
             }
         }
-		
-		// Animate score box
-		if(game.playScoreBox.animActive) {
-			game.playScoreBox.animate(dt);
-		}
+
+        // Animate score box
+        if (game.playScoreBox.animActive) {
+            game.playScoreBox.animate(dt);
+        }
 
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				game.updateWords.update();				  
+                game.updateWords.update();
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
+                game.playTimerBox.resetTimer();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2260,13 +2572,6 @@ game.gameController = {
                 game.drawOnce();
             }
         }
-
-        // Handle mouse clicks
-        for (var i = 0; i < game.mouse.length; i++) {
-            if (engine.input.pressed(game.mouse[i])) {
-                // alert("Event: " + game.mouse[i].toString());
-            }
-        }
     }
 };
 
@@ -2296,6 +2601,16 @@ game.update = function (dt) {
         this.drawOnce();
         this.oldWidth = engine.width;
         this.oldHeight = engine.height;
+    }
+
+    // Maintain Game Timeout
+    game.timeoutOverlay.update(dt);
+
+    // Handle mouse clicks
+    for (var i = 0; i < game.mouse.length; i++) {
+        if (engine.input.pressed(game.mouse[i])) {
+            game.timeoutOverlay.refreshTimer();
+        }
     }
 };
 
@@ -2347,20 +2662,6 @@ game.drawOnce = function () {
             this.planeManager.initialize();
             this.planeManager.draw();
 
-            /*this.playPlaneLeftInnerEngine.draw();
-            this.playPlaneLeftOuterEngine.draw();
-            this.playPlaneRightInnerEngine.draw();
-            this.playPlaneRightOuterEngine.draw();
-
-            this.playPlaneLeftRearWing.draw();
-            this.playPlaneLeftWing.draw();
-            this.playPlaneRightRearWing.draw();
-            this.playPlaneRightWing.draw();
-
-            this.playPlaneNose.draw();
-            this.playPlaneFuselage.draw();
-            this.playPlaneTail.draw();
-            this.playPlaneDorsalFin.draw();*/
             // Display buttons
             this.playMenuButton.adjustStyle();
             this.playKeyPadSpace.adjustStyle();
@@ -2376,9 +2677,11 @@ game.drawOnce = function () {
             this.endInitials.draw();
             this.endKeyboardKeys.draw();
             this.wordFlightTitleSmall.draw();
-            this.endGameOver.draw();
+
             this.endPlayerScore.draw();
             this.endPlayerInitials.draw();
+
+            this.endGameOver.draw();
             // Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
@@ -2387,17 +2690,17 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
-            
+
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
-			      this.leaderboardPlane.draw();							 
+            this.leaderboardPlane.draw();
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
+            this.finalPlayerScore.draw();
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
-
             break;
         default:
             break;
