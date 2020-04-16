@@ -1351,9 +1351,9 @@ game.playScore = {
     updateScore: function () {
         this.score = Math.max(0, game.score);
         this.div.innerHTML = this.score;
+		game.player.score = this.score;
     }
 };
-
 
 game.playScoreBox = {
     div: document.getElementById("newScore"),
@@ -1501,6 +1501,7 @@ game.playKeyPadSpace = {
 
 game.inputKeypad = {
     div: document.getElementById("inputKeypad"),
+	initials: document.getElementById("endPlayerInitials"),
     org_width: 0,
     org_height: 0,
     width: 0,
@@ -1514,23 +1515,46 @@ game.inputKeypad = {
     btnHeight: 0,
     btnPerRow: 0,
     resize: function () {
-        this.width = game.playSponsor.posX - 40;
-        this.height = (game.playKeyPadSpace.org_height * (1 - engine.widthProportion) + this.btnMargin) * 2; // (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
+		switch (game.currState) {
+			case 'play':
+				this.width = game.playSponsor.posX - 40;
+				this.height = (game.playKeyPadSpace.org_height * (1 - engine.widthProportion) + this.btnMargin) * 2; // (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
 
-        // Attach Left Side with Buffer
-        this.posX = Math.max(10, (game.playSponsor.posX - this.width) / 2);
-        this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
+				// Attach Left Side with Buffer
+				this.posX = Math.max(10, (game.playSponsor.posX - this.width) / 2);
+				this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
 
-        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
-        this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
+				this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
+				this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
 
-        for (var i = 0; i < this.keyArray.length; i++) {
-            var domElement = document.getElementById(this.keyArray[i]);
-            domElement.style.width = this.btnWidth + "px";
-            domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
-            domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
-        }
+				for (var i = 0; i < this.keyArray.length; i++) {
+					var domElement = document.getElementById(this.keyArray[i]);
+					domElement.style.width = this.btnWidth + "px";
+					domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
+					domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
+				}
+				break;
+			case 'end':
+				this.width = (game.submitButton.posX - 40) - (game.endKeyboardBackground.posX + 10);
+				this.height = engine.height - game.endKeyboardBackground.posY - 15;
 
+				// Attach to Top-Left of Keyboard Background
+				this.posX = game.endKeyboardBackground.posX + 10;
+				this.posY = game.endKeyboardBackground.posY + 10;
+
+				this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
+				this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
+
+				for (var i = 0; i < this.keyArray.length; i++) {
+					var domElement = document.getElementById(this.keyArray[i]);
+					domElement.style.width = this.btnWidth + "px";
+					domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
+					domElement.childNodes[1].style.fontSize = this.btnWidth * 0.50 + "px";
+				}
+				break;
+			default:
+				break;
+		}
     },
     adjustStyle: function () {
         if (this.keyArray.length == 0) this.buildKeypad();
@@ -1560,7 +1584,16 @@ game.inputKeypad = {
             letter = String.fromCharCode(65 + i);
 
             // Open outer div
-            buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.div.width / 13) + 'px">';
+			switch (game.currState) {
+				case 'play':
+					console.log('W: ' + this.div.width + " | " + (this.div.width/13) + " | " + this.width);
+					buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.width / 13) + 'px">';
+					break;
+				case 'end':
+					console.log('W: ' + this.div.width + " | " + (game.inputKeypad.div.width/13) + " | " + this.width);
+					buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (game.inputKeypad.width / 13) + 'px">';
+					break;
+			}
 
             // Inner Image
             buttonBuilder += btnPrefix + letter + '" class="keypad-image" src="images/key_blank.png">';
@@ -1599,21 +1632,26 @@ game.inputKeypad = {
                             // Reset timeout overlay timer
                             game.timeoutOverlay.refreshTimer();
 
-                            if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
+							switch (game.currState) {
+								case 'play':
+									if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
 
-                                // Set key letter to inactve
-                                e.srcElement.parentNode.childNodes[1].classList.remove("keypad-center-letter");
-                                e.srcElement.parentNode.childNodes[1].classList.add("keypad-center-letter-inactive");
+										// Set key letter to inactve
+										e.srcElement.parentNode.childNodes[1].classList.remove("keypad-center-letter");
+										e.srcElement.parentNode.childNodes[1].classList.add("keypad-center-letter-inactive");
 
-                                // Set key image to inactive
-                                e.srcElement.classList.remove("keypad-image");
-                                e.srcElement.classList.add("keypad-image-inactive");
+										// Set key image to inactive
+										e.srcElement.classList.remove("keypad-image");
+										e.srcElement.classList.add("keypad-image-inactive");
 
-                                // Test letter with chosen word
-                                game.playLetterSpaces.testLetter(e.srcElement.name);
-                            } else {
-                                //console.log("Not enabled");
-                            }
+										// Test letter with chosen word
+										game.playLetterSpaces.testLetter(e.srcElement.name);
+									}
+									break;
+								case 'end':
+									game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[1].name);
+									break;
+							}
                         });
                         continue;
                     }
@@ -1633,21 +1671,26 @@ game.inputKeypad = {
                             // Reset timeout overlay timer
                             game.timeoutOverlay.refreshTimer();
 
-                            if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
+							switch (game.currState) {
+								case 'play':
+									if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
 
-                                // Set key letter to inactve
-                                e.srcElement.classList.remove("keypad-center-letter");
-                                e.srcElement.classList.add("keypad-center-letter-inactive");
+										// Set key letter to inactve
+										e.srcElement.classList.remove("keypad-center-letter");
+										e.srcElement.classList.add("keypad-center-letter-inactive");
 
-                                // Set key image to inactive
-                                e.srcElement.parentNode.childNodes[0].classList.remove("keypad-image");
-                                e.srcElement.parentNode.childNodes[0].classList.add("keypad-image-inactive");
+										// Set key image to inactive
+										e.srcElement.parentNode.childNodes[0].classList.remove("keypad-image");
+										e.srcElement.parentNode.childNodes[0].classList.add("keypad-image-inactive");
 
-                                // Test letter with chosen word
-                                game.playLetterSpaces.testLetter(e.srcElement.name);
-                            } else {
-                                //console.log("Not enabled");
-                            }
+										// Test letter with chosen word
+										game.playLetterSpaces.testLetter(e.srcElement.name);
+									}
+									break;
+								case 'end':
+									game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[0].name);
+									break;
+							}
                         });
                         continue;
                     }
@@ -1865,6 +1908,7 @@ game.endPlayerInitials = {
     org_font_size: 48,
     font_size: 0,
     score: 0,
+	initials: "",
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1878,7 +1922,7 @@ game.endPlayerInitials = {
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
     draw: function () {
-        this.updateInitials();
+        // this.updateInitials();
         this.adjustStyle();
     },
     adjustStyle: function () {
@@ -1892,100 +1936,19 @@ game.endPlayerInitials = {
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
-    updateInitials: function () {
-
-    }
-};
-
-game.endPlayerScore = {
-    div: document.getElementById("endPlayerScore"),
-    org_width: 150 * game.scale,
-    org_height: 95 * game.scale,
-    width: 0,
-    height: 0,
-    org_posX: 325,
-    org_posY: 82,
-    posX: 0,
-    posY: 0,
-    org_font_size: 74,
-    font_size: 0,
-    score: 0,
-    resize: function () {
-
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-
-        // Attach Left Side
-        this.posX = game.endGamePoints.posX + game.endGamePoints.width / 2 - this.width / 2;
-        this.posY = game.endGamePoints.posY + game.endGamePoints.height / 2 - this.height / 2;
-
-        // Adjust font size
-        this.font_size = this.org_font_size * (1 - engine.widthProportion);
+    updateInitials: function (letter) {
+		if (this.initials.length < 2 && this.initials != "") {
+			this.initials += letter;
+		} else {
+			this.initials = letter;
+		}
+		this.div.innerHTML = this.initials;
+		game.player.initials = this.initials;
     },
-    draw: function () {
-        this.updateScore();
-        this.adjustStyle();
-    },
-    adjustStyle: function () {
-        this.resize();
-        this.div.style.position = "absolute";
-        this.div.style.display = "block";
-        this.div.style.left = this.posX.toString() + "px";
-        this.div.style.top = this.posY.toString() + "px";
-        this.div.style.width = this.width + "px";
-        this.div.style.height = this.height + "px";
-        this.div.style.fontSize = this.font_size + "pt";
-        this.div.style.zIndex = 4;
-    },
-    updateScore: function () {
-        this.score = Math.max(0, game.player.score);
-        this.div.innerHTML = this.score;
-    }
-};
-
-game.endPlayerInitials = {
-    div: document.getElementById("endPlayerInitials"),
-    org_width: 150 * game.scale,
-    org_height: 95 * game.scale,
-    width: 0,
-    height: 0,
-    org_posX: 325,
-    org_posY: 82,
-    posX: 0,
-    posY: 0,
-    org_font_size: 48,
-    font_size: 0,
-    score: 0,
-    resize: function () {
-
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-
-        // Attach Left Side
-        this.posX = game.endInitials.posX + (game.endInitials.width * .7);
-        this.posY = game.endInitials.posY + (game.endInitials.height * .15);
-
-        // Adjust font size
-        this.font_size = this.org_font_size * (1 - engine.widthProportion);
-    },
-    draw: function () {
-        this.updateInitials();
-        this.adjustStyle();
-    },
-    adjustStyle: function () {
-        this.resize();
-        this.div.style.position = "absolute";
-        this.div.style.display = "block";
-        this.div.style.left = this.posX.toString() + "px";
-        this.div.style.top = this.posY.toString() + "px";
-        this.div.style.width = this.width + "px";
-        this.div.style.height = this.height + "px";
-        this.div.style.fontSize = this.font_size + "pt";
-        this.div.style.zIndex = 4;
-    },
-    updateInitials: function () {
-
-    }
+	clearInitials: function () {
+		this.initials = "";
+		this.div.innerHTML = this.initials;
+	}
 };
 
 //   - Buttons
@@ -2475,6 +2438,9 @@ game.gameController = {
             game.planeManager.resetElements();
             game.playTimerBox.resetTimer();
 
+			// Clear the initials on the End Scene
+			game.endPlayerInitials.clearInitials();
+			
             // Change to the End Scene state
             game.currState = game.gameState[2];
 
@@ -2529,6 +2495,7 @@ game.gameController = {
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
                 game.playTimerBox.resetTimer();
+				game.endPlayerInitials.clearInitials();
                 game.currState = game.gameState[2];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2548,6 +2515,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				game.inputKeypad.hideKeypad();
                 game.currState = game.gameState[3];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2567,6 +2535,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				game.player.reset();
                 game.currState = game.gameState[0];
                 game.hideElements.hideAll();
                 game.drawOnce();
@@ -2675,7 +2644,9 @@ game.drawOnce = function () {
             this.endKeyboardBackground.draw();
             this.endGamePoints.draw();
             this.endInitials.draw();
-            this.endKeyboardKeys.draw();
+            
+			// this.endKeyboardKeys.draw();
+			
             this.wordFlightTitleSmall.draw();
 
             this.endPlayerScore.draw();
@@ -2685,6 +2656,7 @@ game.drawOnce = function () {
             // Display buttons
             this.submitButton.adjustStyle();
             this.menuButton.adjustStyle();
+			this.inputKeypad.adjustStyle();
             break;
         case 'leaderboard':
             // Draw images on the canvas
