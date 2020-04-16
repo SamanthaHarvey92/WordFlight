@@ -416,6 +416,7 @@ game.menuButton = {
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
                 game.playTimerBox.resetTimer();
+				game.timeoutOverlay.refreshTimer();
 				game.currState = game.gameState[0];
 				game.drawOnce();
 				break;
@@ -1567,14 +1568,13 @@ game.inputKeypad = {
         switch (game.currState) {
             case 'play':
                 this.width = game.playSponsor.posX - 40;
-                this.height = (game.playKeyPadSpace.org_height * (1 - engine.widthProportion) + this.btnMargin) * 2; // (engine.height - (game.playLetterSpace.posY + game.playLetterSpace.height)) - 40;
+                this.height = (game.playKeyPadSpace.org_height * (1 - engine.widthProportion) + this.btnMargin) * 2;
 
                 // Attach Left Side with Buffer
                 this.posX = Math.max(10, (game.playSponsor.posX - this.width) / 2);
                 this.posY = Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
 
-                this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
-                this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
+                this.btnWidth = this.width / 13;
 
                 for (var i = 0; i < this.keyArray.length; i++) {
                     var domElement = document.getElementById(this.keyArray[i]);
@@ -1584,15 +1584,14 @@ game.inputKeypad = {
                 }
                 break;
             case 'end':
-                this.width = (game.endSubmitButton.posX - 40) - (game.endKeyboardBackground.posX + 10);
+                this.width = game.endKeyboardBackground.width - 40 - game.endSubmitButton.width;
                 this.height = engine.height - game.endKeyboardBackground.posY - 15;
 
                 // Attach to Top-Left of Keyboard Background
                 this.posX = game.endKeyboardBackground.posX + 10;
                 this.posY = game.endKeyboardBackground.posY + 10;
 
-                this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (this.btnPerRow) - 2;
-                this.btnHeight = game.playKeyPadSpace.org_height * (1 - Math.abs(game.playKeyPadSpace.org_width - this.btnWidth) / game.playKeyPadSpace.org_width) - 2;
+                this.btnWidth = this.width / 13;
 
                 for (var i = 0; i < this.keyArray.length; i++) {
                     var domElement = document.getElementById(this.keyArray[i]);
@@ -1638,7 +1637,7 @@ game.inputKeypad = {
                     buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.width / 13) + 'px">';
                     break;
                 case 'end':
-                    buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (game.inputKeypad.width / 13) + 'px">';
+                    buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.width / 13) + 'px">';
                     break;
             }
 
