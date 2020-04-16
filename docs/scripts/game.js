@@ -71,6 +71,51 @@ game.oldHeight = 0;
 	   -- Reset score
 */
 
+// Google Analytics
+/*		*** WARNING *** WARNING *** WARNING ***
+*** DO NOT UNCOMMENT THE GTAG() FUNCTIONS BEFORE DEPLOYMENT ***/
+game.google = {
+	load: function () {
+		// gtag('event', 'screen_view', {'screen_name': 'Menu'});
+		
+		// DEBUG ONLY:
+		console.log("<GoogleAnalytics:load>");
+	},
+	start: function () {
+		// gtag('event', 'screen_view', {'screen_name': 'Start'});
+		
+		// DEBUG ONLY:
+		console.log("<GoogleAnalytics:start>");
+	},
+	finish: function () {
+		// gtag('event', 'screen_view', {'screen_name': 'Finish'});
+		
+		// DEBUG ONLY:
+		console.log("<GoogleAnalytics:finish>");
+	},
+	quit: function () {
+		// gtag('event', 'screen_view', {'screen_name': 'Quit'});
+		
+		// DEBUG ONLY:
+		console.log("<GoogleAnalytics:quit>");
+	},
+	timeOut: function () {
+		// gtag('event', 'screen_view', {'screen_name': 'TimeOut'});
+		
+		// DEBUG ONLY:
+		console.log("<GoogleAnalytics:timeOut>");
+	},
+	leaderboard: function () {
+		// gtag('event', 'screen_view', {'screen_name': 'Leaderboard'});
+		
+		// DEBUG ONLY:
+		console.log("<GoogleAnalytics:leaderboard>");
+	}
+};/*
+*** DO NOT UNCOMMENT THE GTAG() FUNCTIONS BEFORE DEPLOYMENT ***
+		*** WARNING *** WARNING *** WARNING ***
+*/
+
 // Game functions
 game.timeoutOverlay = {
     div: document.getElementById("timeoutOverlay"),
@@ -157,6 +202,7 @@ game.timeoutOverlay = {
         this.finalTimerExpired = false;
     },
     expireTimer: function () {
+		game.google.timeOut();
         window.location.replace("http://www.flywithbutchohare.com/");
     }
 };
@@ -405,6 +451,7 @@ game.menuButton = {
 	clickMe: function() {
 		switch(game.currState) {
 			case 'start':
+				game.google.quit();
 				window.location.replace("http://www.flywithbutchohare.com/");
 				break;
 			default:
@@ -435,7 +482,7 @@ game.startButton = {
     posY: 0,
 	init: function () {
         // Add event listener to the button
-        this.image.addEventListener("click", game.menuButton.clickMe);
+        this.image.addEventListener("click", game.startButton.clickMe);
     },
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -457,7 +504,7 @@ game.startButton = {
         this.image.style.zIndex = 1;
     },
 	clickMe: function () {
-		
+		game.google.start();
 	}
 };
 game.startButton.init();
@@ -494,7 +541,7 @@ game.leaderboardButton = {
         this.image.style.zIndex = 1;
     },
 	clickMe: function () {
-		
+		game.google.leaderboard();
 	}
 };
 game.leaderboardButton.init();
@@ -531,7 +578,7 @@ game.quitButton = {
         this.image.style.zIndex = 1;
     },
 	clickMe: function() {
-		
+		game.google.quit();
 	}
 };
 game.quitButton.init();
@@ -2035,6 +2082,10 @@ game.endSubmitButton = {
     height: 0,
     posX: 0,
     posY: 0,
+	init: function () {
+        // Add event listener to the button
+        this.image.addEventListener("click", game.endSubmitButton.clickMe);
+    },
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -2053,8 +2104,12 @@ game.endSubmitButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
-    }
+    },
+	clickMe: function () {
+		game.google.finish();
+	}
 };
+game.endSubmitButton.init();
 
 // - Leaderboard Scene
 //   - Images
@@ -2384,6 +2439,10 @@ game.leaderboardRetryButton = {
     height: 0,
     posX: 0,
     posY: 0,
+	init: function () {
+        // Add event listener to the button
+        this.image.addEventListener("click", game.leaderboardRetryButton.retry);
+    },
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -2404,10 +2463,12 @@ game.leaderboardRetryButton = {
         this.image.style.zIndex = 1;
     },
     retry: function () {
+		game.google.start();
         game.currState = game.gameState[1];
         game.player.reset();
     }
 };
+game.leaderboardRetryButton.init();
 
 /* Game States and transitions
  ** -- Start Scene
