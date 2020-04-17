@@ -2106,8 +2106,6 @@ game.endSubmitButton = {
         this.image.style.zIndex = 1;
     },
 	clickMe: function () {
-        console.log("User: " + game.player.initials);
-        console.log("Score: " + game.player.score);
         //AJAX
         var ajax = new XMLHttpRequest();
         ajax.open("GET", "scripts/insert_score.php?u="+game.player.initials+"&s="+game.player.score, true);
@@ -2128,8 +2126,8 @@ game.endSubmitButton.init();
 //   - Images
 game.leaderboardBackground = {
     image: document.getElementById("leaderboardBackground"),
-    org_width: 1923,
-    org_height: 1093,
+    org_width: 1923 * game.scale,
+    org_height: 1093 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
@@ -2147,15 +2145,15 @@ game.leaderboardBackground = {
 
 game.leaderboardPlane = {
     image: document.getElementById("leaderboardPlane"),
-    org_width: 1096,
-    org_heigth: 456,
+    org_width: 1096 * game.scale,
+    org_height: 456 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
     resize: function () {
-        this.width = 876 * (1 - engine.widthProportion);
-        this.height = 364 * (1 - engine.widthProportion);
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width - (2300 * (1 - engine.widthProportion));
         this.posY = engine.height - (550 * (1 - engine.heightProportion));
     },
