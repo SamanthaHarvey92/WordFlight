@@ -486,8 +486,8 @@ game.startButton = {
         this.image.addEventListener("click", game.startButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * (2 - engine.widthProportion);
+        this.height = this.org_height * (2 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = engine.height / 3 - this.height / 2;
     },
