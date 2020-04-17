@@ -488,7 +488,7 @@ game.startButton = {
     resize: function () {
         this.width = this.org_width * (1.5 - engine.widthProportion);
         this.height = this.org_height * (1.2 - engine.widthProportion);
-        this.posX = engine.width / 1.8 - this.width / 2;
+        this.posX = engine.width / 1.95 - this.width / 2;
         this.posY = engine.height / 3 - this.height / 2;
     },
     draw: function () {
