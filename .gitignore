@@ -1,4 +1,2 @@
+*.php
 *.ini
-docs/scripts/leaderboard.php
-docs/scripts/word_generator.php
-docs/scripts/db_connection.php
