@@ -2106,6 +2106,19 @@ game.endSubmitButton = {
         this.image.style.zIndex = 1;
     },
 	clickMe: function () {
+        console.log("User: " + game.player.initials);
+        console.log("Score: " + game.player.score);
+        //AJAX
+        var ajax = new XMLHttpRequest();
+        ajax.open("GET", "scripts/insert_score.php?u="+game.player.initials+"&s="+game.player.score, true);
+        ajax.send();
+
+        ajax.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+
 		game.google.finish();
 	}
 };
