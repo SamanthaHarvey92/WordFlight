@@ -2,15 +2,20 @@
 include 'db_connection.php';
 
 $conn= $pdo;
+$user = $_GET['u'];
+$score = $_GET['s'];
+
 
 $sql = "INSERT INTO leaderboard (user, score) VALUES (:user,:score)";
 
 $stmt= $conn->prepare($sql);
 
-$stmt->bindParam(' :user', $_GET['u'], PD::PARAM_STR);
-$stmt->bindParam(' :score', $_GET['s'], PDO::PARAM_STR)
+$stmt->bindParam(':user', $user, PDO::PARAM_STR);
+$stmt->bindParam(':score', $score, PDO::PARAM_INT);
 
-$stmt->exectue();
+$stmt->execute();
+
+echo "Input Recieved";
 
 $conn = null;
 ?>
