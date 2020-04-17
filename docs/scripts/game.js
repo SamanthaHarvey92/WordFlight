@@ -36,77 +36,78 @@ for (var i = 0; i < game.mouse.length; i++) {
 
 // Declare Game Variables
 // - Globals
-game.scale = 1.0;
-game.planeScale = 1.0;
-game.lastWord = "";
-game.word = "";
-game.nextWord = "";
-game.lastSponsor = "";
-game.sponsor = "";
-game.nextSponsor = "";
-game.sponsorId = "";
-game.score = 0;
-game.readyForNextWord = false;
-game.playTime = 20000; // (3 * 60 + 30) * 1000; // (3:30)
-game.timeoutTime = 120;
-// - Player information
+game.scale = 1.0;						// Scale for adjusting object sizes
+game.planeScale = 1.0;					// Scale to adjust plane part sizes
+game.lastWord = "";						// Previously used word
+game.word = "";							// Current word
+game.nextWord = "";						// Next word
+game.lastSponsor = "";					// Previously used sponsor
+game.sponsor = "";						// Current sponsor
+game.nextSponsor = "";					// Next sponsor
+game.sponsorId = "";					// Current sponsor's ID
+game.score = 0;							// Current score
+game.readyForNextWord = false;			// Test to identify when to update the word list
+game.playTime = (3 * 60 + 30) * 1000; 	// Play time (3:30)
+game.timeoutTime = 120;					// Timeout time before returning to landing page
+
+// - Player object information (persists through scenes)
 game.player = {
     score: 250,
     initials: "CD",
+	// Reset player object variables
     reset: function () {
         this.score = 0;
         this.initials = "";
+		// Reset global score
 		game.score = 0;
     }
 };
+
 // - Browser size monitors
 game.oldWidth = 0;
 game.oldHeight = 0;
-
-/*score
- - Play scene
-     - Game over: update game.player.score
-   - End scene
-       - Update game.player.initials
-     - Leaderboard scene
-	   -- Reset score
-*/
 
 // Google Analytics
 /*		*** WARNING *** WARNING *** WARNING ***
  *** DO NOT UNCOMMENT THE GTAG() FUNCTIONS BEFORE DEPLOYMENT ***/
 game.google = {
     load: function () {
+		// Inform Google of Start Scene landing
         // gtag('event', 'screen_view', {'screen_name': 'Menu'});
 
         // DEBUG ONLY:
         console.log("<GoogleAnalytics:load>");
     },
     start: function () {
+		// Inform Google of Play Scene landing
         // gtag('event', 'screen_view', {'screen_name': 'Start'});
 
         // DEBUG ONLY:
         console.log("<GoogleAnalytics:start>");
     },
     finish: function () {
+		// Inform Google when player submits their initials (complete play through)
         // gtag('event', 'screen_view', {'screen_name': 'Finish'});
 
         // DEBUG ONLY:
         console.log("<GoogleAnalytics:finish>");
     },
     quit: function () {
+		// Inform Google of a player quitting the game
         // gtag('event', 'screen_view', {'screen_name': 'Quit'});
 
         // DEBUG ONLY:
         console.log("<GoogleAnalytics:quit>");
     },
     timeOut: function () {
+		// Inform Google of a game timeout (inactivity)
         // gtag('event', 'screen_view', {'screen_name': 'TimeOut'});
 
         // DEBUG ONLY:
         console.log("<GoogleAnalytics:timeOut>");
     },
     leaderboard: function () {
+		// Inform Google of players going straight to the leaderboard (from Start Scene)
         // gtag('event', 'screen_view', {'screen_name': 'Leaderboard'});
 
         // DEBUG ONLY:
@@ -119,16 +120,24 @@ game.google = {
  */
 
 // Game functions
+// Display an interactive overlay after a period of inactivity
+// - Return to landing page upon a lack of interaction
 game.timeoutOverlay = {
+	// Handle to overlay
     div: document.getElementById("timeoutOverlay"),
+	// Handle to header message
     divHeader: document.getElementById("timeoutHeader"),
+	// Handle to instructions message
     divInstructions: document.getElementById("timeoutInstructions"),
+	// Handle to timer
     divTimer: document.getElementById("timeoutTimer"),
+	// Declare variables
     initialTime: null,
     finalTime: null,
     currentTime: null,
     initialTimerExpired: false,
     finalTimerExpired: false,
+	// Initialize overlay
     init: function () {
         // Hide the overlay
         this.hideOverlay();
@@ -141,21 +150,24 @@ game.timeoutOverlay = {
         // Initialize all variables
         this.resetTimer();
     },
+	// Show the overlay and its children
     showOverlay: function () {
         this.div.style.display = "block";
         this.divHeader.style.display = "block";
         this.divInstructions.style.display = "block";
         this.divTimer.style.display = "block";
     },
+	// Hide the overlay and its children
     hideOverlay: function () {
         this.div.style.display = "none";
     },
+	// Update the overlay and its timers
     update: function (dt) {
         if (this.currentTime != null) {
             // Update the current time
             this.updateTime(dt);
 
-            // Update the active timer
+            // Update the active timer (primary/secondary)
             if (!this.initialTimerExpired) {
                 this.initialTimer(dt);
             } else if (!this.finalTimerExpired) {
@@ -166,6 +178,7 @@ game.timeoutOverlay = {
             this.expireTimer();
         }
     },
+	// Initialize the primary timer and start its countdown
     initialTimer: function (dt) {
         // Check whether the time is greater than the limit
         if (this.currentTime >= this.initialTime) {
@@ -177,6 +190,7 @@ game.timeoutOverlay = {
             this.showOverlay();
         }
     },
+	// Display the secondary timer
     finalTimer: function (dt) {
         // Update the time left
         this.divTimer.innerHTML = ". . . " + Math.ceil(this.finalTime - this.currentTime) + " . . .";
@@ -189,46 +203,61 @@ game.timeoutOverlay = {
             this.finalTimerExpired = true;
         }
     },
+	// Update the time counter
     updateTime: function (dt) {
         this.currentTime += dt;
     },
+	// Refresh the timer upon user interaction
     refreshTimer: function () {
         this.resetTimer();
     },
+	// Reset the timer
     resetTimer: function () {
+		// Hide the overlay
         this.hideOverlay();
+		// Reinitialize all variables
         this.initialTime = game.timeoutTime;
         this.finalTime = game.timeoutTime / 10;
         this.currentTime = 0;
         this.initialTimerExpired = false;
         this.finalTimerExpired = false;
     },
+	// Timeout expired
     expireTimer: function () {
+		// Notify Google a timeout was reached
         game.google.timeOut();
+		// Redirect to the OHare landing page
         window.location.replace("http://www.flywithbutchohare.com/");
     }
 };
-game.timeoutOverlay.init();
+game.timeoutOverlay.init(); // Force initialization of the timer during script load
 
 // Update words
+// - Maintain a short record of words for the user, preventing latency interference
 game.updateWords = {
+	// Store the current word as the last word
     lastWord: function () {
         game.lastWord = game.word;
         game.lastSponsor = game.sponsor;
     },
+	// Get a new word from the next word
     word: function () {
         game.word = game.nextWord;
         game.sponsor = game.nextSponsor;
     },
+	// Query the database for a new word/sponsor pair
     nextWord: function () {
         game.databaseQuery();
     },
+	// Update the list of words
     update: function () {
         if (game.word == game.lastWord) {
+			// Set initial words
             this.nextWord();
             this.word();
             this.nextWord();
         } else {
+			// Get new word, set current word, and update last word
             this.lastWord();
             this.word();
             this.nextWord();
@@ -240,25 +269,25 @@ game.updateWords = {
 game.databaseQuery = function () {
     // AJAX query
     var ajax = new XMLHttpRequest();
-
+	// Await AJAX completion (State: 4)
     ajax.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+			// Parse the JSON package from PHP
             var selection = JSON.parse(this.responseText);
+			// Read through the JSON results
             for (var a = 0; a < selection.length; a++) {
+				// Set and format the next word
                 game.nextWord = selection[a].word.toUpperCase();
+				// Set and format the next sponsor
                 game.nextSponsor = selection[a].sponsor_name.toUpperCase();
             }
 
             // Remove all spaces from the word
             game.nextWord = game.nextWord.replace(/\s+/g, '');
-
-            // DEBUG
-            // console.log("\n(dbq)LastWord: " + game.lastWord + " | LastSponsor: " + game.lastSponsor);
-            // console.log("(dbq)Word: " + game.word + " | Sponsor: " + game.sponsor);
-            // console.log("(dbq)NextWord: " + game.nextWord + " | NextSponsor: " + game.nextSponsor);
         }
 
     }
+	// Send a request to PHP for a new word
     ajax.open("GET", "scripts/word_generator.php", true);
     ajax.send();
 }
@@ -327,105 +356,122 @@ game.getSponsor = function () {
             this.sponsorId = "__INVALID__";
             break;
     }
+	// Return the sponsor ID
     return this.sponsorId;
 }
 
-// Image hooks
+// Image hooks (Shorthand Object Notation)
 // - Start Scene
 //   - Images
 game.wordFlightTitle = {
+	// Get handle to image
     image: document.getElementById("wordFlightTitle"),
+	// Declare object transform information
     org_width: 826 * game.scale,
     org_height: 200 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = 20;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.startHangar = {
+	// Get handle to image
     image: document.getElementById("startHangar"),
+	// Declare object transform information
     org_width: 1920 * game.scale,
     org_heigth: 1080 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = engine.width;
         this.height = engine.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.startRunway = {
+	// Get handle to image
     image: document.getElementById("startRunway"),
+	// Declare object transform information
     org_width: 1920 * game.scale,
     org_height: 1080 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = engine.width;
         this.height = engine.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.startScene = {
+	// Get handle to image
     image: document.getElementById("startScene"),
+	// Declare object transform information
     org_width: 1920 * game.scale,
     org_height: 1080 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = engine.height / 4 - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 //   - Buttons
 game.menuButton = {
+	// Get handle to image
     image: document.getElementById("wordFlightMenuButton"),
+	// Declare object transform information
     org_width: 275 * game.scale,
     org_height: 138 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Initialize the object
     init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.menuButton.clickMe);
     },
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.dimensionProportion);
         this.height = this.org_height * (1 - engine.dimensionProportion);
@@ -434,9 +480,11 @@ game.menuButton = {
         this.posX = engine.width - this.width;
         this.posY = 50 * (1 - engine.dimensionProportion);
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -447,51 +495,73 @@ game.menuButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
+	// Handle user interaction based on game state
     clickMe: function () {
+		// Determine the current game state
         switch (game.currState) {
             case 'start':
+				// Inform Google the user quit the game
                 game.google.quit();
+				// Redirect the user to the O'Hare landing page
                 window.location.replace("http://www.flywithbutchohare.com/");
                 break;
             default:
+				// All but the Start Scene returns to the Start Scene
+				// Hide all elements
                 game.hideElements.hideAll();
+				// Reset the player object
                 game.player.reset();
+				// Update the words list
                 game.updateWords.update();
+				// Hide the keypad
                 game.inputKeypad.hideKeypad();
+				// Hide the letter display spaces
                 game.playLetterSpaces.hideKeypad();
+				// Set the flag for a new word to false
                 game.readyForNextWord = false;
+				// Reset the plane manager
                 game.planeManager.resetElements();
+				// Reset the game's timer
                 game.playTimerBox.resetTimer();
+				// Refresh the timeout timer
                 game.timeoutOverlay.refreshTimer();
+				// Set the new game state to the Start Scene
                 game.currState = game.gameState[0];
+				// Redraw all objects
                 game.drawOnce();
                 break;
         }
     }
 }
-game.menuButton.init();
+game.menuButton.init(); // Force object initialization on first script load
 
 game.startButton = {
+	// Get handle to image
     image: document.getElementById("startButton"),
+	// Declare object transform information
     org_width: 450 * game.scale,
     org_height: 120 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Initialize the object
     init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.startButton.clickMe);
     },
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1.4 - engine.widthProportion);
         this.height = this.org_height * (1.2 - engine.widthProportion);
         this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 3 - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -502,33 +572,41 @@ game.startButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
+	// Handle user interaction based on game state
     clickMe: function () {
+		// Inform Google the user started playing a game
         game.google.start();
     }
 };
-game.startButton.init();
+game.startButton.init(); // Force object initialization on first script load
 
 game.leaderboardButton = {
+	// Get handle to image
     image: document.getElementById("leaderboardButton"),
+	// Declare object transform information
     org_width: 450 * game.scale,
     org_height: 120 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Initialize the object
     init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.leaderboardButton.clickMe);
     },
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1.4 - engine.widthProportion);
         this.height = this.org_height * (1.2 - engine.widthProportion);
         this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 2 - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -539,33 +617,40 @@ game.leaderboardButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
+	// Handle user interaction based on game state
     clickMe: function () {
         game.google.leaderboard();
     }
 };
-game.leaderboardButton.init();
+game.leaderboardButton.init(); // Force object initialization on first script load
 
 game.quitButton = {
+	// Get handle to image
     image: document.getElementById("quitButton"),
+	// Declare object transform information
     org_width: 450 * game.scale,
     org_height: 120 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Initialize the object
     init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.quitButton.clickMe);
     },
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1.4 - engine.widthProportion);
         this.height = this.org_height * (1.2 - engine.widthProportion);
         this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 1.5 - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -576,35 +661,42 @@ game.quitButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
+	// Handle user interaction based on game state
     clickMe: function () {
+		// Inform Google the user has quit the game
         game.google.quit();
     }
 };
-game.quitButton.init();
+game.quitButton.init(); // Force object initialization on first script load
 
 // - Play Scene
 //   - Images
 game.playBackground = {
+	// Get handle to image
     image: document.getElementById("playBackground"),
-    org_width: 1923,
-    org_height: 1093,
+	// Declare object transform information
+    org_width: 1920,
+    org_height: 1080,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = engine.width;
         this.height = engine.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playTitle = {
+	// Get handle to image
     image: document.getElementById("wordFlightTitleSmall"),
+	// Declare object transform information
     org_width: 488 * game.scale,
     org_height: 110 * game.scale,
     width: 0,
@@ -613,19 +705,22 @@ game.playTitle = {
     org_posY: 10,
     posX: 10,
     posY: 10,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playSponsor = {
+	// Get handle to image
     image: document.getElementById("wordFlightSponsor"),
+	// Declare object transform information
     org_width: 290 * game.scale,
     org_height: 295 * game.scale,
     width: 0,
@@ -634,6 +729,7 @@ game.playSponsor = {
     org_posY: 785,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -642,17 +738,19 @@ game.playSponsor = {
         this.posX = engine.width - this.width - (50 * (1 - engine.widthProportion));
         this.posY = engine.height - this.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playSponsorLogo = {
+	// Get handle to image
     image: function () {
         return document.getElementById(game.getSponsor());
     },
+	// Declare object transform information
     org_width: 200 * game.scale,
     org_height: 200 * game.scale,
     width: 0,
@@ -661,6 +759,7 @@ game.playSponsorLogo = {
     org_posY: 785,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = game.playSponsor.width * 0.95;
         this.height = this.width;
@@ -669,15 +768,17 @@ game.playSponsorLogo = {
         this.posX = game.playSponsor.posX + (game.playSponsor.width - this.width) / 2;
         this.posY = game.playSponsor.posY + game.playSponsor.height / 2 - this.height / 3;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image(), this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playTimer = {
+	// Get handle to image
     image: document.getElementById("playTimer"),
+	// Declare object transform information
     org_width: 814 * game.scale,
     org_height: 218 * game.scale,
     width: 0,
@@ -686,6 +787,7 @@ game.playTimer = {
     org_posY: 342,
     posX: 0,
     posY: 0,
+	// Declare object transform information
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -694,15 +796,17 @@ game.playTimer = {
         this.posX = this.org_posX;
         this.posY = Math.max(game.playTitle.height + game.playTitle.posY + 10, engine.height / 2 - this.height);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playLetterSpace = {
+	// Get handle to image
     image: document.getElementById("playLetterSpace"),
+	// Declare object transform information
     org_width: 110 * game.scale,
     org_height: 142 * game.scale,
     width: 0,
@@ -711,6 +815,7 @@ game.playLetterSpace = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -719,15 +824,16 @@ game.playLetterSpace = {
         this.posX = Math.max(20, Math.min(5, this.org_posX - engine.widthDifference));
         this.posY = Math.max(game.playTimer.height + game.playTimer.posY + 20, engine.height - engine.height / 4 - this.height * 1.2);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
-        //engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playLetterSpaces = {
+	// Get handle to div
     div: document.getElementById("letterSpaces"),
+	// Declare object transform information
     org_width: 0,
     org_height: 0,
     width: 0,
@@ -736,21 +842,28 @@ game.playLetterSpaces = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Declare arrays to hold div and key objects
     divArray: [],
     keyArray: [],
+	// Declare member variables
     btnMargin: 5,
     btnWidth: 0,
     btnHeight: 0,
     btnPerRow: 0,
     lettersFound: 0,
+	// Dictionary to hold key:value pairs
     dict: {},
+	// Add item to dictionary
     add: function (dict, key, value) {
         if (!this.dict[key]) {
+			// Add the first pair to the dictionary
             this.dict[key] = [value];
         } else {
+			// Add next pair to the dictionary
             this.dict[key].push(value);
         }
     },
+	// Adjust the object's transform
     resize: function () {
         this.width = game.playSponsor.posX - 20;
         this.height = game.playLetterSpace.org_height * (1 - engine.widthProportion); // + this.btnMargin;
@@ -763,6 +876,7 @@ game.playLetterSpaces = {
         this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (12) - 2;
         this.btnHeight = this.height; //game.playLetterSpace.height;
 
+		// Adjust styles of every child element
         for (var i = 0; i < this.keyArray.length; i++) {
             var domElement = document.getElementById(this.keyArray[i]);
             domElement.style.width = this.btnWidth + "px";
@@ -771,6 +885,7 @@ game.playLetterSpaces = {
         }
 
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         if (this.keyArray.length == 0) this.buildKeypad();
         this.resize();
@@ -782,24 +897,31 @@ game.playLetterSpaces = {
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
     },
+	// Hide keypad and reset its member variables
     hideKeypad: function () {
         this.divArray = [];
         this.keyArray = [];
         this.lettersFound = 0;
         this.dict = {};
     },
+	// Dynamically construct every keypad feature
     buildKeypad: function () {
         var letter = "";
-
+		
+		// Define variables starting DOM definitions
         var divPrefix = '<div id="inputContainerDiv_';
         var btnPrefix = '<img id="inputLetterButton_';
         var innerDivPrefix = '<div id="inputLetterDiv_';
+		
+		// Build a string to hold all the buttons
         var buttonBuilder = '';
-
+		
+		// Find the number of buttons per row
         this.btnPerRow = game.word.length;
-
+		
+		// Create all buttons
         for (var i = 0; i < this.btnPerRow; i++) {
-
+			// Identify the letter for this button
             letter = game.word.substr(i, 1).toUpperCase();
 
             // Open outer div
@@ -819,23 +941,30 @@ game.playLetterSpaces = {
 
             // Close outer div
             buttonBuilder += "</div>";
-
+			
+			// Add this button to the array and dictionary
             this.keyArray.push("inputContainerDiv_" + i);
             this.add(this.dict, "inputContainerDiv_" + i, letter);
             this.divArray.push(this.dict);
         }
-
+		// Add all the buttons to the primary container
         this.div.innerHTML = buttonBuilder;
     },
+	// Display all the buttons in the array
     showLetters: function () {
         for (var i = 0; i < this.keyArray.length; i++) {
             var domElement = document.getElementById(this.keyArray[i]).childNodes[1];
             domElement.style.display = "block";
         }
     },
+	// Check if the letter matches the current word
     testLetter: function (input) {
+		// Declare score variable
         var increaseBy = 0;
+		
+		// Check all the buttons in the array
         for (var i = 0; i < this.keyArray.length; i++) {
+			// Check if the input matches a letter in the current word
             if (input == this.dict[this.keyArray[i]]) {
 
                 // Increment the number of letters found
@@ -857,6 +986,8 @@ game.playLetterSpaces = {
                     game.playScoreBox.updateScore("Letter", increaseBy);
                 }
                 game.score += increaseBy;
+				
+				// Update the score
                 game.playScore.updateScore();
             }
         }
@@ -870,7 +1001,9 @@ game.playLetterSpaces = {
 
 //   - Plane Parts
 game.planeCanvasBG = {
+	// Get handle to image
     image: document.getElementById("letterButton_"),
+	// Declare object transform information
     org_width: 110 * game.scale,
     org_height: 142 * game.scale,
     width: 0,
@@ -879,8 +1012,10 @@ game.planeCanvasBG = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Animation transform
     animPosX: 0,
     animPosY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.height = Math.max(engine.height * 0.5, (game.playSponsor.posY - 20) - (game.playMenuButton.posY + game.playMenuButton.height + 20));
         this.width = Math.min(this.height, (engine.width - 20) - (game.playTimer.width + 20));
@@ -893,15 +1028,16 @@ game.planeCanvasBG = {
         this.posX = Math.max(this.posX, this.posX + this.animPosX);
         this.posY = Math.max(this.posY, this.posY + this.animPosY);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
-        // engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneDorsalFin = {
+	// Get handle to image
     image: document.getElementById("playPlaneDorsalFin"),
+	// Declare object transform information
     org_width: 186 * game.scale * game.planeScale,
     org_height: 30 * game.scale * game.planeScale,
     description: "Dorsal Fin",
@@ -911,6 +1047,7 @@ game.playPlaneDorsalFin = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -919,15 +1056,17 @@ game.playPlaneDorsalFin = {
         this.posX = game.playPlaneTail.posX - this.width / 4;
         this.posY = (game.playPlaneTail.posY + game.playPlaneTail.height / 2) - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneLeftInnerEngine = {
+	// Get handle to image
     image: document.getElementById("playPlaneEngine"),
+	// Declare object transform information
     org_width: 80 * game.scale * game.planeScale,
     org_height: 50 * game.scale * game.planeScale,
     description: "Left Inner Engine",
@@ -937,6 +1076,7 @@ game.playPlaneLeftInnerEngine = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -945,15 +1085,17 @@ game.playPlaneLeftInnerEngine = {
         this.posX = game.playPlaneLeftWing.posX + (game.playPlaneLeftWing.width / 1.5) - this.width / 2;
         this.posY = (game.playPlaneLeftWing.posY + game.playPlaneLeftWing.height * 0.625) - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneLeftOuterEngine = {
+	// Get handle to image
     image: document.getElementById("playPlaneEngine"),
+	// Declare object transform information
     org_width: 80 * game.scale * game.planeScale,
     org_height: 50 * game.scale * game.planeScale,
     description: "Left Outer Engine",
@@ -963,6 +1105,7 @@ game.playPlaneLeftOuterEngine = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -971,15 +1114,17 @@ game.playPlaneLeftOuterEngine = {
         this.posX = game.playPlaneLeftWing.posX + (game.playPlaneLeftWing.width / 2) - this.width / 3;
         this.posY = (game.playPlaneLeftWing.posY + game.playPlaneLeftWing.height * 0.45) - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneRightInnerEngine = {
+	// Get handle to image
     image: document.getElementById("playPlaneEngine"),
+	// Declare object transform information
     org_width: 80 * game.scale * game.planeScale,
     org_height: 50 * game.scale * game.planeScale,
     description: "Right Inner Engine",
@@ -989,6 +1134,7 @@ game.playPlaneRightInnerEngine = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -997,15 +1143,17 @@ game.playPlaneRightInnerEngine = {
         this.posX = game.playPlaneRightWing.posX + (game.playPlaneRightWing.width / 1.5) - this.width / 2;
         this.posY = (game.playPlaneRightWing.posY + game.playPlaneRightWing.height * 0.375) - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneRightOuterEngine = {
+	// Get handle to image
     image: document.getElementById("playPlaneEngine"),
+	// Declare object transform information
     org_width: 80 * game.scale * game.planeScale,
     org_height: 50 * game.scale * game.planeScale,
     description: "Right Outer Engine",
@@ -1015,6 +1163,7 @@ game.playPlaneRightOuterEngine = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1023,15 +1172,17 @@ game.playPlaneRightOuterEngine = {
         this.posX = game.playPlaneRightWing.posX + (game.playPlaneRightWing.width / 2) - this.width / 3;
         this.posY = (game.playPlaneRightWing.posY + game.playPlaneRightWing.height * 0.55) - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneFuselage = {
+	// Get handle to image
     image: document.getElementById("playPlaneFuselage"),
+	// Declare object transform information
     org_width: 401 * game.scale * game.planeScale,
     org_height: 130 * game.scale * game.planeScale,
     description: "Fuselage",
@@ -1041,6 +1192,7 @@ game.playPlaneFuselage = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1048,15 +1200,17 @@ game.playPlaneFuselage = {
         this.posX = game.playPlaneNose.posX - this.width;
         this.posY = (game.playPlaneNose.posY);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneLeftRearWing = {
+	// Get handle to image
     image: document.getElementById("playPlaneLeftRearWing"),
+	// Declare object transform information
     org_width: 186 * game.scale * game.planeScale,
     org_height: 130 * game.scale * game.planeScale,
     description: "Left Rear Wing",
@@ -1066,6 +1220,7 @@ game.playPlaneLeftRearWing = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1074,15 +1229,17 @@ game.playPlaneLeftRearWing = {
         this.posX = game.playPlaneTail.posX - this.width / 4;
         this.posY = (game.playPlaneTail.posY + game.playPlaneTail.height / 2) - this.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneLeftWing = {
+	// Get handle to image
     image: document.getElementById("playPlaneLeftWing"),
+	// Declare object transform information
     org_width: 286 * game.scale * game.planeScale,
     org_height: 360 * game.scale * game.planeScale,
     description: "Left Wing",
@@ -1092,6 +1249,7 @@ game.playPlaneLeftWing = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1100,15 +1258,17 @@ game.playPlaneLeftWing = {
         this.posX = game.playPlaneFuselage.posX + (game.playPlaneFuselage.width * 0.2);
         this.posY = (game.playPlaneFuselage.posY + game.playPlaneFuselage.height / 2) - this.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneNose = {
+	// Get handle to image
     image: document.getElementById("playPlaneNose"),
+	// Declare object transform information
     org_width: 160 * game.scale * game.planeScale,
     org_height: 130 * game.scale * game.planeScale,
     description: "Nose",
@@ -1118,6 +1278,7 @@ game.playPlaneNose = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1126,15 +1287,17 @@ game.playPlaneNose = {
         this.posX = game.planeCanvasBG.posX + game.planeCanvasBG.width - 20 - this.width;
         this.posY = (game.planeCanvasBG.posY + game.planeCanvasBG.height) / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneRightRearWing = {
+	// Get handle to image
     image: document.getElementById("playPlaneRightRearWing"),
+	// Declare object transform information
     org_width: 186 * game.scale * game.planeScale,
     org_height: 130 * game.scale * game.planeScale,
     description: "Right Rear Wing",
@@ -1144,6 +1307,7 @@ game.playPlaneRightRearWing = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1152,15 +1316,17 @@ game.playPlaneRightRearWing = {
         this.posX = game.playPlaneTail.posX - this.width / 4;
         this.posY = (game.playPlaneTail.posY + game.playPlaneTail.height / 2);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneRightWing = {
+	// Get handle to image
     image: document.getElementById("playPlaneRightWing"),
+	// Declare object transform information
     org_width: 289 * game.scale * game.planeScale,
     org_height: 360 * game.scale * game.planeScale,
     description: "Right Wing",
@@ -1170,6 +1336,7 @@ game.playPlaneRightWing = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1178,15 +1345,17 @@ game.playPlaneRightWing = {
         this.posX = game.playPlaneFuselage.posX + (game.playPlaneFuselage.width * 0.2);
         this.posY = (game.playPlaneFuselage.posY + game.playPlaneFuselage.height / 2);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.playPlaneTail = {
+	// Get handle to image
     image: document.getElementById("playPlaneTail"),
+	// Declare object transform information
     org_width: 138 * game.scale * game.planeScale,
     org_height: 130 * game.scale * game.planeScale,
     description: "Tail",
@@ -1196,6 +1365,7 @@ game.playPlaneTail = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
@@ -1204,23 +1374,26 @@ game.playPlaneTail = {
         this.posX = game.playPlaneFuselage.posX - this.width;
         this.posY = (game.playPlaneFuselage.posY);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 //   - Plane Manager
 game.planeManager = {
+	// Declare member variables
     initialized: false,
     planeParts: [],
     partsDisplayed: 0,
     animVelocity: 0.0,
     animAcceleration: 0.01,
     animNewX: 0.0,
+	// Initialize the object
     initialize: function () {
         if (!this.initialized) {
+			// Push all plane parts to the array container
             this.planeParts.push(game.playPlaneLeftInnerEngine);
             this.planeParts.push(game.playPlaneLeftOuterEngine);
             this.planeParts.push(game.playPlaneRightInnerEngine);
@@ -1236,6 +1409,7 @@ game.planeManager = {
             this.initialized = true;
         }
     },
+	// Draw the object
     draw: function () {
 
         // Redraw background images
@@ -1270,13 +1444,17 @@ game.planeManager = {
         // Animate each plane part every frame
         game.planeCanvasBG.animPosX += this.animNewX;
 
+		// Draw all objects
         this.draw();
+		
+		// After the plane is out of site, notify the game of completion
         if (game.playPlaneTail.posX > engine.width + 100) {
             return true;
         } else {
             return false;
         }
     },
+	// Reset all elements
     resetElements: function () {
         // Reset plane manager
         this.initialized = false;
@@ -1291,16 +1469,17 @@ game.planeManager = {
         game.planeCanvasBG.animPosX = 0;
         game.planeCanvasBG.animPosY = 0;
 
-        // Reset all plane parts
+        // Reset position of all plane parts
         game.planeManager.planeParts.forEach(function (item, index) {
-
             item.posX = 0.0;
         })
     }
 };
 
 game.playTimerBox = {
+	// Get handle to div
     div: document.getElementById("timerBox"),
+	// Declare object transform information
     org_width: 200 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1309,6 +1488,7 @@ game.playTimerBox = {
     org_posY: 82,
     posX: 0,
     posY: 0,
+	// Declare member variables
     org_font_size: 74,
     font_size: 0,
     timeStart: null,
@@ -1317,6 +1497,7 @@ game.playTimerBox = {
     timerStarted: false,
     timerExpired: false,
     timerDisplay: '',
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1329,9 +1510,11 @@ game.playTimerBox = {
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.div.style.position = "absolute";
@@ -1405,7 +1588,9 @@ game.playTimerBox = {
 };
 
 game.playScore = {
+	// Get handle to div
     div: document.getElementById("scoreBox"),
+	// Declare object transform information
     org_width: 325 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1414,9 +1599,11 @@ game.playScore = {
     org_posY: 82,
     posX: 0,
     posY: 0,
+	// Declare member variables
     org_font_size: 74,
     font_size: 0,
     score: 0,
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1429,10 +1616,12 @@ game.playScore = {
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.updateScore();
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.div.style.position = "absolute";
@@ -1444,6 +1633,7 @@ game.playScore = {
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
+    // Update and display the game score
     updateScore: function () {
         this.score = Math.max(0, game.score);
         this.div.innerHTML = this.score;
@@ -1452,7 +1642,9 @@ game.playScore = {
 };
 
 game.playScoreBox = {
+	// Get handle to div
     div: document.getElementById("newScore"),
+	// Declare object transform information
     org_width: 325 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1463,8 +1655,10 @@ game.playScoreBox = {
     posY: 0,
     org_destX: 550,
     org_destY: 240,
+    // Declare member variables
     org_font_size: 74,
     font_size: 0,
+    // Animation transforms
     animSpeed: 0,
     animStartX: 0,
     animStartY: 0,
@@ -1472,6 +1666,7 @@ game.playScoreBox = {
     animEndY: 0,
     animActive: false,
 	animOpacity: 1.0,
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1491,9 +1686,11 @@ game.playScoreBox = {
         this.animEndY = game.playTimer.posY - this.org_destY * (1 - engine.widthProportion);
 
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.div.style.left = this.posX.toString() + "px";
         this.div.style.top = this.posY.toString() + "px";
@@ -1503,6 +1700,7 @@ game.playScoreBox = {
 		this.div.style.opacity = this.animOpacity;
         this.div.style.zIndex = 4;
     },
+    // Update and display the score
     updateScore: function (type, value) {
         var displayString = "";
         displayString += type + "<br>";
@@ -1515,12 +1713,14 @@ game.playScoreBox = {
         this.div.style.display = "block";
         this.animActive = true;
     },
+    // Reset and hide all elements
     resetElements: function () {
         this.resize();
         this.animSpeed = 0;
 		this.animOpacity = 1.0;
         this.div.style.display = "none";
     },
+    // Animate the popup
     animate: function (dt) {
         this.animSpeed += dt / (this.animEndX - this.animStartX);
         this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
@@ -1539,7 +1739,9 @@ game.playScoreBox = {
 
 //   - Buttons
 game.playMenuButton = {
+	// Get handle to image
     image: document.getElementById("wordFlightMenuButton"),
+	// Declare object transform information
     org_width: 275 * game.scale,
     org_height: 138 * game.scale,
     width: 0,
@@ -1548,6 +1750,7 @@ game.playMenuButton = {
     org_posY: 942,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1557,9 +1760,11 @@ game.playMenuButton = {
         this.posX = engine.width - this.width;
         this.posY = Math.max(5, Math.min(5, this.org_posY - engine.heightDifference));
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -1573,7 +1778,9 @@ game.playMenuButton = {
 };
 
 game.playKeyPadSpace = {
+	// Get handle to image
     image: document.getElementById("letterButton_"),
+	// Declare object transform information
     org_width: 94 * game.scale,
     org_height: 102 * game.scale,
     width: 0,
@@ -1582,6 +1789,7 @@ game.playKeyPadSpace = {
     org_posY: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion); //Math.min(, (this.org_width + 5) * 13);
@@ -1591,30 +1799,38 @@ game.playKeyPadSpace = {
         this.posX = Math.max(60, Math.min(60, this.org_posX - engine.widthDifference));
         this.posY = Math.max(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height * 2.2);
     },
+	// Draw the object
     draw: function () {
         this.resize();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
     }
 };
 
 game.inputKeypad = {
+	// Get handle to div
     div: document.getElementById("inputKeypad"),
-    initials: document.getElementById("endPlayerInitials"),
+    // Get handle to initials
+	initials: document.getElementById("endPlayerInitials"),
+	// Declare object transform information
     org_width: 0,
     org_height: 0,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+    // Declare member variables
     divArray: [],
     keyArray: [],
     btnMargin: 5,
     btnWidth: 0,
     btnHeight: 0,
     btnPerRow: 0,
+	// Adjust the object's transform
     resize: function () {
+        // Adjust based on game state
         switch (game.currState) {
             case 'play':
                 this.width = game.playSponsor.posX - 40;
@@ -1626,6 +1842,7 @@ game.inputKeypad = {
 
                 this.btnWidth = this.width / 13;
 
+                // Update CSS for all children
                 for (var i = 0; i < this.keyArray.length; i++) {
                     var domElement = document.getElementById(this.keyArray[i]);
                     domElement.style.width = this.btnWidth + "px";
@@ -1643,6 +1860,7 @@ game.inputKeypad = {
 
                 this.btnWidth = this.width / 13;
 
+                // Update CSS for all children
                 for (var i = 0; i < this.keyArray.length; i++) {
                     var domElement = document.getElementById(this.keyArray[i]);
                     domElement.style.width = this.btnWidth + "px";
@@ -1654,6 +1872,7 @@ game.inputKeypad = {
                 break;
         }
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         if (this.keyArray.length == 0) this.buildKeypad();
         this.resize();
@@ -1665,23 +1884,29 @@ game.inputKeypad = {
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
     },
+    // Hide keypad and clear arrays
     hideKeypad: function () {
         this.divArray = [];
         this.keyArray = [];
     },
+    // Build the keypad
     buildKeypad: function () {
         var letter = "";
 
+        // Define variables starting DOM definitions
         var divPrefix = '<div id="containerDiv_';
         var btnPrefix = '<img id="letterButton_';
         var innerDivPrefix = '<div id="letterDiv_';
+        
+        // Build a string to hold all the buttons
         var buttonBuilder = '';
 
+        // Create all buttons
         for (var i = 0; i < 26; i++) {
-
+            // Identify the letter for this button
             letter = String.fromCharCode(65 + i);
 
-            // Open outer div
+            // Open outer div based on game state
             switch (game.currState) {
                 case 'play':
                     buttonBuilder += divPrefix + letter + '" class="keypad-container" style="width:' + (this.width / 13) + 'px">';
@@ -1706,28 +1931,39 @@ game.inputKeypad = {
             // Close outer div
             buttonBuilder += "</div>";
 
+            // Insert a break after the 13th button
             if (i == 12) {
                 buttonBuilder += "<br>";
             }
 
+            // Add the button to the array
             this.keyArray.push("containerDiv_" + String.fromCharCode(65 + i));
         }
+        // Define the number of buttons per row
         this.btnPerRow = Math.ceil(this.keyArray.length / 2);
 
+        // Display the buttons in the container
         this.div.innerHTML = buttonBuilder;
 
+        // Apply user interaction to the inner elements of each button
+        // Get a list of all the images
         var imgElement = this.div.getElementsByTagName("img");
         for (var i = 0; i < imgElement.length; i++) {
+            // Check the element's name
             if (imgElement[i].id.substring(0, 13) == "letterButton_") {
                 for (var j = 0; j < 26; j++) {
+                    // Create an identity matching string
                     var letter = "letterButton_" + String.fromCharCode(65 + j);
                     if (imgElement[i].id == letter) {
+                        // Give the element a name for easy identification
                         imgElement[i].name = String.fromCharCode(65 + j);
+                        // Add a click event to the element
                         imgElement[i].addEventListener("click", function (e) {
 
                             // Reset timeout overlay timer
                             game.timeoutOverlay.refreshTimer();
 
+                            // Apply actions based on the game state
                             switch (game.currState) {
                                 case 'play':
                                     if (e.srcElement.parentNode.childNodes[1].getAttribute("class") === 'keypad-center-letter') {
@@ -1745,6 +1981,7 @@ game.inputKeypad = {
                                     }
                                     break;
                                 case 'end':
+                                    // Add letter to the player's initials
                                     game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[1].name);
                                     break;
                             }
@@ -1755,18 +1992,24 @@ game.inputKeypad = {
             }
         }
 
+        // Get a list of all the divs
         var divElement = this.div.getElementsByTagName("div");
         for (var i = 0; i < divElement.length; i++) {
+            // Check the element's name
             if (divElement[i].id.substring(0, 10) == "letterDiv_") {
                 for (var j = 0; j < 26; j++) {
+                    // Create an identity matching string
                     var letter = "letterDiv_" + String.fromCharCode(65 + j);
                     if (divElement[i].id == letter) {
+                        // Give the element a name for easy identification
                         divElement[i].name = String.fromCharCode(65 + j);
+                        // Add a click event to the element
                         divElement[i].addEventListener("click", function (e) {
 
                             // Reset timeout overlay timer
                             game.timeoutOverlay.refreshTimer();
 
+                            // Apply actions based on the game state
                             switch (game.currState) {
                                 case 'play':
                                     if (e.srcElement.getAttribute("class") === 'keypad-center-letter') {
@@ -1784,6 +2027,7 @@ game.inputKeypad = {
                                     }
                                     break;
                                 case 'end':
+                                    // Add letter to the player's initials
                                     game.endPlayerInitials.updateInitials(e.srcElement.parentNode.childNodes[0].name);
                                     break;
                             }
@@ -1799,53 +2043,62 @@ game.inputKeypad = {
 // - End Scene
 //   - Images
 game.wordFlightTitleSmall = {
+	// Get handle to image
     image: document.getElementById("wordFlightTitleSmall"),
+	// Declare object transform information
     org_width: 488 * game.scale,
     org_height: 118 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = 10 * (1 - engine.widthProportion);
         this.posY = 10 * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.endBackground = {
+	// Get handle to image
     image: document.getElementById("endBackground"),
+	// Declare object transform information
     org_width: 1920 * game.scale,
     org_height: 1080 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = engine.width;
         this.height = engine.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.endGameOver = {
+	// Get handle to image
     image: document.getElementById("endGameOver"),
+	// Declare object transform information
     org_width: 750 * game.scale,
     org_height: 205 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     poxY: 0,
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1854,99 +2107,113 @@ game.endGameOver = {
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = game.endGamePoints.posY / 3;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.endGamePoints = {
+	// Get handle to image
     image: document.getElementById("endGamePoints"),
+	// Declare object transform information
     org_width: 613 * game.scale,
     org_height: 342 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+    // Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = (game.endKeyboardBackground.posY * .6) - this.height / 2;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.endInitials = {
+	// Get handle to image
     image: document.getElementById("endInitials"),
+	// Declare object transform information
     org_width: 811 * game.scale,
     org_height: 103 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     poxY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = game.endKeyboardBackground.posY - (game.endKeyboardBackground.posY - (game.endGamePoints.posY + game.endGamePoints.height));
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.endKeyboardBackground = {
+	// Get handle to image
     image: document.getElementById("endKeyboardBackground"),
+	// Declare object transform information
     org_width: 1557 * game.scale,
     org_height: 283 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+    // Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = engine.height - this.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, poxY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.endKeyboardKeys = {
+	// Get handle to image
     image: document.getElementById("endKeyboardKeys"),
+	// Declare object transform information
     org_width: 1222 * game.scale,
     org_height: 221 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = game.endKeyboardBackground.posX + 10;
         this.posY = game.endKeyboardBackground.posY + 10;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.endPlayerScore = {
+	// Get handle to div
     div: document.getElementById("endPlayerScore"),
+	// Declare object transform information
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -1955,9 +2222,11 @@ game.endPlayerScore = {
     org_posY: 82,
     posX: 0,
     posY: 0,
+    // Declare member variables
     org_font_size: 74,
     font_size: 0,
     score: 0,
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1970,10 +2239,12 @@ game.endPlayerScore = {
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.updateScore();
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.div.style.position = "absolute";
@@ -1985,6 +2256,7 @@ game.endPlayerScore = {
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
+    // Update and display the player's score
     updateScore: function () {
         this.score = Math.max(0, game.player.score);
         this.div.innerHTML = this.score;
@@ -1992,7 +2264,9 @@ game.endPlayerScore = {
 };
 
 game.endPlayerInitials = {
+	// Get handle to div
     div: document.getElementById("endPlayerInitials"),
+	// Declare object transform information
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -2001,10 +2275,12 @@ game.endPlayerInitials = {
     org_posY: 82,
     posX: 0,
     posY: 0,
+    // Declare member variables
     org_font_size: 48,
     font_size: 0,
     score: 0,
     initials: "",
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -2017,10 +2293,11 @@ game.endPlayerInitials = {
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
-        // this.updateInitials();
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.div.style.position = "absolute";
@@ -2032,15 +2309,19 @@ game.endPlayerInitials = {
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
+    // Update and display the player's initials
     updateInitials: function (letter) {
+        // Add to or reset initials, limiting 2 letters
         if (this.initials.length < 2 && this.initials != "") {
             this.initials += letter;
         } else {
             this.initials = letter;
         }
+        // Display and set the player's initials
         this.div.innerHTML = this.initials;
         game.player.initials = this.initials;
     },
+    // Clear and hid the initials
     clearInitials: function () {
         this.initials = "";
         this.div.innerHTML = this.initials;
@@ -2049,22 +2330,27 @@ game.endPlayerInitials = {
 
 //   - Buttons
 game.endMenuButton = {
+	// Get handle to image
     image: document.getElementById("wordFlightMenuButton"),
+	// Declare object transform information
     org_width: 275 * game.scale,
     org_height: 138 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.dimensionProportion);
         this.height = this.org_height * (1 - engine.dimensionProportion);
         this.posX = engine.width - this.width; // this.org_posX - engine.widthDifference;
         this.posY = 50 * (1 - engine.dimensionProportion);
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -2078,26 +2364,32 @@ game.endMenuButton = {
 };
 
 game.endSubmitButton = {
+	// Get handle to image
     image: document.getElementById("submitButton"),
+	// Declare object transform information
     org_width: 265 * game.scale,
     org_height: 107 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Initialize the object
     init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.endSubmitButton.clickMe);
     },
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = game.endKeyboardBackground.posX + (game.endKeyboardBackground.width - this.width) - 10;
         this.posY = game.endKeyboardBackground.posY + (game.endKeyboardBackground.height - this.height) / 2;
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -2108,137 +2400,166 @@ game.endSubmitButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
+	// Handle user interaction based on game state
     clickMe: function () {
+		// DEBUG
         console.log("User: " + game.player.initials);
         console.log("Score: " + game.player.score);
+		
         //AJAX
         var ajax = new XMLHttpRequest();
+		// Send player's initials and score to the database
         ajax.open("GET", "scripts/insert_score.php?u=" + game.player.initials + "&s=" + game.player.score, true);
         ajax.send();
 
+		// Await response completion (State: 4)
         ajax.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
+				// DEBUG
                 console.log(this.responseText);
 				
+				// TRANSITION
+				// Hide keypad
 				game.inputKeypad.hideKeypad();
+				// Change game state to Leaderboard Scene
                 game.currState = game.gameState[3];
+				// Hide all elements
                 game.hideElements.hideAll();
+				// Redraw all elements
                 game.drawOnce();
+				
+				// Inform Google the player completed a playthrough
+				game.google.finish();
             }
         }
-
-        game.google.finish();
     }
 };
-game.endSubmitButton.init();
+game.endSubmitButton.init(); // Force initialize object on first script load
 
 // - Leaderboard Scene
 //   - Images
 game.leaderboardBackground = {
+	// Get handle to image
     image: document.getElementById("leaderboardBackground"),
+	// Declare object transform information
     org_width: 1923,
     org_height: 1093,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = engine.width;
         this.height = engine.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.leaderboardPlane = {
+	// Get handle to image
     image: document.getElementById("leaderboardPlane"),
+	// Declare object transform information
     org_width: 1096,
     org_heigth: 456,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = 876 * (1 - engine.widthProportion);
         this.height = 364 * (1 - engine.widthProportion);
         this.posX = engine.width - (2300 * (1 - engine.widthProportion));
         this.posY = engine.height - (550 * (1 - engine.heightProportion));
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.leaderboardTitle = {
+	// Get handle to image
     image: document.getElementById("wordFlightTitleSmall"),
+	// Declare object transform information
     org_width: 488 * game.scale,
     org_height: 118 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = 10 * (1 - engine.widthProportion);
         this.posY = 10 * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.leaderboardClipboard = {
+	// Get handle to image
     image: document.getElementById("leaderboardClipboard"),
+	// Declare object transform information
     org_width: 845 * game.scale,
     org_height: 1018 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * .90 * (1 - engine.widthProportion);
         this.height = this.org_height * .90 * (1 - engine.widthProportion);
         this.posX = engine.width - this.width - (375 * (1 - engine.widthProportion));
         this.posY = 25;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.leaderboardPlayerScore = {
+	// Get handle to image
     image: document.getElementById("leaderboardScore"),
+	// Declare object transform information
     org_width: 613 * game.scale,
     org_height: 342 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = 10 * (1 - engine.widthProportion);
         this.posY = 230 * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        //drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.leaderboardSponsor = {
+	// Get handle to image
     image: document.getElementById("wordFlightSponsor"),
+	// Declare object transform information
     org_width: 290 * game.scale,
     org_height: 295 * game.scale,
     width: 0,
@@ -2247,23 +2568,26 @@ game.leaderboardSponsor = {
     org_posY: 825,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.dimensionProportion);
         this.height = this.org_height * (1 - engine.dimensionProportion);
         this.posX = engine.width - this.width - (50 * (1 - engine.widthProportion));
         this.posY = engine.height - this.height;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.LeadboardSponsorLogo = {
+	// Get handle to image
     image: function () {
         return document.getElementById(game.getSponsor());
     },
+	// Declare object transform information
     org_width: 200 * game.scale,
     org_height: 200 * game.scale,
     width: 0,
@@ -2272,6 +2596,7 @@ game.LeadboardSponsorLogo = {
     org_posY: 785,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = game.leaderboardSponsor.width * (1 - engine.widthProportion);
         this.height = this.width;
@@ -2280,15 +2605,17 @@ game.LeadboardSponsorLogo = {
         this.posX = game.leaderboardSponsor.posX + (game.leaderboardSponsor.width - this.width) / 2;
         this.posY = game.leaderboardSponsor.posY + game.leaderboardSponsor.height / 2 - this.height / 3;
     },
+	// Draw the object
     draw: function () {
         this.resize();
-        // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image(), this.posX, this.posY, this.width, this.height);
     }
 };
 
 game.finalPlayerScore = {
+	// Get handle to div
     div: document.getElementById("finalPlayerScore"),
+	// Declare object transform information
     org_width: 150 * game.scale,
     org_height: 95 * game.scale,
     width: 0,
@@ -2297,9 +2624,11 @@ game.finalPlayerScore = {
     org_posY: 82,
     posX: 0,
     posY: 0,
+    // Declare member variables
     org_font_size: 74,
     font_size: 0,
     score: 0,
+	// Adjust the object's transform
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -2312,10 +2641,12 @@ game.finalPlayerScore = {
         // Adjust font size
         this.font_size = this.org_font_size * (1 - engine.widthProportion);
     },
+	// Draw the object
     draw: function () {
         this.updateScore();
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.div.style.position = "absolute";
@@ -2327,23 +2658,27 @@ game.finalPlayerScore = {
         this.div.style.fontSize = this.font_size + "pt";
         this.div.style.zIndex = 4;
     },
+    // Update and display the score
     updateScore: function () {
         this.score = Math.max(0, game.player.score);
         this.div.innerHTML = this.score;
     }
 };
 
-//Leaderboard Table
-
+// Leaderboard Table
 game.top10players = {
+	// Get handle to div
     div: document.getElementById("top10table"),
+	// Declare object transform information
     org_width: 0,
     org_height: 0,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+    // Array to hold displayable items
     divArray: [],
+	// Adjust the object's transform
     resize: function () {
         this.width = game.leaderboardClipboard.width * .80;
         this.height = game.leaderboardClipboard.height * .75;
@@ -2353,6 +2688,7 @@ game.top10players = {
         this.posY = game.leaderboardClipboard.posY + game.leaderboardClipboard.height / 2 - (this.height * .28);
 
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.buildTable();
         this.resize();
@@ -2364,9 +2700,11 @@ game.top10players = {
         this.div.style.height = this.height + "px";
         this.div.style.zIndex = 1;
     },
+    // Hide the table and clear the array
     hideTable: function () {
         this.divArray = [];
     },
+    // Build the table
     buildTable: function () {
         var place = "";
         var divPrefix = '<div id="containerDiv_';
@@ -2382,8 +2720,10 @@ game.top10players = {
         ajax.open("GET", "scripts/leaderboard.php", true);
         ajax.send();
 
+        // Perform actions when AJAX completes (State: 4)
         ajax.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
+                // Parse and store the JSON message from PHP
                 var leaders = JSON.parse(this.responseText);
 
                 for (var i = 0; i < leaders.length; i++) {
@@ -2415,31 +2755,34 @@ game.top10players = {
 
                 game.top10players.divArray.push("containerDiv_" + place);
                 game.top10players.div.innerHTML = tableBuilder;
-
             }
-
         }
     }
 };
 
 //   - Buttons
 game.leaderboardMenuButton = {
+	// Get handle to image
     image: document.getElementById("wordFlightMenuButton"),
+	// Declare object transform information
     org_width: 275 * game.scale,
     org_height: 138 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.dimensionProportion);
         this.height = this.org_height * (1 - engine.dimensionProportion);
         this.posX = engine.width - this.width; // this.org_posX - engine.widthDifference;
         this.posY = 50 * (1 - engine.dimensionProportion);
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -2453,26 +2796,32 @@ game.leaderboardMenuButton = {
 };
 
 game.leaderboardRetryButton = {
+	// Get handle to image
     image: document.getElementById("leaderboardRetryButton"),
+	// Declare object transform information
     org_width: 265 * game.scale,
     org_height: 107 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+	// Initialize the object
     init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.leaderboardRetryButton.retry);
     },
+	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
         this.posX = 100 * (1 - engine.widthProportion);
         this.posY = engine.height - this.height - (50 * (1 - engine.dimensionProportion));
     },
+	// Draw the object
     draw: function () {
         this.adjustStyle();
     },
+	// Apply changes via CSS
     adjustStyle: function () {
         this.resize();
         this.image.style.position = "absolute";
@@ -2483,15 +2832,21 @@ game.leaderboardRetryButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
+    // Actions when clicking this button
     retry: function () {
+        // Inform Google the player is starting a new game
         game.google.start();
+        // Set the game state to Play Scene
         game.currState = game.gameState[1];
+        // Reset the player object
         game.player.reset();
+        // Hide all elements
 		game.hideElements.hideAll();
+        // Redraw all elements
 		game.drawOnce();
     }
 };
-game.leaderboardRetryButton.init();
+game.leaderboardRetryButton.init(); // Force initialize object on first script load
 
 /* Game States and transitions
  ** -- Start Scene
@@ -2507,10 +2862,12 @@ game.currState = game.gameState[0];
 game.hideElements = {
     // Hide images
     images: function () {
+		// Hide all <img> elements
         var y = document.getElementsByTagName("img");
         for (var i = 0; i < y.length; i++) {
             y[i].style.display = "none";
         }
+		// Hide all <div> elements
         var z = document.getElementsByTagName("div");
         for (var i = 0; i < z.length; i++) {
             z[i].style.display = "none";
@@ -2540,11 +2897,17 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				// Set game score to zero
                 game.score = 0;
+				// Reset the player object
                 game.player.reset();
+				// Get the current sponsor
                 game.getSponsor();
+				// Set the new game state to Play Scene
                 game.currState = game.gameState[1];
+				// Hide all elements
                 game.hideElements.hideAll();
+				// Redraw all elements
                 game.drawOnce();
             }
         }
@@ -2556,6 +2919,7 @@ game.gameController = {
         if (!game.playTimerBox.timerExpired) {
             game.playTimerBox.update();
         } else {
+			// Once the timer expires...
             // Update the player object's score
             game.player.score = game.score;
 
@@ -2580,12 +2944,11 @@ game.gameController = {
             game.drawOnce();
         }
 
-
         // Check whether a word is complete
         if (game.readyForNextWord) {
-
+			// Check if the plane is animating
             if (game.planeManager.animate(dt)) {
-
+				// During animation, perform the following
                 // Query new word and sponsor
                 game.updateWords.update();
 
@@ -2606,6 +2969,7 @@ game.gameController = {
                 // Prepare for the next word
                 game.readyForNextWord = false;
 
+				// Redraw all assets
                 game.drawOnce();
             }
         }
@@ -2615,58 +2979,65 @@ game.gameController = {
             game.playScoreBox.animate(dt);
         }
 
+		// DEBUG
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				// Update words list
                 game.updateWords.update();
+				// Hide keypad
                 game.inputKeypad.hideKeypad();
+				// Hide letter spaces
                 game.playLetterSpaces.hideKeypad();
+				// Clear flag for next word
                 game.readyForNextWord = false;
+				// Reset all elements in the plane manager
                 game.planeManager.resetElements();
+				// Reset the play timer
                 game.playTimerBox.resetTimer();
+				// Clear the player initials div
                 game.endPlayerInitials.clearInitials();
+				// Update game state to End Scene
                 game.currState = game.gameState[2];
+				// Hide all elements
                 game.hideElements.hideAll();
+				// Redraw all elements
                 game.drawOnce();
-            }
-        }
-
-        // Handle mouse clicks
-        for (var i = 0; i < game.mouse.length; i++) {
-            if (engine.input.pressed(game.mouse[i])) {
-                // alert("Event: " + game.mouse[i].toString());
             }
         }
     },
     gsEnd: function (dt) {
         // End Scene
 
+		// DEBUG
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				// Hide keypad
                 game.inputKeypad.hideKeypad();
+				// Update game state to Leaderboard Scene
                 game.currState = game.gameState[3];
+				// Hide all elements
                 game.hideElements.hideAll();
+				// Redraw all elements
                 game.drawOnce();
-            }
-        }
-
-        // Handle mouse clicks
-        for (var i = 0; i < game.mouse.length; i++) {
-            if (engine.input.pressed(game.mouse[i])) {
-                // alert("Event: " + game.mouse[i].toString());
             }
         }
     },
     gsLeaderboard: function (dt) {
         // Leaderboard Scene
 
+		// DEBUG
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+				// Reset player object
                 game.player.reset();
+				// Update game state to Start Scene
                 game.currState = game.gameState[0];
+				// Hide all elements
                 game.hideElements.hideAll();
+				// Redraw all elements
                 game.drawOnce();
             }
         }
@@ -2674,6 +3045,9 @@ game.gameController = {
 };
 
 // Update
+// - Heavy performance impact
+// - Limit actions that do not require real-time updates
+// - Executes every frame
 game.update = function (dt) {
     // Monitor game states
     switch (game.currState) {
@@ -2695,8 +3069,11 @@ game.update = function (dt) {
     };
 
     // Montior window sizes
+	// - Works like window.onresize without interrupting the engine
     if (this.oldWidth != engine.width || this.oldHeight != engine.height) {
+		// Redraw static assets
         this.drawOnce();
+		// Update window transform variables
         this.oldWidth = engine.width;
         this.oldHeight = engine.height;
     }
@@ -2707,6 +3084,7 @@ game.update = function (dt) {
     // Handle mouse clicks
     for (var i = 0; i < game.mouse.length; i++) {
         if (engine.input.pressed(game.mouse[i])) {
+			// Refresh the overlay's timer
             game.timeoutOverlay.refreshTimer();
         }
     }
@@ -2715,7 +3093,8 @@ game.update = function (dt) {
 // Draw functions
 // - Static
 //   - Draw static assets once, if they are active
-
+//   - Light performance impact
+//   - Useful during scene transitions and small animations
 game.drawOnce = function () {
     // Draw based on the GameState
     switch (this.currState) {
@@ -2724,6 +3103,7 @@ game.drawOnce = function () {
             this.startRunway.draw();
             this.startHangar.draw();
             this.wordFlightTitle.draw();
+			
             // Display buttons
             this.startButton.adjustStyle();
             this.leaderboardButton.adjustStyle();
@@ -2741,6 +3121,7 @@ game.drawOnce = function () {
             this.playTimerBox.draw();
             this.playScore.draw();
             this.playScoreBox.resize();
+			
             // Display plane parts
             this.planeCanvasBG.draw();
             this.playPlaneNose.resize();
@@ -2759,7 +3140,7 @@ game.drawOnce = function () {
             // Initialize plane manager
             this.planeManager.initialize();
             this.planeManager.draw();
-
+			
             // Display buttons
             this.playMenuButton.adjustStyle();
             this.playKeyPadSpace.adjustStyle();
@@ -2773,15 +3154,11 @@ game.drawOnce = function () {
             this.endKeyboardBackground.draw();
             this.endGamePoints.draw();
             this.endInitials.draw();
-
-            // this.endKeyboardKeys.draw();
-
             this.wordFlightTitleSmall.draw();
-
             this.endPlayerScore.draw();
             this.endPlayerInitials.draw();
-
             this.endGameOver.draw();
+			
             // Display buttons
             this.endSubmitButton.adjustStyle();
             this.endMenuButton.adjustStyle();
@@ -2791,7 +3168,6 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
-
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
@@ -2799,6 +3175,7 @@ game.drawOnce = function () {
             this.LeadboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
+			
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
@@ -2816,8 +3193,10 @@ window.onload = function () {
 
 // - Animation
 //   - Draw animations
+//     - Heavy performance impact
+//     - Only use when animating the full screen
+//     - Draws every frame
 game.draw = function () {
-
     // Draw based on the GameState
     switch (this.currState) {
         case 'start':
@@ -2833,15 +3212,17 @@ game.draw = function () {
     }
 };
 
-// Lose focus
+// Window loses focus
 window.onblur = function () {
+	// Pause the game
     return game.stop();
 };
 
-// Gain focus
+// Window gains focus
 window.onfocus = function () {
+	// Unpause the game
     return game.run();
 };
 
 // Run Game
-game.run();
+game.run(); // Force game to start on first script load
