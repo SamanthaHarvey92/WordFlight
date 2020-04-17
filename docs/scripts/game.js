@@ -237,7 +237,6 @@ game.updateWords = {
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
     // AJAX query
-/*
     var ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function () {
@@ -260,9 +259,6 @@ game.databaseQuery = function () {
     }
     ajax.open("GET", "scripts/word_generator.php", true);
     ajax.send();
-    */
-    game.nextWord = "GREENTEA";
-    game.nextSponsor = "ARGO TEA";
 }
 
 // Get the sponsor
