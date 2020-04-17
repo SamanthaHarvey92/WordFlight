@@ -47,7 +47,7 @@ game.nextSponsor = "";
 game.sponsorId = "";
 game.score = 0;
 game.readyForNextWord = false;
-game.playTime = (3 * 60 + 30) * 1000; // (3:30)
+game.playTime = 20000; // (3 * 60 + 30) * 1000; // (3:30)
 game.timeoutTime = 120;
 // - Player information
 game.player = {
@@ -56,6 +56,7 @@ game.player = {
     reset: function () {
         this.score = 0;
         this.initials = "";
+		game.score = 0;
     }
 };
 // - Browser size monitors
@@ -73,48 +74,49 @@ game.oldHeight = 0;
 
 // Google Analytics
 /*		*** WARNING *** WARNING *** WARNING ***
-*** DO NOT UNCOMMENT THE GTAG() FUNCTIONS BEFORE DEPLOYMENT ***/
+ *** DO NOT UNCOMMENT THE GTAG() FUNCTIONS BEFORE DEPLOYMENT ***/
 game.google = {
-	load: function () {
-		// gtag('event', 'screen_view', {'screen_name': 'Menu'});
-		
-		// DEBUG ONLY:
-		console.log("<GoogleAnalytics:load>");
-	},
-	start: function () {
-		// gtag('event', 'screen_view', {'screen_name': 'Start'});
-		
-		// DEBUG ONLY:
-		console.log("<GoogleAnalytics:start>");
-	},
-	finish: function () {
-		// gtag('event', 'screen_view', {'screen_name': 'Finish'});
-		
-		// DEBUG ONLY:
-		console.log("<GoogleAnalytics:finish>");
-	},
-	quit: function () {
-		// gtag('event', 'screen_view', {'screen_name': 'Quit'});
-		
-		// DEBUG ONLY:
-		console.log("<GoogleAnalytics:quit>");
-	},
-	timeOut: function () {
-		// gtag('event', 'screen_view', {'screen_name': 'TimeOut'});
-		
-		// DEBUG ONLY:
-		console.log("<GoogleAnalytics:timeOut>");
-	},
-	leaderboard: function () {
-		// gtag('event', 'screen_view', {'screen_name': 'Leaderboard'});
-		
-		// DEBUG ONLY:
-		console.log("<GoogleAnalytics:leaderboard>");
-	}
-};/*
-*** DO NOT UNCOMMENT THE GTAG() FUNCTIONS BEFORE DEPLOYMENT ***
-		*** WARNING *** WARNING *** WARNING ***
-*/
+    load: function () {
+        // gtag('event', 'screen_view', {'screen_name': 'Menu'});
+
+        // DEBUG ONLY:
+        console.log("<GoogleAnalytics:load>");
+    },
+    start: function () {
+        // gtag('event', 'screen_view', {'screen_name': 'Start'});
+
+        // DEBUG ONLY:
+        console.log("<GoogleAnalytics:start>");
+    },
+    finish: function () {
+        // gtag('event', 'screen_view', {'screen_name': 'Finish'});
+
+        // DEBUG ONLY:
+        console.log("<GoogleAnalytics:finish>");
+    },
+    quit: function () {
+        // gtag('event', 'screen_view', {'screen_name': 'Quit'});
+
+        // DEBUG ONLY:
+        console.log("<GoogleAnalytics:quit>");
+    },
+    timeOut: function () {
+        // gtag('event', 'screen_view', {'screen_name': 'TimeOut'});
+
+        // DEBUG ONLY:
+        console.log("<GoogleAnalytics:timeOut>");
+    },
+    leaderboard: function () {
+        // gtag('event', 'screen_view', {'screen_name': 'Leaderboard'});
+
+        // DEBUG ONLY:
+        console.log("<GoogleAnalytics:leaderboard>");
+    }
+};
+/*
+ *** DO NOT UNCOMMENT THE GTAG() FUNCTIONS BEFORE DEPLOYMENT ***
+ *** WARNING *** WARNING *** WARNING ***
+ */
 
 // Game functions
 game.timeoutOverlay = {
@@ -202,7 +204,7 @@ game.timeoutOverlay = {
         this.finalTimerExpired = false;
     },
     expireTimer: function () {
-		game.google.timeOut();
+        game.google.timeOut();
         window.location.replace("http://www.flywithbutchohare.com/");
     }
 };
@@ -237,7 +239,6 @@ game.updateWords = {
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
     // AJAX query
-
     var ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function () {
@@ -419,21 +420,19 @@ game.menuButton = {
     org_height: 138 * game.scale,
     width: 0,
     height: 0,
-    org_posX: 1645,
-    org_posY: 942,
     posX: 0,
     posY: 0,
-	init: function () {
+    init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.menuButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * (1 - engine.dimensionProportion);
+        this.height = this.org_height * (1 - engine.dimensionProportion);
 
         // Attach Top-Right Side
         this.posX = engine.width - this.width;
-        this.posY = Math.max(5, Math.min(5, this.org_posY - engine.heightDifference));
+        this.posY = 50 * (1 - engine.dimensionProportion);
     },
     draw: function () {
         this.adjustStyle();
@@ -448,27 +447,27 @@ game.menuButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
-	clickMe: function() {
-		switch(game.currState) {
-			case 'start':
-				game.google.quit();
-				window.location.replace("http://www.flywithbutchohare.com/");
-				break;
-			default:
-				game.hideElements.hideAll();
-				game.player.reset();
-				game.updateWords.update();
+    clickMe: function () {
+        switch (game.currState) {
+            case 'start':
+                game.google.quit();
+                window.location.replace("http://www.flywithbutchohare.com/");
+                break;
+            default:
+                game.hideElements.hideAll();
+                game.player.reset();
+                game.updateWords.update();
                 game.inputKeypad.hideKeypad();
                 game.playLetterSpaces.hideKeypad();
                 game.readyForNextWord = false;
                 game.planeManager.resetElements();
                 game.playTimerBox.resetTimer();
-				game.timeoutOverlay.refreshTimer();
-				game.currState = game.gameState[0];
-				game.drawOnce();
-				break;
-		}
-	}
+                game.timeoutOverlay.refreshTimer();
+                game.currState = game.gameState[0];
+                game.drawOnce();
+                break;
+        }
+    }
 }
 game.menuButton.init();
 
@@ -480,14 +479,14 @@ game.startButton = {
     height: 0,
     posX: 0,
     posY: 0,
-	init: function () {
+    init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.startButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.width = this.org_width * (1.4 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 3 - this.height / 2;
     },
     draw: function () {
@@ -503,9 +502,9 @@ game.startButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
-	clickMe: function () {
-		game.google.start();
-	}
+    clickMe: function () {
+        game.google.start();
+    }
 };
 game.startButton.init();
 
@@ -517,14 +516,14 @@ game.leaderboardButton = {
     height: 0,
     posX: 0,
     posY: 0,
-	init: function () {
+    init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.leaderboardButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.width = this.org_width * (1.4 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 2 - this.height / 2;
     },
     draw: function () {
@@ -540,9 +539,9 @@ game.leaderboardButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
-	clickMe: function () {
-		game.google.leaderboard();
-	}
+    clickMe: function () {
+        game.google.leaderboard();
+    }
 };
 game.leaderboardButton.init();
 
@@ -554,14 +553,14 @@ game.quitButton = {
     height: 0,
     posX: 0,
     posY: 0,
-	init: function () {
+    init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.quitButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.width = this.org_width * (1.4 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 1.5 - this.height / 2;
     },
     draw: function () {
@@ -577,9 +576,9 @@ game.quitButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
-	clickMe: function() {
-		game.google.quit();
-	}
+    clickMe: function () {
+        game.google.quit();
+    }
 };
 game.quitButton.init();
 
@@ -1472,6 +1471,7 @@ game.playScoreBox = {
     animEndX: 0,
     animEndY: 0,
     animActive: false,
+	animOpacity: 1.0,
     resize: function () {
 
         this.width = this.org_width * (1 - engine.widthProportion);
@@ -1500,6 +1500,7 @@ game.playScoreBox = {
         this.div.style.width = this.width + "px";
         this.div.style.height = this.height + "px";
         this.div.style.fontSize = this.font_size + "pt";
+		this.div.style.opacity = this.animOpacity;
         this.div.style.zIndex = 4;
     },
     updateScore: function (type, value) {
@@ -1517,12 +1518,14 @@ game.playScoreBox = {
     resetElements: function () {
         this.resize();
         this.animSpeed = 0;
+		this.animOpacity = 1.0;
         this.div.style.display = "none";
     },
     animate: function (dt) {
         this.animSpeed += dt / (this.animEndX - this.animStartX);
         this.posX += (this.animEndX - this.animStartX) * this.animSpeed;
         this.posY += (this.animEndY - this.animStartY) * this.animSpeed;
+		this.animOpacity -= 1 * this.animSpeed;
 
         // Force redraw
         this.draw();
@@ -2082,7 +2085,7 @@ game.endSubmitButton = {
     height: 0,
     posX: 0,
     posY: 0,
-	init: function () {
+    init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.endSubmitButton.clickMe);
     },
@@ -2105,22 +2108,27 @@ game.endSubmitButton = {
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
     },
-	clickMe: function () {
+    clickMe: function () {
         console.log("User: " + game.player.initials);
         console.log("Score: " + game.player.score);
         //AJAX
         var ajax = new XMLHttpRequest();
-        ajax.open("GET", "scripts/insert_score.php?u="+game.player.initials+"&s="+game.player.score, true);
+        ajax.open("GET", "scripts/insert_score.php?u=" + game.player.initials + "&s=" + game.player.score, true);
         ajax.send();
 
         ajax.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
+				
+				game.inputKeypad.hideKeypad();
+                game.currState = game.gameState[3];
+                game.hideElements.hideAll();
+                game.drawOnce();
             }
         }
 
-		game.google.finish();
-	}
+        game.google.finish();
+    }
 };
 game.endSubmitButton.init();
 
@@ -2452,7 +2460,7 @@ game.leaderboardRetryButton = {
     height: 0,
     posX: 0,
     posY: 0,
-	init: function () {
+    init: function () {
         // Add event listener to the button
         this.image.addEventListener("click", game.leaderboardRetryButton.retry);
     },
@@ -2476,9 +2484,11 @@ game.leaderboardRetryButton = {
         this.image.style.zIndex = 1;
     },
     retry: function () {
-		game.google.start();
+        game.google.start();
         game.currState = game.gameState[1];
         game.player.reset();
+		game.hideElements.hideAll();
+		game.drawOnce();
     }
 };
 game.leaderboardRetryButton.init();
