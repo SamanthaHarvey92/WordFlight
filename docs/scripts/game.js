@@ -525,7 +525,7 @@ game.leaderboardButton = {
     resize: function () {
         this.width = this.org_width * (1.5 - engine.widthProportion);
         this.height = this.org_height * (1.2 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 2 - this.height / 2;
     },
     draw: function () {
@@ -562,7 +562,7 @@ game.quitButton = {
     resize: function () {
         this.width = this.org_width * (1.5 - engine.widthProportion);
         this.height = this.org_height * (1.2 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 1.5 - this.height / 2;
     },
     draw: function () {
