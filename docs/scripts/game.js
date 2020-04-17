@@ -486,10 +486,10 @@ game.startButton = {
         this.image.addEventListener("click", game.startButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.dimensionProportion);
-        this.height = this.org_height * (1 - engine.dimensionProportion);
-        this.posX = engine.width / 2 - this.width / 2;
-        this.posY = engine.height / 3 - this.height / 2;
+        this.width = this.org_width * (1 - engine.widthProportion);
+        this.height = this.org_height * (1 - engine.widthProportion);
+        this.posX = engine.width / 4 - this.width / 2;
+        this.posY = engine.height / 4 - this.height / 2;
     },
     draw: function () {
         this.adjustStyle();
@@ -525,8 +525,8 @@ game.leaderboardButton = {
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 1;
-        this.posY = engine.height / 2 - this.height / 1;
+        this.posX = engine.width / 2 - this.width / 2;
+        this.posY = engine.height / 3 - this.height / 2;
     },
     draw: function () {
         this.adjustStyle();
