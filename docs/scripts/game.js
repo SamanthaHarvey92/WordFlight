@@ -237,7 +237,6 @@ game.updateWords = {
 // Database - Pull random word with its sponsor
 game.databaseQuery = function () {
     // AJAX query
-
     var ajax = new XMLHttpRequest();
 
     ajax.onreadystatechange = function () {
@@ -419,8 +418,6 @@ game.menuButton = {
     org_height: 138 * game.scale,
     width: 0,
     height: 0,
-    org_posX: 1645,
-    org_posY: 942,
     posX: 0,
     posY: 0,
 	init: function () {
@@ -428,12 +425,12 @@ game.menuButton = {
         this.image.addEventListener("click", game.menuButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * (1 - engine.dimensionProportion);
+        this.height = this.org_height * (1 - engine.dimensionProportion);
 
         // Attach Top-Right Side
         this.posX = engine.width - this.width;
-        this.posY = Math.max(5, Math.min(5, this.org_posY - engine.heightDifference));
+        this.posY = 50 * (1 - engine.dimensionProportion);
     },
     draw: function () {
         this.adjustStyle();
@@ -485,9 +482,9 @@ game.startButton = {
         this.image.addEventListener("click", game.startButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.width = this.org_width * (1.4 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 3 - this.height / 2;
     },
     draw: function () {
@@ -522,9 +519,9 @@ game.leaderboardButton = {
         this.image.addEventListener("click", game.leaderboardButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.width = this.org_width * (1.4 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 2 - this.height / 2;
     },
     draw: function () {
@@ -559,9 +556,9 @@ game.quitButton = {
         this.image.addEventListener("click", game.quitButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width / 2 - this.width / 2;
+        this.width = this.org_width * (1.4 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
+        this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 1.5 - this.height / 2;
     },
     draw: function () {
