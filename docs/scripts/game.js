@@ -420,10 +420,8 @@ game.menuButton = {
     image: document.getElementById("wordFlightMenuButton"),
     org_width: 275 * game.scale,
     org_height: 138 * game.scale,
-    width: 275,
-    height: 138,
-    org_posX: 1645,
-    org_posY: 942,
+    width: 0,
+    height: 0,
     posX: 0,
     posY: 0,
 	init: function () {
@@ -431,12 +429,12 @@ game.menuButton = {
         this.image.addEventListener("click", game.menuButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * (1 - engine.dimensionProportion);
+        this.height = this.org_height * (1 - engine.dimensionProportion);
 
         // Attach Top-Right Side
         this.posX = engine.width - this.width;
-        this.posY = Math.max(5, Math.min(5, this.org_posY - engine.heightDifference));
+        this.posY = 50 * (1 - engine.dimensionProportion);
     },
     draw: function () {
         this.adjustStyle();
