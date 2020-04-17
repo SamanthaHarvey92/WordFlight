@@ -523,8 +523,8 @@ game.leaderboardButton = {
         this.image.addEventListener("click", game.leaderboardButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * (1.5 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = engine.height / 2 - this.height / 2;
     },
@@ -560,8 +560,8 @@ game.quitButton = {
         this.image.addEventListener("click", game.quitButton.clickMe);
     },
     resize: function () {
-        this.width = this.org_width * (1 - engine.widthProportion);
-        this.height = this.org_height * (1 - engine.widthProportion);
+        this.width = this.org_width * (1.5 - engine.widthProportion);
+        this.height = this.org_height * (1.2 - engine.widthProportion);
         this.posX = engine.width / 2 - this.width / 2;
         this.posY = engine.height / 1.5 - this.height / 2;
     },
