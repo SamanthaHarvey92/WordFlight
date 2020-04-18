@@ -7,7 +7,7 @@ $conn = $pdo;
 
 // Select top 7 players from the leaderboard
 // Prepare the SQL query statement
-$stmt = $conn->prepare( "SELECT user, score from wordflightleaderboard ORDER BY score DESC LIMIT 7" );
+$stmt = $conn->prepare( "SELECT TOP (7) [user], [score] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightleaderboard] ORDER BY [score] DESC;" );
 
 // Perform the SQL query
 $stmt->execute();
