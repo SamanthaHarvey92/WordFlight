@@ -2159,16 +2159,24 @@ game.leaderboardPlane = {
     height: 0,
     posX: 0,
     posY: 0,
+    animPosX: 0,
+    animPosY: 0,
     resize: function () {
         this.width = this.org_width * (1 - engine.widthProportion);
         this.height = this.org_height * (1 - engine.widthProportion);
-        this.posX = engine.width - (2300 * (1 - engine.widthProportion));
+        this.posX = engine.width - (3000 * (1 - engine.widthProportion));
         this.posY = engine.height - (550 * (1 - engine.heightProportion));
+
+        // Check for animation
+        this.posX = Math.max(this.posX, this.posX + this.animPosX);
+        this.posY = Math.max(this.posY, this.posY + this.animPosY);
     },
     draw: function () {
         this.resize();
         // drawImage(source, posX, posY, width, height)
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+
+        game.leaderboardAnimation.animActive = true;
     }
 };
 
@@ -2258,7 +2266,7 @@ game.leaderboardSponsor = {
     }
 };
 
-game.LeadboardSponsorLogo = {
+game.leaderboardSponsorLogo = {
     image: function () {
         return document.getElementById(game.getSponsor());
     },
@@ -2328,6 +2336,59 @@ game.finalPlayerScore = {
     updateScore: function () {
         this.score = Math.max(0, game.player.score);
         this.div.innerHTML = this.score;
+    }
+};
+
+//LeaderboardAnimation
+game.leaderboardAnimation = {
+    animVelocity: 0.5,
+    animAcceleration: 0.5,
+    animNewX: 0.0,
+    animActive: false,
+    draw: function () {
+
+        // Redraw background images
+        game.leaderboardBackground.draw();
+        game.leaderboardTitle.draw();
+        game.leaderboardSponsor.draw();
+        game.leaderboardSponsorLogo.draw();
+        game.leaderboardClipboard.draw();
+
+        // Draw plane
+		game.leaderboardPlane.draw();
+    },
+    animate: function (dt) {
+        var deltaTime = dt;
+
+        // decrease acceleration every frame
+        this.animAcceleration -= 0.1 + Math.max(dt * this.animAcceleration, 0.1);
+        // decrease velocity every frame based on acceleration * time
+        this.animVelocity -= this.animAcceleration * deltaTime;
+        // Increase position every fame based on velocity * time
+        this.animNewX += this.animVelocity * deltaTime;
+
+        // Animate plane every frame
+        game.leaderboardPlane.animPosX += this.animNewX;
+
+        this.draw();
+        if (game.leaderboardPlane.posX < engine.width - (2300 * (1 - engine.widthProportion))) {
+            this.animActive = true;
+        } else {
+            this.animActive = false;
+        }
+    },
+    resetElements: function () {
+        // Reset plane animation
+        this.animAcceleration = 1.0;
+        this.animVelocity = 0.5;
+        this.animNewX = 0.0;
+		
+		//reset plane
+		game.leaderboardPlane.posX = 0;
+		game.leaderboardPlane.posY = 0;
+		game.leaderboardPlane.animPosX = 0;
+		game.leaderboardPlane.animPosY = 0;
+
     }
 };
 
@@ -2659,6 +2720,14 @@ game.gameController = {
     gsLeaderboard: function (dt) {
         // Leaderboard Scene
 
+        //Animate Scene
+        /*
+        if (game.leaderboardAnimation.animActive) {
+            game.leaderboardAnimation.animate(dt);            
+        }
+        */
+
+
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
@@ -2789,12 +2858,12 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
-
+            this.leaderboardAnimation.draw();
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
             this.leaderboardPlane.draw();
-            this.LeadboardSponsorLogo.draw();
+            this.leaderboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
             // Display buttons
