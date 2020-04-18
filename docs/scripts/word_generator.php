@@ -8,7 +8,7 @@ $conn = $pdo;
 if ( $conn ) {
     // Select a random word and its sponsor
     // Prepare the SQL query statement
-    $stmt = $conn->prepare( "SELECT word, sponsor_name from flywithbutchoharedb_copy.wordflightwords A JOIN flywithbutchoharedb_copy.wordflightsponsors B ON A.sponsor_id=B.sponsor_id ORDER BY RAND() LIMIT 1" );
+    $stmt = $conn->prepare( "SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] ORDER BY NEWID();" );
 
     // Perform the SQL query
     $stmt->execute();
