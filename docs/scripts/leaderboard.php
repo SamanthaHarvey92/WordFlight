@@ -1,45 +1,20 @@
 <?php
-echo "<table style='border: solid 1px black;'>";
-echo "<tr><th>Rank</th><th>User</th><th>Score</th></tr>";
+// Link to the database connection string
+include( "../includes/db_admin.php" );
 
-class TableRows extends RecursiveIteratorIterator {
-    function __construct($it) {
-        parent::__construct($it, self::LEAVES_ONLY);
-    }
+// Pull the connection from the database connection string
+$conn = $pdo;
 
-    function current() {
-        return "<td style='width:150px;border:1px solid black;'>" . parent::current(). "</td>";
-    }
+// Select top 7 players from the leaderboard
+// Prepare the SQL query statement
+$stmt = $conn->prepare( "SELECT TOP (7) [user], [score] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightleaderboard] ORDER BY [score] DESC;" );
 
-    function beginChildren() {
-        echo "<tr>";
-    }
+// Perform the SQL query
+$stmt->execute();
 
-    function endChildren() {
-        echo "</tr>" . "\n";
-    }
-}
+// Save the query results
+$result = $stmt->fetchAll();
 
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "WordFlight";
-
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $stmt = $conn->prepare("select @i:=0; SELECT User, Score, @i:=@i+1 AS Rank FROM Leaderboard ORDER BY Score DESC LIMIT 10;");
-    $stmt->execute();
-
-    // set the resulting array to associative
-    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    foreach(new TableRows(new RecursiveArrayIterator($stmt->fetchAll())) as $k=>$v) {
-        echo $v;
-    }
-}
-catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-$conn = null;
-echo "</table>";
-?> 
+// Pack the result with JSON and return to AJAX
+echo json_encode( $result );
+?>

@@ -1,28 +1,28 @@
 <?php
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "WordFlight";
+// Link to the database connection string
+include( "../includes/db_admin.php" );
 
-try {
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $stmt = $conn->prepare("SELECT word FROM WordBank ORDER BY RAND() LIMIT 1");
+// Pull the connection from the database connection string
+$conn = $pdo;
+
+if ( $conn ) {
+    // Select a random word and its sponsor
+    // Prepare the SQL query statement
+    $stmt = $conn->prepare( "SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] ORDER BY NEWID();" );
+
+    // Perform the SQL query
     $stmt->execute();
 
-    $result1 = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    // Save the query results
+    $result = $stmt->fetchAll();
 
-    $stmt2 = $conn->prepare("SELECT 'sponsor_name' FROM 'sponsors' join 'words' on 'sponsors.sponsor_id = words.sponsor_id' WHERE 'sponsors.sponsor_id = (SELECT words.sponsor_id WHERE word = $result1)';");
-    $stmt2->execute();
-
-    $result2 = $stmt2->setFetchMode(PDO::FETCH_ASSOC);
-
-    echo $result1;
-    echo $result2;
+    // Pack the result with JSON and return to AJAX
+    echo json_encode( $result );
+} else {
+    // Notify the console of any errors
+    echo "<script>console.log('(" . $db_type . ")<" . $settings[ 'database' ][ 'driver' ] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
 }
-catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
+
+// Clear and close the connection
 $conn = null;
-
 ?>

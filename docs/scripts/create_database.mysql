@@ -1,12 +1,12 @@
 CREATE DATABASE WordFlight;
 USE WordFlight;
 CREATE TABLE Sponsors (
-    sponsor_id int NOT NULL,  
+    sponsor_id int NOT NULL UNIQUE AUTO-INCREMENT,  
     sponsor_name varchar NOT NULL(20),
     PRIMARY KEY (sponsor_id)
 );
 CREATE TABLE Words (
-    unique_id int NOT NULL, 
+    unique_id int NOT NULL UNIQUE AUTO-INCREMENT, 
     sponsor_id int NOT NULL, 
     word varchar(15) NOT NULL, 
     PRIMARY KEY (unique_id), 
@@ -15,7 +15,8 @@ CREATE TABLE Words (
     ON DELETE CASCADE
 );
 CREATE TABLE Leaderboard (
+    entry_id int NOT NULL UNIQUE AUTO-INCREMENT,
     user char(2) NOT NULL,
     score int NOT NULL,
-    PRIMARY KEY (user)
+    PRIMARY KEY (entry_id)
 );
