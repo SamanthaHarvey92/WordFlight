@@ -10,7 +10,7 @@ $user = $_GET[ 'u' ];
 $score = $_GET[ 's' ];
 
 // Insert player into the leaderboard
-$sql = "INSERT INTO [FlyWithButchOhareDB_Copy].[dbo].[wordflightleaderboard] ([user], [score]) VALUES ('XB', 2);";
+$sql = "INSERT INTO [FlyWithButchOhareDB_Copy].[dbo].[wordflightleaderboard] ([user], [score]) VALUES (:user, :score);";
 // Prepare the SQL query statement
 $stmt = $conn->prepare( $sql );
 
