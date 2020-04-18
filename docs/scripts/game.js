@@ -523,6 +523,8 @@ game.menuButton = {
                 game.planeManager.resetElements();
 				// Reset the game's timer
                 game.playTimerBox.resetTimer();
+                // Reset plane animation
+                game.leaderboardAnimation.resetElements();
 				// Refresh the timeout timer
                 game.timeoutOverlay.refreshTimer();
 				// Set the new game state to the Start Scene
@@ -1431,6 +1433,7 @@ game.planeManager = {
             }
         }
     },
+    // Animate elements
     animate: function (dt) {
         var deltaTime = dt;
 
@@ -2461,11 +2464,12 @@ game.leaderboardPlane = {
     image: document.getElementById("leaderboardPlane"),
 	// Declare object transform information
     org_width: 1096 * game.scale,
-    org_heigth: 456 * game.scale,
+    org_height: 456 * game.scale,
     width: 0,
     height: 0,
     posX: 0,
     posY: 0,
+    // Animation transforms
     animPosX: 0,
     animPosY: 0,
 	// Adjust the object's transform
@@ -2483,8 +2487,6 @@ game.leaderboardPlane = {
     draw: function () {
         this.resize();
         engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
-
-        game.leaderboardAnimation.animActive = true;
     }
 };
 
@@ -2586,7 +2588,7 @@ game.leaderboardSponsor = {
     }
 };
 
-game.LeadboardSponsorLogo = {
+game.leaderboardSponsorLogo = {
 	// Get handle to image
     image: function () {
         return document.getElementById(game.getSponsor());
@@ -2602,7 +2604,7 @@ game.LeadboardSponsorLogo = {
     posY: 0,
 	// Adjust the object's transform
     resize: function () {
-        this.width = game.leaderboardSponsor.width * (1 - engine.widthProportion);
+        this.width = game.leaderboardSponsor.width * 0.95;
         this.height = this.width;
 
         // Attach Bottom Side
@@ -2669,57 +2671,68 @@ game.finalPlayerScore = {
     }
 };
 
-
 //LeaderboardAnimation
 game.leaderboardAnimation = {
-    animVelocity: 0.5,
-    animAcceleration: 0.5,
+    animStartX: game.leaderboardPlane.posX,
+    animEndX: engine.width - (2300 * (1 - engine.widthProportion)),
+    animStartY: game.leaderboardPlane.posY,
+    animEndY: game.leaderboardPlane.posY,
+    animDistance: 0,
+    animVelocity: 20,
+    animAcceleration: 1,
     animNewX: 0.0,
-    animActive: false,
+    animActive: true,
     draw: function () {
-
         // Redraw background images
         game.leaderboardBackground.draw();
         game.leaderboardTitle.draw();
         game.leaderboardSponsor.draw();
         game.leaderboardSponsorLogo.draw();
+        game.leaderboardPlayerScore.draw();
+        game.finalPlayerScore.draw();
         game.leaderboardClipboard.draw();
 
         // Draw plane
 		game.leaderboardPlane.draw();
     },
+    // Animate elements
     animate: function (dt) {
         var deltaTime = dt;
-
-        // decrease acceleration every frame
-        this.animAcceleration -= 0.1 + Math.max(dt * this.animAcceleration, 0.1);
-        // decrease velocity every frame based on acceleration * time
-        this.animVelocity -= this.animAcceleration * deltaTime;
-        // Increase position every fame based on velocity * time
-        this.animNewX += this.animVelocity * deltaTime;
+        
+        // Decelerate into position
+        this.animDistance = this.animEndX - this.animStartX;
+        this.animAcceleration = this.animDistance * dt * 4;
+        this.animVelocity = Math.max(this.animVelocity + this.animAcceleration * dt, dt);
+        this.animNewX += this.animVelocity * dt;
 
         // Animate plane every frame
         game.leaderboardPlane.animPosX += this.animNewX;
 
         this.draw();
-        if (game.leaderboardPlane.posX < engine.width - (2300 * (1 - engine.widthProportion))) {
+        if (game.leaderboardPlane.posX < this.animEndX) {
             this.animActive = true;
         } else {
             this.animActive = false;
         }
     },
+    // Reset all elements
     resetElements: function () {
-        // Reset plane animation
-        this.animAcceleration = 1.0;
-        this.animVelocity = 0.5;
-        this.animNewX = 0.0;
-		
-		//reset plane
+        //reset plane
 		game.leaderboardPlane.posX = 0;
 		game.leaderboardPlane.posY = 0;
 		game.leaderboardPlane.animPosX = 0;
 		game.leaderboardPlane.animPosY = 0;
-
+            
+        // Reset plane animation
+        this.animStartX = game.leaderboardPlane.posX;
+        this.animEndX = engine.width - (2300 * (1 - engine.widthProportion));
+        this.animStartY = game.leaderboardPlane.posY;
+        this.animEndY = game.leaderboardPlane.posY;
+        this.animDistance = 0;
+        this.animVelocity = 20;
+        this.animAcceleration = 1;
+        this.animNewX = 0.0;
+        this.animActive = true;
     }
 };
 
@@ -2898,6 +2911,8 @@ game.leaderboardRetryButton = {
         game.currState = game.gameState[1];
         // Reset the player object
         game.player.reset();
+        // Reset plane animation
+        game.leaderboardAnimation.resetElements();
         // Hide all elements
 		game.hideElements.hideAll();
         // Redraw all elements
@@ -3086,19 +3101,18 @@ game.gameController = {
         // Leaderboard Scene
 
         //Animate Scene
-        /*
         if (game.leaderboardAnimation.animActive) {
             game.leaderboardAnimation.animate(dt);            
         }
-        */
-
-
+        
 		// DEBUG
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
 				// Reset player object
                 game.player.reset();
+                // Reset plane animation
+                game.leaderboardAnimation.resetElements();
 				// Update game state to Start Scene
                 game.currState = game.gameState[0];
 				// Hide all elements
@@ -3234,7 +3248,6 @@ game.drawOnce = function () {
             // Draw images on the canvas
             this.leaderboardBackground.draw();
             this.leaderboardTitle.draw();
-            this.leaderboardAnimation.draw();
             this.leaderboardSponsor.draw();
             this.leaderboardClipboard.draw();
             this.leaderboardPlayerScore.draw();
@@ -3246,6 +3259,9 @@ game.drawOnce = function () {
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
+            
+            // Animations
+            this.leaderboardAnimation.draw();
             break;
         default:
             break;
