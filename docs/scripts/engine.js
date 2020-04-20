@@ -65,6 +65,9 @@ _requestAnimationFrame =
 // Initialize engine
 window.engine = engine = {};
 
+// Time of a resize event
+engine.timeSizing = new Date();
+
 // Setup user input control, bindings, and handling
 engine.input = {
 	// Initialize action types
@@ -280,6 +283,8 @@ window.onload = function () {
 
 // Handle window resizing events
 window.onresize = function (e) {
+    engine.timeSizing = Date.now();
+    
     // Set canvas dimensions to the inner browser dimensions
     engine.canvas.width = window.innerWidth;
     engine.canvas.height = window.innerHeight;
