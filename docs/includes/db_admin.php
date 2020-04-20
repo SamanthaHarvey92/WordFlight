@@ -1,7 +1,7 @@
 <?php
 
 $db_type = "pdo";
-$db_location = "local";
+$db_location = "azure";
 
 $conn = null;
 $pdo = null;
