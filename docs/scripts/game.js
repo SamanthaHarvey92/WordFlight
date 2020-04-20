@@ -539,8 +539,8 @@ game.startButton = {
 	// Get handle to image
     image: document.getElementById("startButton"),
 	// Declare object transform information
-    org_width: 450 * game.scale,
-    org_height: 120 * game.scale,
+    org_width: 450 * game.scale * 1.4,
+    org_height: 120 * game.scale * 1.2,
     width: 0,
     height: 0,
     posX: 0,
@@ -552,8 +552,8 @@ game.startButton = {
     },
 	// Adjust the object's transform
     resize: function () {
-        this.width = this.org_width * (1.4 - Math.max(engine.widthProportion, engine.heightProportion));
-        this.height = this.org_height * (1.2 - Math.max(engine.widthProportion, engine.heightProportion));
+        this.width = this.org_width * (1 - Math.max(engine.widthProportion, engine.heightProportion));
+        this.height = this.org_height * (1 - Math.max(engine.widthProportion, engine.heightProportion));
         this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 3 - this.height / 2;
     },
@@ -596,8 +596,8 @@ game.leaderboardButton = {
 	// Get handle to image
     image: document.getElementById("leaderboardButton"),
 	// Declare object transform information
-    org_width: 450 * game.scale,
-    org_height: 120 * game.scale,
+    org_width: 450 * game.scale * 1.4,
+    org_height: 120 * game.scale * 1.2,
     width: 0,
     height: 0,
     posX: 0,
@@ -609,8 +609,8 @@ game.leaderboardButton = {
     },
 	// Adjust the object's transform
     resize: function () {
-        this.width = this.org_width * (1.4 - Math.max(engine.widthProportion, engine.heightProportion));
-        this.height = this.org_height * (1.2 - Math.max(engine.widthProportion, engine.heightProportion));
+        this.width = this.org_width * (1 - Math.max(engine.widthProportion, engine.heightProportion));
+        this.height = this.org_height * (1 - Math.max(engine.widthProportion, engine.heightProportion));
         this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 2 - this.height / 2;
     },
@@ -649,8 +649,8 @@ game.quitButton = {
 	// Get handle to image
     image: document.getElementById("quitButton"),
 	// Declare object transform information
-    org_width: 450 * game.scale,
-    org_height: 120 * game.scale,
+    org_width: 450 * game.scale * 1.4,
+    org_height: 120 * game.scale * 1.2,
     width: 0,
     height: 0,
     posX: 0,
@@ -662,8 +662,8 @@ game.quitButton = {
     },
 	// Adjust the object's transform
     resize: function () {
-        this.width = this.org_width * (1.4 - Math.max(engine.widthProportion, engine.heightProportion));
-        this.height = this.org_height * (1.2 - Math.max(engine.widthProportion, engine.heightProportion));
+        this.width = this.org_width * (1 - Math.max(engine.widthProportion, engine.heightProportion));
+        this.height = this.org_height * (1 - Math.max(engine.widthProportion, engine.heightProportion));
         this.posX = engine.width / 1.98 - this.width / 2;
         this.posY = engine.height / 1.5 - this.height / 2;
     },
@@ -726,12 +726,15 @@ game.playTitle = {
     height: 0,
     org_posX: 10,
     org_posY: 10,
-    posX: 10,
-    posY: 10,
+    posX: 0,
+    posY: 0,
 	// Adjust the object's transform
     resize: function () {
         this.width = this.org_width * (1 - Math.max(engine.widthProportion, engine.heightProportion));
         this.height = this.org_height * (1 - Math.max(engine.widthProportion, engine.heightProportion));
+        
+        this.posX = this.org_posX * (1 - Math.max(engine.widthProportion, engine.heightProportion));
+        this.posY = Math.min(this.org_posY, this.org_posY * (1 - Math.max(engine.widthProportion, engine.heightProportion)));
     },
 	// Draw the object
     draw: function () {
@@ -2808,6 +2811,7 @@ game.top10players = {
     // Hide the table and clear the array
     hideTable: function () {
         this.divArray = [];
+        this.tableBuilt = false;
     },
     // Build the table
     buildTable: function () {
@@ -2857,7 +2861,7 @@ game.top10players = {
                 game.top10players.divArray.push("containerDiv_" + place);
                 game.top10players.div.innerHTML = tableBuilder;
                 
-                game.top10players.buildTable = true;
+                game.top10players.tableBuilt = true;
             }
         }
     }
