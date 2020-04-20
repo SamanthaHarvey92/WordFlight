@@ -578,6 +578,18 @@ game.startButton = {
     clickMe: function () {
 		// Inform Google the user started playing a game
         game.google.start();
+        // Set game score to zero
+        game.score = 0;
+        // Reset the player object
+        game.player.reset();
+        // Get the current sponsor
+        game.getSponsor();
+        // Set the new game state to Play Scene
+        game.currState = game.gameState[1];
+        // Hide all elements
+        game.hideElements.hideAll();
+        // Redraw all elements
+        game.drawOnce();
     }
 };
 game.startButton.init(); // Force object initialization on first script load
@@ -621,7 +633,16 @@ game.leaderboardButton = {
     },
 	// Handle user interaction based on game state
     clickMe: function () {
+        // Inform Google the user went straight to the leaderboard
         game.google.leaderboard();
+        // Clear the player object
+        game.player.reset();
+        // Update game state to Leaderboard Scene
+        game.currState = game.gameState[3];
+        // Hide all elements
+        game.hideElements.hideAll();
+        // Redraw all elements
+        game.drawOnce();
     }
 };
 game.leaderboardButton.init(); // Force object initialization on first script load
@@ -665,8 +686,10 @@ game.quitButton = {
     },
 	// Handle user interaction based on game state
     clickMe: function () {
-		// Inform Google the user has quit the game
+        // Inform Google the user quit the game
         game.google.quit();
+        // Redirect the user to the O'Hare landing page
+        window.location.replace("http://www.flywithbutchohare.com/");
     }
 };
 game.quitButton.init(); // Force object initialization on first script load
@@ -981,7 +1004,7 @@ game.playLetterSpaces = {
 
                 // Increment score
                 if (this.lettersFound == this.keyArray.length) {
-                    increaseBy = Math.floor(12 / (12 - this.lettersFound)) * 3;
+                    increaseBy = Math.floor(16 / Math.max(16 - this.lettersFound, 1)) * 3;
                     game.playScoreBox.updateScore("Plane", increaseBy);
                 } else {
                     increaseBy = 10;
@@ -3303,7 +3326,9 @@ window.onblur = function () {
 
 // Window gains focus
 window.onfocus = function () {
-	// Unpause the game
+	// Force redraw of all elements
+    game.drawOnce();
+    // Unpause the game
     return game.run();
 };
 
