@@ -288,7 +288,7 @@ game.databaseQuery = function () {
 
     }
 	// Send a request to PHP for a new word
-    ajax.open("GET", "scripts/word_generator.php", true);
+    ajax.open("GET", "scripts/word_generator.php", false);
     ajax.send();
 }
 
@@ -3345,3 +3345,4 @@ window.onfocus = function () {
 
 // Run Game
 game.run(); // Force game to start on first script load
+
