@@ -50,6 +50,8 @@ game.readyForNextWord = false;			// Test to identify when to update the word lis
 game.playTime = (3 * 60 + 30) * 1000; 	// Play time (3:30)
 game.timeoutTime = 120;					// Timeout time before returning to landing page
 
+game.lastTimeSized = new Date();
+
 // - Player object information (persists through scenes)
 game.player = {
     score: 250,
@@ -62,10 +64,6 @@ game.player = {
 		game.score = 0;
     }
 };
-
-// - Browser size monitors
-game.oldWidth = 0;
-game.oldHeight = 0;
 
 // Google Analytics
 /*		*** WARNING *** WARNING *** WARNING ***
@@ -3181,15 +3179,11 @@ game.update = function (dt) {
             this.gameController.gsStart(dt);
             break;
     };
-
-    // Montior window sizes
-	// - Works like window.onresize without interrupting the engine
-    if (this.oldWidth != engine.width || this.oldHeight != engine.height) {
-		// Redraw static assets
+    
+    // Force a draw when the window resizes
+    if (this.lastTimeSized < (engine.timeSizing)) {
         this.drawOnce();
-		// Update window transform variables
-        this.oldWidth = engine.width;
-        this.oldHeight = engine.height;
+        this.lastTimeSized = Date.now();
     }
 
     // Maintain Game Timeout
@@ -3345,4 +3339,3 @@ window.onfocus = function () {
 
 // Run Game
 game.run(); // Force game to start on first script load
-
