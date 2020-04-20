@@ -142,10 +142,9 @@
     width: 100%;
     text-align: center;
     vertical-align: center;
-    font-size: 36pt;
-    font-size: 2.5vw;
     border-collapse: separate;
-    border-spacing: 25px 5px;
+    /*border-spacing: 1.1vw 1.1vw;*/
+    border-spacing: 1vw 1.3vh;
 }
 
 .table-container td:nth-child(1) {
@@ -162,13 +161,17 @@
 
 .table-container td {
     text-align: center;
-    font-family: roboto-bold;
-    color: #fff;    
+    font-family: roboto-bold;    
     background-color: #2581af;
     border-radius: 4px;
     -moz-box-shadow: 2px 4px 0px rgba(0, 0, 0, 0.4);
     -webkit-box-shadow: 2px 4px 0px rgba(0, 0, 0, 0.4);
     box-shadow: 2px 4px 0px rgba(0, 0, 0, 0.4);
+}
+
+.top-10-data {
+    color: #fff;
+    
 }
 
 /* End Scene initials */
@@ -207,8 +210,8 @@
 	font-size: 5vw;
 	font-family: Roboto-Bold;
 	color: #fff;
+    -ms-transform: translate(-50%, -65%);
 	transform: translate(-50%, -65%);
-	-ms-transform: translate(-50%, -65%);
 }
 
 #timeoutInstructions {
@@ -218,8 +221,8 @@
 	font-size: 3vw;
 	font-family: Roboto-Bold;
 	color: #fff;
+    -ms-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
 }
 
 #timeoutTimer {
@@ -229,6 +232,6 @@
 	font-size: 4vw;
 	font-family: Roboto-Bold;
 	color: #fff;
+    -ms-transform: translate(-50%, -35%);
 	transform: translate(-50%, -35%);
-	-ms-transform: translate(-50%, -35%);
 }
