@@ -3326,7 +3326,9 @@ window.onblur = function () {
 
 // Window gains focus
 window.onfocus = function () {
-	// Unpause the game
+	// Force redraw of all elements
+    game.drawOnce();
+    // Unpause the game
     return game.run();
 };
 
