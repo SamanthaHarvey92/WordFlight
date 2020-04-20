@@ -13,7 +13,7 @@
 //========================================================================
 
 // Initialize game object
-game = Object.create(GameObject.prototype);
+window.game = Object.create(GameObject.prototype);
 
 // Keybindings
 game.keys = ['A', 'S', 'D', 'F'];
@@ -354,6 +354,7 @@ game.getSponsor = function () {
             this.sponsorId = "__INVALID__";
             break;
     }
+    console.log("<SPONSOR> " + this.sponsor + " | " + this.sponsorId);
 	// Return the sponsor ID
     return this.sponsorId;
 }
@@ -523,6 +524,8 @@ game.menuButton = {
                 game.playTimerBox.resetTimer();
                 // Reset plane animation
                 game.leaderboardAnimation.resetElements();
+                // Reset leaderboard table
+                game.top10players.hideTable();
 				// Refresh the timeout timer
                 game.timeoutOverlay.refreshTimer();
 				// Set the new game state to the Start Scene
@@ -2835,14 +2838,14 @@ game.top10players = {
                 // Parse and store the JSON message from PHP
                 var leaders = JSON.parse(this.responseText);
 
+                //open div
+                tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (game.top10players.width) + 'px">';
+                
                 for (var i = 0; i < leaders.length; i++) {
                     place = i + 1;
 
                     placeHolder = leaders[i].user.toString();
                     scoreHolder = leaders[i].score.toString();
-
-                    //open div
-                    tableBuilder += divPrefix + place + '" class="table-container" style="width:' + (game.top10players.width) + 'px">';
 
                     if (game.player.initials.toString() == placeHolder && game.player.score.toString() == scoreHolder) {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + " style='background-color: #f41c63;'>" + place + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + leaders[i].user + "</td>" + dataPrefix + " style='background-color: #f41c63;'>" + scoreHolder + "</td></tr>";
@@ -2850,17 +2853,17 @@ game.top10players = {
                         tableBuilder += tablePrefix + rowPrefix + dataPrefix + ">" + place + "</td>" + dataPrefix + ">" + leaders[i].user + "</td>" + dataPrefix + ">" + scoreHolder + "</td></tr>";
                     }
 
-                    tableBuilder += "</div>";
                 }
                 //close table
                 tableBuilder += "</table>"
 
                 //close div
-                tableBuilder += "</div>"
+                tableBuilder += "</div>";
 
                 game.top10players.divArray.push("containerDiv_" + place);
                 game.top10players.div.innerHTML = tableBuilder;
                 
+                // Disable extra queries
                 game.top10players.tableBuilt = true;
             }
         }
@@ -2947,6 +2950,8 @@ game.leaderboardRetryButton = {
         game.currState = game.gameState[1];
         // Reset the player object
         game.player.reset();
+        // Reset leaderboard table
+        game.top10players.hideTable();
         // Reset plane animation
         game.leaderboardAnimation.resetElements();
         // Hide all elements
@@ -3016,6 +3021,8 @@ game.gameController = {
                 game.currState = game.gameState[1];
 				// Hide all elements
                 game.hideElements.hideAll();
+                // Refresh timeout
+                game.timeoutOverlay.refreshTimer();
 				// Redraw all elements
                 game.drawOnce();
             }
@@ -3110,6 +3117,8 @@ game.gameController = {
                 game.currState = game.gameState[2];
 				// Hide all elements
                 game.hideElements.hideAll();
+                // Refresh timeout
+                game.timeoutOverlay.refreshTimer();
 				// Redraw all elements
                 game.drawOnce();
             }
@@ -3128,6 +3137,8 @@ game.gameController = {
                 game.currState = game.gameState[3];
 				// Hide all elements
                 game.hideElements.hideAll();
+                // Refresh timeout
+                game.timeoutOverlay.refreshTimer();
 				// Redraw all elements
                 game.drawOnce();
             }
@@ -3149,10 +3160,14 @@ game.gameController = {
                 game.player.reset();
                 // Reset plane animation
                 game.leaderboardAnimation.resetElements();
+                // Reset leaderboard table
+                game.top10players.hideTable();
 				// Update game state to Start Scene
                 game.currState = game.gameState[0];
 				// Hide all elements
                 game.hideElements.hideAll();
+                // Refresh timeout
+                game.timeoutOverlay.refreshTimer();
 				// Redraw all elements
                 game.drawOnce();
             }
@@ -3340,6 +3355,13 @@ window.onfocus = function () {
     // Unpause the game
     return game.drawOnce();
 };
+
+// Handle mobile device reorientation
+$(document).on('pagecreate', (event) => {
+    $(window).on('orientationchange', () => {
+        game.drawOnce();
+    });
+});
 
 // Run Game
 game.run(); // Force game to start on first script load
