@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Word Flight</title>
 	<link href="styles/styles.css" rel="stylesheet" type="text/css" />
+    
+    <link href="scripts/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet">
+	<script src="scripts/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+	<script src="scripts/jquery-ui-1.12.1/jquery-ui.js"></script>
+	<script src="scripts/jquery-3.4.1.min.js"></script>
+	<script src="scripts/jquery_activity.js"></script>
 	
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<!-- *** WARNING *** WARNING *** WARNING ***
@@ -20,111 +26,16 @@
 		*** DO NOT UNCOMMENT THIS BEFORE DEPLOYMENT ***
 		*** WARNING *** WARNING *** WARNING *** -->
 </head>
-
+    
 	<!-- Preload Images -->
-	<!-- Reusables -->
-	<img id="wordFlightTitleSmall" src="images/WordFlight_Title_Small.png" alt="Word Flight Title Small" style="display:none;">
-	<img id="wordFlightMenuButton" src="images/menu_button.png" alt="Menu Button" style="display:none;">
-	<img id="wordFlightSponsor" src="images/sponsor_block.png" alt="Sponsor Block" style="display:none;">
-	<img id="letterButton_" src="images/key_blank.png" alt="Key Blank" style="display:none;">
-		<!-- Sponsors -->
-		<img id="sponsorArgo" src="images/sponsors/logos_white/logo_argo_white.png" alt="Sponsor Argo" style="display:none;">
-		<img id="sponsorAuntieAnnes" src="images/sponsors/logos_white/logo_auntie_annes_white.png" alt="Sponsor Auntie Annes" style="display:none;">
-		<img id="sponsorBrookstone" src="images/sponsors/logos_white/logo_brookstone_white.png" alt="Sponsor Brookstone" style="display:none;">
-		<img id="sponsorBSmooth" src="images/sponsors/logos_white/logo_bsmooth_white.png" alt="Sponsor BSmooth" style="display:none;">
-		<img id="sponsorBurritoBeach" src="images/sponsors/logos_white/logo_burrito_beach_white.png" alt="Sponsor Burrito Beach" style="display:none;">
-		<img id="sponsorChicagoSports" src="images/sponsors/logos_white/logo_chicago_sports_white.png" alt="Sponsor Chicago Sports" style="display:none;">
-		<img id="sponsorCNN" src="images/sponsors/logos_white/logo_cnn_white.png" alt="Sponsor CNN" style="display:none;">
-		<img id="sponsorCoach" src="images/sponsors/logos_white/logo_coach_white.png" alt="Sponsor Coach" style="display:none;">
-		<img id="sponsorDunkinDonuts" src="images/sponsors/logos_white/logo_dunkin_donuts_white.png" alt="Sponsor Dunkin Donuts" style="display:none;">
-		<img id="sponsorDutyFreeStore" src="images/sponsors/logos_white/logo_duty_free_store_white.png" alt="Sponsor Duty Free Store" style="display:none;">
-		<img id="sponsorField" src="images/sponsors/logos_white/logo_field_white.png" alt="Sponsor Field" style="display:none;">
-		<img id="sponsorHudson" src="images/sponsors/logos_white/logo_hudson_white.png" alt="Sponsor Hudson" style="display:none;">
-		<img id="sponsorMacCosmetics" src="images/sponsors/logos_white/logo_mac_cosmetics_white.png" alt="Sponsor Mac Cosmetics" style="display:none;">
-		<img id="sponsorNutsOnClark" src="images/sponsors/logos_white/logo_nuts_on_clark_white.png" alt="Sponsor Nuts On Clark" style="display:none;">
-		<img id="sponsorRockyMountainChocolate" src="images/sponsors/logos_white/logo_rocky_mountain_chocolate_white.png" alt="Sponsor Rocky Mountain Chocolate" style="display:none;">
-		<img id="sponsorSarahsCandies" src="images/sponsors/logos_white/logo_sarahs_candies_white.png" alt="Sponsor Sarahs Candies" style="display:none;">
-		<img id="sponsorShoeHospital" src="images/sponsors/logos_white/logo_shoe_hospital_white.png" alt="Sponsor Shoe Hospital" style="display:none;">
-		<img id="sponsorSpiritOfTheRedHorse" src="images/sponsors/logos_white/logo_spirit_of_the_red_horse_white.png" alt="Sponsor Spirit of the Red Horse" style="display:none;">
-		<img id="sponsorTalie" src="images/sponsors/logos_white/logo_talie_white.png" alt="Sponsor Talie" style="display:none;">
-		<!-- Keypad -->
-		<div id="inputKeypad" style="display:none;position:absolute;"></div>
-		<!-- Overlay -->
-		<div id="timeoutOverlay">
-			<div id="timeoutHeader">Are you still there?</div>
-			<div id="timeoutInstructions"><p>Tap the screen to continue.</p><p>Returning to the main menu in...</p></div>
-			<div id="timeoutTimer" class="glow">10</div>
-		</div>
-	
-	<!-- Start Scene -->
-		<!-- Images -->
-		<img id="wordFlightTitle" src="images/start_scene/WordFlight_Title.png" alt="Word Flight Title" style="display:none;">
-		<img id="startHangar" src="images/start_scene/start_hangar_bg.png" alt="Start Hangar" style="display:none;">
-		<img id="startRunway" src="images/start_scene/start_runway_bg.png" alt="Start Runway" style="display:none;">
-	
-		<!-- Buttons -->
-		<img id="startButton" src="images/start_scene/start_button.png" alt="Start Button" style="display:none;">
-		<img id="leaderboardButton" src="images/start_scene/leaderboard_button.png" alt="Leaderboard Button" style="display:none;">
-		<img id="quitButton" src="images/start_scene/quit_button.png" alt="Quit Button" style="display:none;">
-																   
-	<!-- Play Scene -->
-		<!-- Images -->
-		<img id="playBackground" src="images/play_scene/play_hangar_bg.png" alt="Play Scene Background" style="display:none;">
-		<img id="playTimer" src="images/play_scene/play_timer_empty.png" alt="Play Timer Board" style="display:none;">
-		<img id="playLetterSpace" src="images/play_scene/play_empty_space.png" alt="Play Letter Space" style="display:none;">
-			<!-- Plane -->
-			<img id="playPlaneDorsalFin" src="images/play_scene/play_plane_dorsal_fin.png" alt="Play Plane Dorsal Fin" style="display:none;">
-			<img id="playPlaneEngine" src="images/play_scene/play_plane_engine.png" alt="Play Plane Engine" style="display:none;">
-			<img id="playPlaneFuselage" src="images/play_scene/play_plane_fuselage.png" alt="Play Plane Fuselage" style="display:none;">
-			<img id="playPlaneLeftRearWing" src="images/play_scene/play_plane_left_rear_wing.png" alt="Play Plane Left Rear Wing" style="display:none;">
-			<img id="playPlaneLeftWing" src="images/play_scene/play_plane_left_wing.png" alt="Play Plane Left Wing" style="display:none;">
-			<img id="playPlaneNose" src="images/play_scene/play_plane_nose.png" alt="Play Plane Nose" style="display:none;">
-			<img id="playPlaneRightRearWing" src="images/play_scene/play_plane_right_rear_wing.png" alt="Play Plane Right Rear Wing" style="display:none;">
-			<img id="playPlaneRightWing" src="images/play_scene/play_plane_right_wing.png" alt="Play Plane Right Wing" style="display:none;">
-			<img id="playPlaneTail" src="images/play_scene/play_plane_tail.png" alt="Play Plane Tail" style="display:none;">
-		<!-- Buttons -->
-		<!-- Letter Spaces -->
-		<div id="letterSpaces" style="display:none;position:absolute;"></div>
-		<!-- Timer -->
-		<div id="timerBox" class="timer-box pulse" style="display:none;position:absolute;z-index:4">3:30</div>
-		<!-- Scores -->
-		<div id="scoreBox" class="score-box pulse" style="display:none;position:absolute;z-index: 4">1,000,000</div>
-		<div id="newScore" class="score-alert-box glow" style="display:none;position:absolute;z-index: 50">Letter +20</div>
-		
-	
-	<!-- End Scene -->
-		<!-- Images -->
-		<img id="endBackground" src="images/end_scene/end_bg.png" alt="End Background" style="display:none;">
-		<img id="endGameOver" src="images/end_scene/end_game_over_message.png" alt="End Game Over" style="display:none;">
-		<img id="endGamePoints" src="images/end_scene/end_game_points_block_empty.png" alt="End Game Points" style="display:none;">
-		<img id="endInitials" src="images/end_scene/end_initials_empty.png" alt="End Initials" style="display:none;">
-		<img id="endKeyboardBackground" src="images/end_scene/end_keyboard_background.png" alt="End Keyboard Background" style="display:none;">
-		<img id="endKeyboardKeys" src="images/end_scene/end_keyboard_keys.png" alt="End Keyboard Keys" style="display:none;">
-		<!-- Score -->
-		<div id="endPlayerScore" class= "score-box" style="display:none;position:absolute;z-index:4;">500</div>
-		<!-- Initials -->
-		<div id="endPlayerInitials" class= "Initials" style="display:none;position:absolute;z-index:4;">AB</div>
-		<!-- Buttons -->
-		<img id="submitButton" src="images/end_scene/end_submit_button.png" alt="Submit Button" style="display:none;">
-        <img id="menuButton" src="images/menu_button.png" alt="Menu Button" style="display:none;">
-		
-	<!-- Leaderboard Scene -->
-		<!-- Images -->
-		<img id="leaderboardBackground" src="images/leaderboard_scene/leaderboard_bg.png" alt="Leaderboard Scene Background" style="display:none;">
-		<img id="leaderboardPlane" src="images/leaderboard_scene/leaderboard_plane.png" alt="Leaderboard Scene Background Plane" style="display:none;">
-		<img id="leaderboardClipboard" src="images/leaderboard_scene/leaderboard_clipboard.png" alt="Leaderboard Scene Clipboard" style="display:none;">
-		<img id="leaderboardScore" src="images/leaderboard_scene/leaderboard_player_results_empty.png" alt="Leaderboard Scene Score" style="display:none;">
-		<!-- Table -->
-		<div id="top10table" style="display:none;position:absolute;z-index:4;">Rank | User | Score</div>
-		<!-- Score -->
-		<div id="finalPlayerScore" class= "score-box" style="display:none;position:absolute;z-index:4;">500</div>
-		<!-- Buttons -->
-		<img id="leaderboardRetryButton" src="images/leaderboard_scene/leaderboard_retry_button.png" alt="Leaderboard Scene Retry Button" style="display:none;">
-  
+        <!-- Fadeout Overlay -->
+        <div id="fadeOutOverlay"></div>
+        <div id="fadeOutLoader"></div>
+	<br>
+
 	<!-- Canvas -->
 	<canvas id="baseCanvas" style="z-index: 0"></canvas>
 	<!-- Scripts -->
-	<script type="text/javascript" src="scripts/engine.js"></script>
-	<script type="text/javascript" src="scripts/game.js"></script>
-
+    <script type="text/javascript" src="scripts/loader.js"></script>
+    <div id="wordFlightScripts"></div>
 </html>
