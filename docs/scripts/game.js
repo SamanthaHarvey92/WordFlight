@@ -3355,12 +3355,5 @@ window.onfocus = function () {
     return game.drawOnce();
 };
 
-// Handle mobile device reorientation
-$(document).on('pagecreate', (event) => {
-    $(window).on('orientationchange', () => {
-        game.drawOnce();
-    });
-});
-
 // Run Game
 game.run(); // Force game to start on first script load
