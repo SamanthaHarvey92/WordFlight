@@ -8,6 +8,12 @@
     font-family: BigShouldersDisplay-SemiBold;
     src: url("BigShouldersDisplay-SemiBold.ttf");
 }
+
+body {
+    overflow: -moz-scrollbars-none;
+    overflow: hidden !important;
+}
+
 /* Play/End Scene Keypads */
 .keypad-container {
     position: relative;
