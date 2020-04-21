@@ -354,7 +354,6 @@ game.getSponsor = function () {
             this.sponsorId = "__INVALID__";
             break;
     }
-    console.log("<SPONSOR> " + this.sponsor + " | " + this.sponsorId);
 	// Return the sponsor ID
     return this.sponsorId;
 }
