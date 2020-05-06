@@ -65,6 +65,9 @@ _requestAnimationFrame =
 // Initialize engine
 window.engine = engine = {};
 
+// Time of a resize event
+engine.timeSizing = new Date();
+
 // Setup user input control, bindings, and handling
 engine.input = {
 	// Initialize action types
@@ -278,36 +281,51 @@ window.onload = function () {
     console.log("(w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
 };
 
+engine.windowControl = {
+    updateWindow: () => {
+        engine.timeSizing = Date.now();
+    
+        // Set canvas dimensions to the inner browser dimensions
+        engine.canvas.width = window.innerWidth;
+        engine.canvas.height = window.innerHeight;
+
+        // Find the dimension differences from a target dimension (1920x1080)
+        engine.widthDifference = 1920 - window.innerWidth;
+        engine.heightDifference = 1080 - window.innerHeight;
+
+        // Aspect ratios
+        engine.targetRatio = 1920 / 1080;
+        engine.aspectRatio = window.innerWidth / window.innerHeight;
+
+        // Find the dimensional proportion ratios
+        engine.widthProportion = ((engine.widthDifference) / 1920).toPrecision(4);
+        engine.heightProportion = ((engine.heightDifference) / 1080).toPrecision(4);
+        engine.dimensionProportion = engine.widthProportion > engine.heightProportion ? engine.widthProportion : engine.heightProportion;
+
+        // Set the engine's width to the canvas' width
+        engine.width = engine.canvas.width;
+
+        // DEBUG
+        // Report the viewport dimensions when the window is resized
+        console.log("<ENGINE> (w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
+
+        // Return and set the engine's height to the canvas' height
+        return engine.height = engine.canvas.height;
+    }
+};
+
 // Handle window resizing events
 window.onresize = function (e) {
-    // Set canvas dimensions to the inner browser dimensions
-    engine.canvas.width = window.innerWidth;
-    engine.canvas.height = window.innerHeight;
-
-    // Find the dimension differences from a target dimension (1920x1080)
-    engine.widthDifference = 1920 - window.innerWidth;
-    engine.heightDifference = 1080 - window.innerHeight;
-
-    // Aspect ratios
-    engine.targetRatio = 1920 / 1080;
-    engine.aspectRatio = window.innerWidth / window.innerHeight;
-
-    // Find the dimensional proportion ratios
-    engine.widthProportion = ((engine.widthDifference) / 1920).toPrecision(4);
-    engine.heightProportion = ((engine.heightDifference) / 1080).toPrecision(4);
-    engine.dimensionProportion = engine.widthProportion > engine.heightProportion ? engine.widthProportion : engine.heightProportion;
-    
-	// Set the engine's width to the canvas' width
-	engine.width = engine.canvas.width;
-
-    // DEBUG
-	// Report the viewport dimensions when the window is resized
-    console.log("<ENGINE> (w: " + engine.canvas.width + ", h: " + engine.canvas.height + ")");
-
-	// Return and set the engine's height to the canvas' height
-    return engine.height = engine.canvas.height;
+    return engine.windowControl.updateWindow();
 };
 window.onresize(); // Force a resize call as the script is loaded for the first time
+
+// Handle mobile device reorientation
+$(document).on('pagecreate', (event) => {
+    $(window).on('orientationchange', () => {
+        return engine.windowControl.updateWindow();
+    });
+});
 
 // Primary game loop
 GameObject = (function () {
