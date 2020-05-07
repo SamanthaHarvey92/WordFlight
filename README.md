@@ -11,19 +11,25 @@ As the game begins, players will see an open hangar with tools and parts laying 
 
 ## Gameplay
 - The game will populate blank spaces based on the number of letters in the word chosen from a word bank.
--	All 26 letters will be displayed on the screen for the player to select to make a guess.
-  - After a letter is selected, it will be crossed or grayed out, preventing players from selecting it multiple times.
--	An incorrect guess will result in an “Incorrect” message, but nothing will happen to the plane.
--	A correct guess will result in a “Correct” message and a piece of the plane will be added to the construction.
--	A complete plane will display sponsor logos and roll out of the hangar to make room for the next plane.
--	The process will repeat until the timer runs out.
+- All 26 letters will be displayed on the screen for the player to select to make a guess.
+    - After a letter is selected, it will be crossed or grayed out, preventing players from selecting it multiple times.
+- An incorrect guess will result in an “Incorrect” message, but nothing will happen to the plane.
+- A correct guess will result in a “Correct” message and a piece of the plane will be added to the construction.
+- A complete plane will display sponsor logos and roll out of the hangar to make room for the next plane.
+- The process will repeat until the timer runs out.
 
 ### Editable database for word bank
 * Words will have relation to sponsors (i.e. products the sponsors sell)
 
 ## Concept Drawings
-![Word Flight Start](/docs/images/WordFlight01.png)
+### Start Scene
+![Word Flight Start Scene](/docs/images/old/concept_start_scene.png)
 
-![Word Flight In Progress](/docs/images/WordFlight02.png)
+### Play Scene
+![Word Flight Play Scene](/docs/images/old/concept_play_scene.png)
 
-![Word Flight Complete](/docs/images/WordFlight03.png)
+### End Scene
+![Word Flight End Scene](/docs/images/old/concept_end_scene.png)
+
+### Leaderboard Scene
+![Word Flight Leaderboard Scene](/docs/images/old/concept_leaderboard_scene.png)
