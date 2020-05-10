@@ -1,23 +1,28 @@
 <?php
-// include('db_connection.php');
+// Link to the database connection string
+include( "../includes/db_admin.php" );
 
-include("../includes/db_admin.php");
-
+// Pull the connection from the database connection string
 $conn = $pdo;
 
-if ($conn) {
-	// echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] successful.');</script>";
+if ( $conn ) {
+    // Select a random word and its sponsor
+    // Prepare the SQL query statement
+    $stmt = $conn->prepare( "SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] ORDER BY NEWID();" );
 
-	$stmt = $conn->prepare("SELECT word, sponsor_name from flywithbutchoharedb_copy.wordflightwords A JOIN flywithbutchoharedb_copy.wordflightsponsors B ON A.sponsor_id=B.sponsor_id ORDER BY RAND() LIMIT 1");
-	$stmt->execute();
+    // Perform the SQL query
+    $stmt->execute();
 
-	$result=$stmt->fetchAll();
+    // Save the query results
+    $result = $stmt->fetchAll();
 
-	echo json_encode($result);
+    // Pack the result with JSON and return to AJAX
+    echo json_encode( $result );
 } else {
-	echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
+    // Notify the console of any errors
+    echo "<script>console.log('(" . $db_type . ")<" . $settings[ 'database' ][ 'driver' ] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
 }
-	
-$conn = null;
 
+// Clear and close the connection
+$conn = null;
 ?>

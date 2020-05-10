@@ -1,16 +1,29 @@
 <?php
-include 'db_connection.php';
+// Link to the database connection string
+include( "../includes/db_admin.php" );
 
-$conn= $pdo;
+// Pull the connection from the database connection string
+$conn = $pdo;
 
-$sql = "INSERT INTO leaderboard (user, score) VALUES (:user,:score)";
+// Get the variables sent from AJAX
+$user = $_GET[ 'u' ];
+$score = $_GET[ 's' ];
 
-$stmt= $conn->prepare($sql);
+// Insert player into the leaderboard
+$sql = "INSERT INTO [FlyWithButchOhareDB_Copy].[dbo].[wordflightleaderboard] ([user], [score]) VALUES (:user, :score);";
+// Prepare the SQL query statement
+$stmt = $conn->prepare( $sql );
 
-$stmt->bindParam(' :user', $_GET['u'], PD::PARAM_STR);
-$stmt->bindParam(' :score', $_GET['s'], PDO::PARAM_STR)
+// Bind parameters
+$stmt->bindParam( ':user', $user, PDO::PARAM_STR );
+$stmt->bindParam( ':score', $score, PDO::PARAM_INT );
 
-$stmt->exectue();
+// Perform the SQL query
+$stmt->execute();
 
+// Notify the calling AJAX function of completion
+echo "Input Recieved";
+
+// Clear and close the connection
 $conn = null;
 ?>
