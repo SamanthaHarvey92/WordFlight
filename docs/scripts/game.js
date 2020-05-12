@@ -279,11 +279,7 @@ game.databaseQuery = function () {
 				// Set and format the next sponsor
                 game.nextSponsor = selection[a].sponsor_name.toUpperCase();
             }
-
-            // Remove all spaces from the word
-            game.nextWord = game.nextWord.replace(/\s+/g, '');
         }
-
     }
 	// Send a request to PHP for a new word
     ajax.open("GET", "scripts/word_generator.php", false);
@@ -901,7 +897,7 @@ game.playLetterSpaces = {
         this.posX = Math.max(20, Math.min(5, this.org_posX - engine.widthDifference));
         this.posY = Math.max(game.playTimer.height + game.playTimer.posY + 20 * (1 - Math.max(engine.widthProportion, engine.heightProportion)), Math.min(game.inputKeypad.posY - this.height - 40), ((game.inputKeypad.posY - (game.playTimer.height + game.playTimer.posY)) / 2));
 
-        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (12) - 2;
+        this.btnWidth = (this.width - ((2 * this.btnMargin) + ((this.btnPerRow - 1) * (2 * this.btnMargin)))) / (14) - 2;
         this.btnHeight = this.height; //game.playLetterSpace.height;
 
 		// Adjust styles of every child element
@@ -951,15 +947,27 @@ game.playLetterSpaces = {
         for (var i = 0; i < this.btnPerRow; i++) {
 			// Identify the letter for this button
             letter = game.word.substr(i, 1).toUpperCase();
-
-            // Open outer div
-            buttonBuilder += divPrefix + i + '" class="word-spaces-container" style="width:' + (this.div.width / 12) + 'px">';
+            
+            if (letter == " ") {
+                // Open outer div "SPACE"
+                buttonBuilder += divPrefix + i + '" class="word-spaces-container" style="width:' + (this.div.width / 12) + 'px;opacity:0.0;">';
+                this.lettersFound++;
+            } else {
+                // Open outer div
+                buttonBuilder += divPrefix + i + '" class="word-spaces-container" style="width:' + (this.div.width / 12) + 'px">';
+            }
 
             // Inner Image
             buttonBuilder += btnPrefix + i + '" class="word-spaces-image" src="images/play_scene/play_empty_space.png">';
 
-            // Open inner div
-            buttonBuilder += innerDivPrefix + i + '" class="word-spaces-center-letter">';
+            if (letter == "-" || letter == "'") {
+                // Open inner div with hyphen or apostrophe
+                buttonBuilder += innerDivPrefix + i + '" class="word-spaces-center-letter" style="display:block">';
+                this.lettersFound++;
+            } else {
+                // Open inner div
+                buttonBuilder += innerDivPrefix + i + '" class="word-spaces-center-letter">';
+            }
 
             // Write letter
             buttonBuilder += letter;
@@ -988,7 +996,8 @@ game.playLetterSpaces = {
 	// Check if the letter matches the current word
     testLetter: function (input) {
 		// Declare score variable
-        var increaseBy = 0;
+        var increaseBy, decreaseBy, myIndex = 0;
+        var foundLetter = false;
 		
 		// Check all the buttons in the array
         for (var i = 0; i < this.keyArray.length; i++) {
@@ -1005,19 +1014,49 @@ game.playLetterSpaces = {
                 // Draw plane parts
                 game.planeManager.draw();
 
-                // Increment score
-                if (this.lettersFound == this.keyArray.length) {
-                    increaseBy = Math.floor(16 / Math.max(16 - this.lettersFound, 1)) * 3;
-                    game.playScoreBox.updateScore("Plane", increaseBy);
-                } else {
-                    increaseBy = 10;
-                    game.playScoreBox.updateScore("Letter", increaseBy);
-                }
-                game.score += increaseBy;
-				
-				// Update the score
-                game.playScore.updateScore();
+                // Track the number of letters found with this key press
+                myIndex++;
+                
+                // Identify that letters were found
+                foundLetter = true;
             }
+        }
+        
+        // Scoring
+        if (foundLetter) {
+            // Calculate Score
+            if (this.lettersFound == this.keyArray.length) {
+                // Plane Completion Points
+                increaseBy = Math.max(20 - this.keyArray.length, 1) * 4 * myIndex;
+                increaseBy += Math.max(20 - this.keyArray.length, 1) * 12;
+                
+                // Points Indicator
+                game.playScoreBox.updateScore("Plane", increaseBy);
+            } else {
+                // Letter(s) Found Points
+                increaseBy = Math.max(20 - this.keyArray.length, 1) * 4 * myIndex;
+                
+                // Points Indicator
+                game.playScoreBox.updateScore("Letter", increaseBy);
+            }
+            // Increase Score
+            game.score += increaseBy;
+
+            // Update the scoreboard
+            game.playScore.updateScore();
+        } else {
+            // If the player guesses incorrectly, decrease the score (floor: 0)
+            decreaseBy = Math.floor(Math.max(20 - this.keyArray.length, 1) * -1.5);
+            decreaseBy = ((game.score + decreaseBy) < 0) ? (game.score * -1) : decreaseBy;
+            
+            // Points Indicator
+            game.playScoreBox.updateScore("Letter", decreaseBy);
+            
+            // Decrease Score
+            game.score += decreaseBy;
+            
+            // Update the score
+            game.playScore.updateScore();
         }
 
         // Notify the game that all letters have been found

@@ -45,7 +45,7 @@ $(document).ready(function() {
                         });
 
                         $("#fadeOutOverlay").fadeOut(2000);
-                        $("#fadeOutLoader").fadeOut(3000);
+                        $("#fadeOutLoader").fadeOut(3000).promise().done(() => { window.game.drawOnce(); });
                     });
                 });
             });
