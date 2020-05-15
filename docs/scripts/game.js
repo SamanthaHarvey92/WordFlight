@@ -376,8 +376,19 @@ game.wordFlightTitle = {
     },
 	// Draw the object
     draw: function () {
+        this.adjustStyle();
+        //engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    },
+    adjustStyle: function () {
         this.resize();
-        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
+        this.image.style.margin = "40px 0px 0px 0px";
     }
 };
 
@@ -736,8 +747,19 @@ game.playTitle = {
     },
 	// Draw the object
     draw: function () {
+        this.adjustStyle();
+        //engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    },
+    adjustStyle: function () {
         this.resize();
-        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
+        this.image.style.margin = "40px 0px 0px 20px";
     }
 };
 
@@ -1826,7 +1848,7 @@ game.playMenuButton = {
 
         // Attach Top-Right Side
         this.posX = engine.width - this.width;
-        this.posY = Math.max(5, Math.min(5, this.org_posY - engine.heightDifference));
+        this.posY = Math.max(50, Math.min(50, this.org_posY - engine.heightDifference));
     },
 	// Draw the object
     draw: function () {
@@ -1842,6 +1864,7 @@ game.playMenuButton = {
         this.image.style.width = this.width + "px";
         this.image.style.height = this.height + "px";
         this.image.style.zIndex = 1;
+        //this.image.style.margin = "40px 0px 0px 0px";
     }
 };
 
@@ -2130,8 +2153,19 @@ game.wordFlightTitleSmall = {
     },
 	// Draw the object
     draw: function () {
+        this.adjustStyle();
+        //engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    },
+    adjustStyle: function () {
         this.resize();
-        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
+        this.image.style.margin = "40px 0px 0px 20px";
     }
 };
 
@@ -2575,8 +2609,19 @@ game.leaderboardTitle = {
     },
 	// Draw the object
     draw: function () {
+        this.adjustStyle();
+        //engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+    },
+    adjustStyle: function () {
         this.resize();
-        engine.context.drawImage(this.image, this.posX, this.posY, this.width, this.height);
+        this.image.style.position = "absolute";
+        this.image.style.display = "block";
+        this.image.style.left = this.posX.toString() + "px";
+        this.image.style.top = this.posY.toString() + "px";
+        this.image.style.width = this.width + "px";
+        this.image.style.height = this.height + "px";
+        this.image.style.zIndex = 1;
+        this.image.style.margin = "40px 0px 0px 20px";
     }
 };
 
