@@ -219,7 +219,6 @@ game.timeoutOverlay = {
         this.currentTime = 0;
         this.initialTimerExpired = false;
         this.finalTimerExpired = false;
-        console.log("Updated timeout");
     },
 	// Timeout expired
     expireTimer: function () {
