@@ -271,3 +271,55 @@ body {
         transform: rotate(360deg);
     }
 }
+/* Difficulty Overlay */
+#difficultyOverlay {
+    height: 0px;
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.9);
+    overflow-y: hidden;
+    transition: 0.5s;
+}
+#difficultyContent {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    -ms-transform: translate(0%, 10%);
+    transform: translate(0%, 10%);
+}
+#difficultyOverlay p {
+    padding: 8px;
+    text-decoration: none;
+    font-family: BigShouldersDisplay-Semibold;
+    color: #E4E4E4;
+    display: block;
+    transition: 0.3s;
+}
+#difficultyOverlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-family: Roboto-Bold;
+    color: #C8C8C8;
+    display: block;
+    transition: 0.3s;
+}
+#difficultyOverlay #difficultyPlay {
+    padding: 8px;
+}
+#difficultyOverlay a:hover, difficultyOverlay a:focus {
+    color: #f41c63;
+}
+#difficultyOverlay a.active {
+    -webkit-animation: glow 1s ease-in-out infinite alternate;
+    -moz-animation: glow 1s ease-in-out infinite alternate;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+#difficultyOverlay .difficultyCloseButton {
+    position: absolute;
+    top: 40px;
+    right: 45px;
+}
