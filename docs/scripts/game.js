@@ -49,6 +49,7 @@ game.score = 0; // Current score
 game.readyForNextWord = false; // Test to identify when to update the word list
 game.playTime = (3 * 60 + 30) * 1000; // Play time (3:30)
 game.timeoutTime = 120; // Timeout time before returning to landing page
+game.difficulty = "medium"; //Current difficulty level
 
 game.lastTimeSized = new Date();
 
@@ -313,7 +314,7 @@ game.databaseQuery = function () {
         }
     }
     // Send a request to PHP for a new word
-    ajax.open("GET", "scripts/word_generator.php", false);
+    ajax.open("GET", "scripts/word_generator.php?d=" + game.difficulty, true);
     ajax.send();
 }
 
