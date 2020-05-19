@@ -276,7 +276,7 @@ body {
     height: 0px;
     width: 100%;
     position: fixed;
-    z-index: 1000;
+    z-index: 900;
     top: 0;
     left: 0;
     background-color: rgb(0,0,0);
