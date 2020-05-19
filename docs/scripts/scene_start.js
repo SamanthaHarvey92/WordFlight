@@ -217,22 +217,10 @@ game.startButton = {
     },
 	// Handle user interaction based on game state
     clickMe: function () {
-		// Inform Google the user started playing a game
-        game.google.start();
-        // Set game score to zero
-        game.score = 0;
-        // Reset the player object
-        game.player.reset();
-        // Get the current sponsor
-        game.getSponsor();
-        // Refresh the timeout timer
+		// Refresh the timeout timer
 		game.timeoutOverlay.refreshTimer();
-        // Set the new game state to Play Scene
-        game.currState = game.gameState[1];
-        // Hide all elements
-        game.hideElements.hideAll();
-        // Redraw all elements
-        game.drawOnce();
+        // Show the difficulty overlay before starting
+        game.difficultyOverlay.open();
     }
 };
 game.startButton.init(); // Force object initialization on first script load
