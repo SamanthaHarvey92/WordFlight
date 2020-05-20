@@ -340,8 +340,8 @@ body {
 #tutorialOverlay {
     position: relative;
     width: 100%;
-    -ms-transform: translate(0%, 10%);
-    transform: translate(0%, 10%);
+    transform: translate(-50%, -50%);
+    -ms-transform:translate(-50%, -50%);
 }
 #tutorialOverlay .tutorialCloseButton {
     position: absolute;
