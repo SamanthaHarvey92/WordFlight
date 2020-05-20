@@ -291,7 +291,11 @@ game.drawOnce = function () {
             
             // Difficulty Overlay
             this.difficultyOverlay.resize();
-            break;
+		    
+	    //Tutorial Overlay
+    	    this.tutorialOverlay.resize();
+	    break;
+		    
         case 'play':
             // Draw images on the canvas
             this.playBackground.draw();
