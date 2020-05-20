@@ -16,7 +16,7 @@
 window.game = Object.create(GameObject.prototype);
 
 // Keybindings
-game.keys = ['A', 'S', 'D', 'F', 'O', 'P'];
+game.keys = ['A', 'S', 'D', 'F', 'O', 'P', 'T', 'C'];
 for (var i = 0; i < game.keys.length; i++) {
     engine.input.bind(engine.key[game.keys[i]], game.keys[i]);
 }
@@ -284,6 +284,9 @@ game.tutorialOverlay = {
         this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
         this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
     }
+    tester: (key) => {
+        console.log(`Key: ${key}`);
+    },
 };
 
 // Update words
