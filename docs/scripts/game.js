@@ -16,8 +16,8 @@
 window.game = Object.create(GameObject.prototype);
 
 // Keybindings
-game.keys = ['A', 'S', 'D', 'F'];
-for (var i = 0; i < game.keys.length - 1; i++) {
+game.keys = ['A', 'S', 'D', 'F', 'O', 'P'];
+for (var i = 0; i < game.keys.length; i++) {
     engine.input.bind(engine.key[game.keys[i]], game.keys[i]);
 }
 
@@ -50,6 +50,7 @@ game.readyForNextWord = false; // Test to identify when to update the word list
 game.playTime = (3 * 60 + 30) * 1000; // Play time (3:30)
 game.timeoutTime = 120; // Timeout time before returning to landing page
 game.difficulty = "medium"; //Current difficulty level
+game.firstPlayThrough = false; // Flag for the first play through
 
 game.lastTimeSized = new Date();
 
@@ -230,6 +231,160 @@ game.timeoutOverlay = {
     }
 };
 game.timeoutOverlay.init(); // Force initialization of the timer during script load
+
+game.difficultyOverlay = {
+    div: document.getElementById("difficultyOverlay"),
+    divContent: document.getElementById("difficultyContent"),
+    divHeader: document.getElementById("difficultyHeader"),
+    aEasy: document.getElementById("difficultyEasy"),
+    aMedium: document.getElementById("difficultyMedium"),
+    aHard: document.getElementById("difficultyHard"),
+    aPlay: document.getElementById("difficultyPlay"),
+    divFooter: document.getElementById("difficultyPlay"),
+    closeButton: document.getElementById("difficultyCloseButton"),
+    org_header_size: 90,
+    org_select_size: 53,
+    org_action_size: 80,
+    org_closer_size: 60,
+    init: function() {
+        // Initialize the easy menu option
+        this.aEasy.addEventListener("click", function (e) {
+            console.log("<Game:Difficulty> Set to easy");
+            // Reset timeout overlay timer
+            game.timeoutOverlay.refreshTimer();
+            // Set difficulty to easy
+            game.difficulty = "easy";
+            // Update difficulty styles
+            game.difficultyOverlay.updateStyles();
+        });
+        
+        // Initialize the medium menu option
+        this.aMedium.addEventListener("click", function (e) {
+            console.log("<Game:Difficulty> Set to medium");
+            // Reset timeout overlay timer
+            game.timeoutOverlay.refreshTimer();
+            // Set difficulty to medium
+            game.difficulty = "medium";
+            // Update difficulty styles
+            game.difficultyOverlay.updateStyles();
+        });
+        
+        // Initialize the hard menu option
+        this.aHard.addEventListener("click", function (e) {
+            console.log("<Game:Difficulty> Set to hard");
+            // Reset timeout overlay timer
+            game.timeoutOverlay.refreshTimer();
+            // Set difficulty to hard
+            game.difficulty = "hard";
+            // Update difficulty styles
+            game.difficultyOverlay.updateStyles();
+        });
+        
+        // Initialize the play menu option
+        this.aPlay.addEventListener("click", function (e) {
+            console.log("<Game:Difficulty> Play");
+            // Reset timeout overlay timer
+            game.timeoutOverlay.refreshTimer();
+            // Perform scene transition test
+            game.difficultyOverlay.sceneTransition();
+        });
+        
+        // Initialize the close menu option
+        this.closeButton.addEventListener("click", function (e) {
+            console.log("<Game:Difficulty> Close button");
+            // Reset timeout overlay timer
+            game.timeoutOverlay.refreshTimer();
+            // Close the overlay
+            game.difficultyOverlay.close();
+        });
+            
+    },
+    open: function() {
+        this.updateStyles();
+        this.div.style.display = "block";
+        this.divContent.style.display = "block";
+        this.div.style.height = "100%";
+        console.log("<Game:Difficulty> Open Overlay");
+    },
+    close: function() {
+        this.div.style.height = "0%";
+        console.log("<Game:Difficulty> Close Overlay");
+    },
+    tester: (key) => {
+        console.log(`Key: ${key}`);
+    },
+    updateStyles: function() {
+        this.deactivateAll();
+        switch (game.difficulty) {
+            case "easy":
+                // Set element to active
+                this.aEasy.classList.add("active");
+                break;
+            case "medium":
+                // Set element to active
+                this.aMedium.classList.add("active");
+                break;
+            case "hard":
+                // Set element to active
+                this.aHard.classList.add("active");
+                break;
+            default:
+                game.difficulty = "medium";
+                this.updateStyles();
+                break;
+        }
+    },
+    deactivateAll: function() {
+        // Remove the active class from aEasy
+        if (this.aEasy.getAttribute("class") === 'active') {
+            this.aEasy.classList.remove("active");
+            console.log("<Game:DifficultyOverlay> Removed active from Easy");
+        }
+        // Remove the active class from aMedium
+        if (this.aMedium.getAttribute("class") === 'active') {
+            this.aMedium.classList.remove("active");
+            console.log("<Game:DifficultyOverlay> Removed active from Medium");
+        }
+        // Remove the active class from aHard
+        if (this.aHard.getAttribute("class") === 'active') {
+            this.aHard.classList.remove("active");
+            console.log("<Game:DifficultyOverlay> Removed active from Hard");
+        }
+    },
+    sceneTransition: function() {
+        console.log("<Game:DifficultyOverlay> Transition Scenes");
+        // Display the tutorial overlay if this is the first playthrough
+        if (game.firstPlayThrough) {
+            console.log("<Game:DifficultyOverlay> Display the tutorial");
+        } else {
+            // Otherwise, start the game
+            console.log("<Game:DifficultyOverlay> Transition to the Play Scene");
+            // Inform Google the user started playing a game
+            game.google.start();
+            // Set game score to zero
+            game.score = 0;
+            // Reset the player object
+            game.player.reset();
+            // Get the current sponsor
+            game.getSponsor();
+            // Refresh the timeout timer
+            game.timeoutOverlay.refreshTimer();
+            // Set the new game state to Play Scene
+            game.currState = game.gameState[1];
+            // Hide all elements
+            game.hideElements.hideAll();
+            // Redraw all elements
+            game.drawOnce();
+        }
+    },
+    resize: function() {
+        this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+        this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+        this.divHeader.style.fontSize = this.org_header_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+        this.divFooter.style.fontSize = this.org_action_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+    }
+};
+game.difficultyOverlay.init() // Force initialize all objects in the difficulty overlay
 
 // Update words
 // - Maintain a short record of words for the user, preventing latency interference

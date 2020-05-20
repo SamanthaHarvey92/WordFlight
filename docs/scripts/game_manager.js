@@ -45,6 +45,20 @@ game.gameController = {
         if (game.word === "") {
             game.updateWords.update();
         }
+        
+        // Toggle difficulty overlay
+        for (var i = 0; i < game.keys.length; i++) {
+            if (engine.input.pressed(game.keys[i])) {
+                game.difficultyOverlay.tester(`Key: ${game.keys[i]}`);
+                if (game.keys[i] == 'O') {
+                    game.difficultyOverlay.open();
+                } else if (game.keys[i] == 'P') {
+                    game.difficultyOverlay.close();
+                }
+                // Refresh timeout
+                game.timeoutOverlay.refreshTimer();
+            }
+        }
 
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
@@ -274,6 +288,9 @@ game.drawOnce = function () {
             this.leaderboardButton.adjustStyle();
             this.quitButton.adjustStyle();
             this.menuButton.adjustStyle();
+            
+            // Difficulty Overlay
+            this.difficultyOverlay.resize();
             break;
         case 'play':
             // Draw images on the canvas
