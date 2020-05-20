@@ -59,6 +59,20 @@ game.gameController = {
                 game.timeoutOverlay.refreshTimer();
             }
         }
+	    
+	//Toggle tutorial overlay
+	for (var i = 0; i < game.keys.length; i++) {
+	    if (engine.input.pressed(game.keys[i])) {
+	    	game.tutorialOverlay.tester(`Key: ${game.keys[i]}`);
+		    if (game.keys[i] == 'T') {
+		    	game.tutorialOverlay.open();
+		    } else if (game.keys[i] == 'C') {
+		    	game.tutorialOverlay.close();
+		    }
+		    //Refresh timeout
+		    game.timeoutOverlay.refreshTimer();
+	    }
+	}
 
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
