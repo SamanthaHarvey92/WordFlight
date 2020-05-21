@@ -337,11 +337,77 @@ body {
     overflow-y: hidden;
     transition: 0.5s;
 }
-#tutorialOverlay {
+#tutorialContent {
     position: relative;
     width: 100%;
     transform: translate(-50%, -50%);
     -ms-transform:translate(-50%, -50%);
+}
+#tutorialOverlay .image-container{
+    background-image: url("WordFlight_TutorialOverlay.png");
+    background-size: cover;
+    position: relative;
+    height: 300px;
+}
+#tutorialOverlay .score{
+    background-color: rgb(120, 120, 120);
+    color: black;
+    font-size: 125vw;
+    font-weight: bold;
+    margin: 0 auto;
+    padding: 400px;
+    width: 50%;
+    text-align: center;
+    position: absolute;
+    top: 10%;
+    left: 18%;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+}
+#tutorialOverlay .sponsor{
+    background-color: rgb(120,120,120);
+    color: black;
+    font-size: 125vw;
+    font-weight: bold;
+    margin: 0 auto;
+    padding: 450px;
+    width: 50%;
+    text-align: center;
+    position: absolute;
+    top: -2%;
+    left: 88%;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+}
+#tutorialOverlay .plane{
+    background-color: rgb(120,120,120);
+    color: black;
+    font-size: 700vw;
+    font-weight: bold;
+    margin: 0 auto;
+    padding: 450px;
+    width: 50%;
+    text-align: center;
+    position: absolute;
+    top: -45%;
+    left: 88%;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
+}
+#tutorialOverlay .keypad{
+    background-color: rgb(120,120,120);
+    color: black;
+    font-size: 500vw;
+    font-weight: bold;
+    margin: 0 auto;
+    padding: 450px;
+    width: 50%;
+    text-align: center;
+    position: absolute;
+    top: 44%;
+    left: 18%;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: screen;
 }
 #tutorialOverlay .tutorialCloseButton {
     position: absolute;
