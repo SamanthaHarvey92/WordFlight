@@ -343,6 +343,7 @@ body {
     transform: translate(-50%, -50%);
     -ms-transform:translate(-50%, -50%);
 }
+/* NOTED OUT SECTION: 
 #tutorialOverlay .image-container{
     background-image: url("WordFlight_TutorialOverlay.png");
     background-size: cover;
@@ -408,7 +409,7 @@ body {
     left: 18%;
     transform: translate(-50%, -50%);
     mix-blend-mode: screen;
-}
+}   */
 #tutorialOverlay .tutorialCloseButton {
     position: absolute;
     top: 40px;
