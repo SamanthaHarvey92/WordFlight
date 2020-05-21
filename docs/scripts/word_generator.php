@@ -1,28 +1,90 @@
 <?php
 // Link to the database connection string
-include( "../includes/db_admin.php" );
+include("../includes/db_admin.php");
 
-// Pull the connection from the database connection string
+
 $conn = $pdo;
 
-if ( $conn ) {
-    // Select a random word and its sponsor
-    // Prepare the SQL query statement
-    $stmt = $conn->prepare( "SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] ORDER BY NEWID();" );
+//Retrieve variable from AJAX
+$difficulty = $_GET['d'];
 
-    // Perform the SQL query
-    $stmt->execute();
+switch ($difficulty):
+    case "easy":
+        if ($conn) {
+            // Select a random word and its sponsor
+            // Prepare the SQL query statement
+            $stmt = $conn->prepare("SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] WHERE LEN([word]) < 6 ORDER BY NEWID();");
 
-    // Save the query results
-    $result = $stmt->fetchAll();
+            // Perform the SQL query
+            $stmt->execute();
 
-    // Pack the result with JSON and return to AJAX
-    echo json_encode( $result );
-} else {
-    // Notify the console of any errors
-    echo "<script>console.log('(" . $db_type . ")<" . $settings[ 'database' ][ 'driver' ] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
-}
+            // Save the query results
+            $result = $stmt->fetchAll();
 
-// Clear and close the connection
+            // Pack the result with JSON and return to AJAX
+            echo json_encode($result);
+        } else {
+            // Notify the console of any errors
+            echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
+        };
+        break;
+    case "medium":
+        if ($conn) {
+            // Select a random word and its sponsor
+            // Prepare the SQL query statement
+            $stmt = $conn->prepare("SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] WHERE LEN([word]) BETWEEN 5 AND 9 ORDER BY NEWID();");
+
+            // Perform the SQL query
+            $stmt->execute();
+
+            // Save the query results
+            $result = $stmt->fetchAll();
+
+            // Pack the result with JSON and return to AJAX
+            echo json_encode($result);
+        } else {
+            // Notify the console of any errors
+            echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
+        }
+        break;
+    case "hard":
+        if ($conn) {
+            // Select a random word and its sponsor
+            // Prepare the SQL query statement
+            $stmt = $conn->prepare("SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] ORDER BY NEWID();");
+
+            // Perform the SQL query
+            $stmt->execute();
+
+            // Save the query results
+            $result = $stmt->fetchAll();
+
+            // Pack the result with JSON and return to AJAX
+            echo json_encode($result);
+        } else {
+            // Notify the console of any errors
+            echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
+        };
+        break;
+    default:
+        if ($conn) {
+            // Select a random word and its sponsor
+            // Prepare the SQL query statement
+            $stmt = $conn->prepare("SELECT TOP (1) [word], [sponsor_name] FROM [FlyWithButchOhareDB_Copy].[dbo].[wordflightwords] A JOIN [FlyWithButchOhareDB_Copy].[dbo].[wordflightsponsors] B ON A.[sponsor_id]=B.[sponsor_id] ORDER BY NEWID();");
+
+            // Perform the SQL query
+            $stmt->execute();
+
+            // Save the query results
+            $result = $stmt->fetchAll();
+
+            // Pack the result with JSON and return to AJAX
+            echo json_encode($result);
+        } else {
+            // Notify the console of any errors
+            echo "<script>console.log('(" . $db_type . ")<" . $settings['database']['driver'] . "> connection to [" . $db_location . "] unsuccessful.');</script>";
+        };
+endswitch;
+
+
 $conn = null;
-?>
