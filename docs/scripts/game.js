@@ -256,13 +256,8 @@ game.difficultyOverlay = {
             game.difficulty = "easy";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
-            //reset words
-            game.word = "";
-            game.nextWord = "";
-            game.lastSponsor = "";
-            game.sponsor = "";
-            game.nextSponsor = "";
-            game.sponsorId = "";
+            // Reset words
+            game.updateWords.reset();
             //re initialize words and sponsors
             game.updateWords.update();
         });
@@ -276,13 +271,8 @@ game.difficultyOverlay = {
             game.difficulty = "medium";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
-            //reset words
-            game.word = "";
-            game.nextWord = "";
-            game.lastSponsor = "";
-            game.sponsor = "";
-            game.nextSponsor = "";
-            game.sponsorId = "";
+            // Reset words
+            game.updateWords.reset();
             //re initialize words and sponsors
             game.updateWords.update();
         });
@@ -296,14 +286,9 @@ game.difficultyOverlay = {
             game.difficulty = "hard";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
-            //reset words
-            game.word = "";
-            game.nextWord = "";
-            game.lastSponsor = "";
-            game.sponsor = "";
-            game.nextSponsor = "";
-            game.sponsorId = "";
-            //re initialize words and sponsors
+            // Reset words
+            game.updateWords.reset();
+            // Re initialize words and sponsors
             game.updateWords.update();
         });
 
@@ -443,6 +428,15 @@ game.updateWords = {
             this.word();
             this.nextWord();
         }
+    },
+    // Reset the list of words (difficulty changes)
+    reset: function() {
+        game.word = "";
+        game.nextWord = "";
+        game.lastSponsor = "";
+        game.sponsor = "";
+        game.nextSponsor = "";
+        game.sponsorId = "";
     }
 }
 
