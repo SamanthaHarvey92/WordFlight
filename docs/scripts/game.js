@@ -246,7 +246,7 @@ game.difficultyOverlay = {
     org_select_size: 53,
     org_action_size: 80,
     org_closer_size: 60,
-    init: function() {
+    init: function () {
         // Initialize the easy menu option
         this.aEasy.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Set to easy");
@@ -256,8 +256,12 @@ game.difficultyOverlay = {
             game.difficulty = "easy";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
+            // Reset words
+            game.updateWords.reset();
+            //re initialize words and sponsors
+            game.updateWords.update();
         });
-        
+
         // Initialize the medium menu option
         this.aMedium.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Set to medium");
@@ -267,8 +271,12 @@ game.difficultyOverlay = {
             game.difficulty = "medium";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
+            // Reset words
+            game.updateWords.reset();
+            //re initialize words and sponsors
+            game.updateWords.update();
         });
-        
+
         // Initialize the hard menu option
         this.aHard.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Set to hard");
@@ -278,8 +286,12 @@ game.difficultyOverlay = {
             game.difficulty = "hard";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
+            // Reset words
+            game.updateWords.reset();
+            // Re initialize words and sponsors
+            game.updateWords.update();
         });
-        
+
         // Initialize the play menu option
         this.aPlay.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Play");
@@ -288,7 +300,7 @@ game.difficultyOverlay = {
             // Perform scene transition test
             game.difficultyOverlay.sceneTransition();
         });
-        
+
         // Initialize the close menu option
         this.closeButton.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Close button");
@@ -297,23 +309,23 @@ game.difficultyOverlay = {
             // Close the overlay
             game.difficultyOverlay.close();
         });
-            
+
     },
-    open: function() {
+    open: function () {
         this.updateStyles();
         this.div.style.display = "block";
         this.divContent.style.display = "block";
         this.div.style.height = "100%";
         console.log("<Game:Difficulty> Open Overlay");
     },
-    close: function() {
+    close: function () {
         this.div.style.height = "0%";
         console.log("<Game:Difficulty> Close Overlay");
     },
     tester: (key) => {
         console.log(`Key: ${key}`);
     },
-    updateStyles: function() {
+    updateStyles: function () {
         this.deactivateAll();
         switch (game.difficulty) {
             case "easy":
@@ -334,7 +346,7 @@ game.difficultyOverlay = {
                 break;
         }
     },
-    deactivateAll: function() {
+    deactivateAll: function () {
         // Remove the active class from aEasy
         if (this.aEasy.getAttribute("class") === 'active') {
             this.aEasy.classList.remove("active");
@@ -351,7 +363,7 @@ game.difficultyOverlay = {
             console.log("<Game:DifficultyOverlay> Removed active from Hard");
         }
     },
-    sceneTransition: function() {
+    sceneTransition: function () {
         console.log("<Game:DifficultyOverlay> Transition Scenes");
         // Display the tutorial overlay if this is the first playthrough
         if (game.firstPlayThrough) {
@@ -377,7 +389,7 @@ game.difficultyOverlay = {
             game.drawOnce();
         }
     },
-    resize: function() {
+    resize: function () {
         this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
         this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
         this.divHeader.style.fontSize = this.org_header_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
@@ -416,6 +428,15 @@ game.updateWords = {
             this.word();
             this.nextWord();
         }
+    },
+    // Reset the list of words (difficulty changes)
+    reset: function() {
+        game.word = "";
+        game.nextWord = "";
+        game.lastSponsor = "";
+        game.sponsor = "";
+        game.nextSponsor = "";
+        game.sponsorId = "";
     }
 }
 
