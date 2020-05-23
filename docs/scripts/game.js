@@ -16,7 +16,7 @@
 window.game = Object.create(GameObject.prototype);
 
 // Keybindings
-game.keys = ['A', 'S', 'D', 'F', 'O', 'P'];
+game.keys = ['A', 'S', 'D', 'F', 'O', 'P', 'T', 'C'];
 for (var i = 0; i < game.keys.length; i++) {
     engine.input.bind(engine.key[game.keys[i]], game.keys[i]);
 }
@@ -397,6 +397,174 @@ game.difficultyOverlay = {
     }
 };
 game.difficultyOverlay.init() // Force initialize all objects in the difficulty overlay
+
+//Tutorial Overlay
+game.tutorialOverlay = {
+    div: document.getElementById("tutorialOverlay"),
+    divContent: document.getElementById("tutorialContent"),
+    closeButton: document.getElementById("tutorialCloseButton"),
+    img01: document.getElementsByName("tutImg1"),
+    img02: document.getElementsByName("tutImg2"),
+    img03: document.getElementsByName("tutImg3"),
+    img04: document.getElementsByName("tutImg4"),
+    tutImg1: document.getElementById("tutorialImage01"),
+    tutImg2: document.getElementById("tutorialImage02"),
+    tutImg3: document.getElementById("tutorialImage03"),
+    tutImg4: document.getElementById("tutorialImage04"),
+    tutTxt1: document.getElementById("tutorialText01"),
+    tutTxt2: document.getElementById("tutorialText02"),
+    tutTxt3: document.getElementById("tutorialText03"),
+    tutTxt4: document.getElementById("tutorialText04"),
+    tutorialPages: document.getElementById("tutorialPages"),
+    org_header_size: 90,
+    org_select_size: 53,
+    org_action_size: 80,
+    org_closer_size: 60,
+    activeE: 0,
+    init: function() {
+        // Images
+        this.tutImg1.addEventListener("click", this.nextSlide);
+        this.tutImg2.addEventListener("click", this.nextSlide);
+        this.tutImg3.addEventListener("click", this.nextSlide);
+        this.tutImg4.addEventListener("click", this.nextSlide);
+        // Text
+        this.tutTxt1.addEventListener("click", this.nextSlide);
+        this.tutTxt2.addEventListener("click", this.nextSlide);
+        this.tutTxt3.addEventListener("click", this.nextSlide);
+        this.tutTxt4.addEventListener("click", this.nextSlide);
+        // Pagination
+        $("#tutorialPages a:nth-child(1)").on("click", function() { game.tutorialOverlay.pagesUpdate(1);});
+        $("#tutorialPages a:nth-child(2)").on("click", function() { game.tutorialOverlay.pagesUpdate(2);});
+        $("#tutorialPages a:nth-child(3)").on("click", function() { game.tutorialOverlay.pagesUpdate(3);});
+        $("#tutorialPages a:nth-child(4)").on("click", function() { game.tutorialOverlay.pagesUpdate(4);});
+        // Close Button
+        this.closeButton.addEventListener("click", this.close);
+    },
+    open: function() {
+        this.div.style.display = "block";
+        this.divContent.style.display = "block";
+        this.div.style.height = "100%";
+        
+        for (var i = 0; i < this.img01.length; i++) {
+            this.img01[i].style.display = "block";
+        }
+        for (var i = 0; i < this.img02.length; i++) {
+            this.img02[i].style.display = "none";
+        }
+        for (var i = 0; i < this.img03.length; i++) {
+            this.img03[i].style.display = "none";
+        }
+        for (var i = 0; i < this.img04.length; i++) {
+            this.img04[i].style.display = "none";
+        }
+        
+        console.log("<Game:Tutorial> Open");
+    },
+    close: function() {
+        game.tutorialOverlay.div.style.height = "0%";
+        console.log("<Game:Tutorial> Close");
+    },
+    resize: function() {
+        this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+        this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+    },
+    pagesUpdate: (key) => {
+        game.tutorialOverlay.activeE = key - 2;
+        console.log(`Active: ${game.tutorialOverlay.activeE}`);
+        game.tutorialOverlay.nextSlide();
+    },
+    nextSlide: function() {
+        game.tutorialOverlay.activeE += 1;
+        console.log(`Active ${game.tutorialOverlay.activeE}`);
+        switch(game.tutorialOverlay.activeE) {
+            case 0:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.add("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "block";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "none";
+                }
+                break;
+            case 1:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.add("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "block";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "none";
+                }
+                break;
+            case 2:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.add("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "block";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "none";
+                }
+                break;
+            case 3:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.add("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "block";
+                }
+                break;
+            default:
+                // Exit tutorial (aka. start game)
+                break;
+        }
+    },
+    clickMe: () => {
+        console.log("Clicked!");
+    },
+    startGame: () => {
+        
+    },
+    tester: (key) => {
+        console.log(`Key: ${key}`);
+    }
+};
+game.tutorialOverlay.init(); // Force initialize all event listeners
 
 // Update words
 // - Maintain a short record of words for the user, preventing latency interference
