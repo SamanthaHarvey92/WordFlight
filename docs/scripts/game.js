@@ -283,10 +283,10 @@ game.tutorialOverlay = {
     resize: function() {
         this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
         this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
-    }
+    },
     tester: (key) => {
         console.log(`Key: ${key}`);
-    },
+    }
 };
 
 // Update words
