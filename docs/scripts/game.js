@@ -304,16 +304,11 @@ game.updateWords = {
     },
     // Query the database for a new word/sponsor pair
     nextWord: function () {
-        //game.databaseQuery();
-        game.nextWord = "chai";
-        game.nextSponsor = "BROOKSTONE";
+        game.databaseQuery();
     },
     // Update the list of words
     update: function () {
-       this.nextWord();
-       this.word();
-       this.lastWord();
-        /*if (game.word == game.lastWord) {
+        if (game.word == game.lastWord) {
             // Set initial words
             this.nextWord();
             this.word();
@@ -323,7 +318,7 @@ game.updateWords = {
             this.lastWord();
             this.word();
             this.nextWord();
-        }*/
+        }
     }
 }
 
