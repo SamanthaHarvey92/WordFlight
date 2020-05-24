@@ -288,8 +288,8 @@ body {
     vertical-align: middle;
 }
 #difficultyOverlay p {
-    padding: 1vh 1vw;
-    font-size: 7vh;
+    padding: 0.5vh 0.5vw;
+    font-size: 6vh;
     text-decoration: none;
     font-family: BigShouldersDisplay-Semibold;
     color: #E4E4E4;
@@ -298,7 +298,7 @@ body {
     transition: 0.3s;
 }
 #difficultyOverlay a {
-    padding: 1vh 1vw;
+    padding: 0.5vh 0.5vw;
     font-size: 5vh;
     text-decoration: none;
     font-family: Roboto-Bold;
