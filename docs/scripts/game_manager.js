@@ -433,9 +433,6 @@ window.onfocus = function () {
     return game.drawOnce();
 };
 
-// Refresh CSS and JavaScript
-window.location.reload(true);
-
 // First draw event
 window.game.drawOnce();
 
