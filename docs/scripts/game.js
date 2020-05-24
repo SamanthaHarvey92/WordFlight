@@ -400,10 +400,8 @@ game.difficultyOverlay = {
         }
     },
     resize: function () {
-        this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
-        this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
-        this.divHeader.style.fontSize = this.org_header_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
-        this.divFooter.style.fontSize = this.org_action_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+        // Align the div element in the center of the screen
+        this.divContent.style.top = engine.height / 2 - this.divContent.offsetHeight / 2 + "px";
     }
 };
 game.difficultyOverlay.init() // Force initialize all objects in the difficulty overlay
