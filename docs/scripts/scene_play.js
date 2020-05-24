@@ -15,7 +15,7 @@ game.playTutorial = {
         game.playTutorial.div.className = "show";
         setTimeout(function(){
             game.playTutorial.div.className = game.playTutorial.div.className.replace("show", "");
-        }, 15000);
+        }, 5000);
     }
 };
 game.playTutorial.init(); // Force the play tutorial snackbar to initialize
