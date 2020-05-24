@@ -77,6 +77,7 @@ game.gameController = {
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
+                game.playTutorial.play();
                 // Set game score to zero
                 game.score = 0;
                 // Reset the player object
@@ -347,6 +348,9 @@ game.drawOnce = function () {
             this.inputKeypad.adjustStyle();
             this.playLetterSpaces.adjustStyle();
             this.inputKeypad.adjustStyle();
+            
+            // Display Snackbar
+            this.playTutorial.draw();
             break;
         case 'end':
             // Draw images on the canvas

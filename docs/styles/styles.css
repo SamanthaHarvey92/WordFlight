@@ -8,12 +8,10 @@
     font-family: BigShouldersDisplay-SemiBold;
     src: url("BigShouldersDisplay-SemiBold.ttf");
 }
-
 body {
     overflow: -moz-scrollbars-none;
     overflow: hidden !important;
 }
-
 /* Play/End Scene Keypads */
 .keypad-container {
     position: relative;
@@ -242,7 +240,6 @@ body {
     position: absolute;
     left: 50%;
     top: 50%;
-
     width: 30vw;
     height: 30vw;
     margin: -19vw 0 0 -19vw;
@@ -251,7 +248,6 @@ body {
     border-top: 4vw solid #f41c63;
     border-bottom: 4vw solid #2581af;
     z-index: 1001;
-    
     -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
 }
@@ -279,8 +275,8 @@ body {
     z-index: 900;
     top: 0;
     left: 0;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.9);
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.9);
     overflow-y: hidden;
     transition: 0.5s;
 }
@@ -323,7 +319,6 @@ body {
     top: 40px;
     right: 45px;
 }
-
 /* Tutorial Overlay */
 #tutorialOverlay {
     height: 0px;
@@ -332,9 +327,9 @@ body {
     z-index: 1000;
     top: 0;
     left: 0;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.9);
-    overflow-y: hidden;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.9);
+    overflow: hidden;
     transition: 0.5s;
 }
 #tutorialContent {
@@ -342,7 +337,7 @@ body {
     width: 90%;
     height: 90%;
     transform: translate(5%, 5%);
-    -ms-transform:translate(5%, 5%);
+    -ms-transform: translate(5%, 5%);
 }
 #tutorialOverlay a {
     padding: 8px;
@@ -355,7 +350,7 @@ body {
 #tutorialOverlay a:hover, #tutorialOverlay a:focus, #tutorialOverlay a.active {
     color: #f41c63;
 }
-#tutorialOverlay .image-container{
+#tutorialOverlay .image-container {
     background-image: url("../images/WordFlight_TutorialOverlay.png");
     background-repeat: no-repeat;
     background-size: contain;
@@ -363,15 +358,15 @@ body {
     height: 100%;
     width: 100%;
 }
-#tutorialOverlay .image-container:active{
-    display:block;
+#tutorialOverlay .image-container:active {
+    display: block;
 }
-#tutorialOverlay .image-container:not(active){
-    display:none;
+#tutorialOverlay .image-container:not(active) {
+    display: none;
 }
-#tutorialOverlay .score-highlight{
-    background-color: rgb(25,25,25);
-    color: rgb(255,255,255);
+#tutorialOverlay .score-highlight {
+    background-color: rgb(25, 25, 25);
+    color: rgb(255, 255, 255);
     font-size: 100vw;
     font-weight: bold;
     margin: 0px;
@@ -383,16 +378,17 @@ body {
     mix-blend-mode: multiply;
     transition: 1.0s;
 }
-#tutorialOverlay .score-text{
+#tutorialOverlay .score-text {
     position: absolute;
     color: white;
     font-weight: bold;
     bottom: 128px;
     left: 10px;
+    font-family: Roboto-Bold;
 }
-#tutorialOverlay .mySponsor-highlight{
-    background-color: rgb(25,25,25);
-    color: rgb(255,255,255);
+#tutorialOverlay .mySponsor-highlight {
+    background-color: rgb(25, 25, 25);
+    color: rgb(255, 255, 255);
     font-size: 80vw;
     font-weight: bold;
     margin: 0px;
@@ -404,17 +400,18 @@ body {
     mix-blend-mode: multiply;
     transition: 1.0s;
 }
-#tutorialOverlay .mySponsor-text{
+#tutorialOverlay .mySponsor-text {
     position: absolute;
     color: white;
     font-weight: bold;
     bottom: 95px;
     left: 10px;
     right: 15%;
+    font-family: Roboto-Bold;
 }
-#tutorialOverlay .plane-highlight{
-    background-color: rgb(25,25,25);
-    color: rgb(255,255,255);
+#tutorialOverlay .plane-highlight {
+    background-color: rgb(25, 25, 25);
+    color: rgb(255, 255, 255);
     font-size: 200vw;
     font-weight: bold;
     margin: 0px;
@@ -426,16 +423,17 @@ body {
     mix-blend-mode: multiply;
     transition: 1.0s;
 }
-#tutorialOverlay .plane-text{
+#tutorialOverlay .plane-text {
     position: absolute;
     color: white;
     font-weight: bold;
     bottom: 135px;
     left: 10px;
+    font-family: Roboto-Bold;
 }
-#tutorialOverlay .keypad-highlight{
-    background-color: rgb(25,25,25);
-    color: rgb(255,255,255);
+#tutorialOverlay .keypad-highlight {
+    background-color: rgb(25, 25, 25);
+    color: rgb(255, 255, 255);
     font-size: 120vw;
     font-weight: bold;
     margin: 0px;
@@ -447,12 +445,13 @@ body {
     mix-blend-mode: multiply;
     transition: 1.0s;
 }
-#tutorialOverlay .keypad-text{
+#tutorialOverlay .keypad-text {
     position: absolute;
     color: white;
     font-weight: bold;
     top: 30%;
     left: 10px;
+    font-family: Roboto-Bold;
 }
 #tutorialOverlay .tutorialCloseButton {
     position: absolute;
@@ -471,13 +470,76 @@ body {
     width: 50%;
     text-align: center;
     transform: translate(50%, 0);
+    font-family: Roboto-Bold;
 }
 #tutorialPages a {
     display: inherit;
     position: relative;
-    background-color: rgb(104,47,122);
-    background-color: rgba(104,47,122,0.67);
+    background-color: rgb(104, 47, 122);
+    background-color: rgba(104, 47, 122, 0.67);
     margin: 0px;
     padding: 10px 0px;
     width: 12.5%;
+}
+/* Tutorial Snackbar */
+#playSnackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 40px;
+    font-size: 24px;
+    font-family: BigShouldersDisplay-SemiBold;
+}
+#playSnackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 14.5s;
+    animation: fadein 0.5s, fadeout 0.5s 14.5s;
+}
+@-webkit-keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+    to {
+        top: 40px;
+        opacity: 1;
+    }
+}
+@keyframes fadein {
+    from {
+        top: 0;
+        opacity: 0;
+    }
+    to {
+        top: 40px;
+        opacity: 1;
+    }
+}
+@-webkit-keyframes fadeout {
+    from {
+        top: 40px;
+        opacity: 1;
+    }
+    to {
+        top: 0;
+        opacity: 0;
+    }
+}
+@keyframes fadeout {
+    from {
+        top: 40px;
+        opacity: 1;
+    }
+    to {
+        top: 0;
+        opacity: 0;
+    }
 }
