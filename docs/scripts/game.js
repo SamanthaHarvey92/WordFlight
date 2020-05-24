@@ -613,7 +613,7 @@ game.tutorialOverlay = {
             // Refresh the timeout timer
             game.timeoutOverlay.refreshTimer();
             // Display keypads
-            game.playLetterSpaces.showLetters();
+            game.playLetterSpaces.adjustStyle();
             game.inputKeypad.adjustStyle();
             // Redraw all elements
             game.drawOnce();
