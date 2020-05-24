@@ -312,8 +312,6 @@ game.difficultyOverlay = {
 
     },
     open: function () {
-        // Reset the height
-        this.div.style.height = "0%";
         // Reset words
         game.updateWords.reset();
         this.updateStyles();
@@ -372,7 +370,7 @@ game.difficultyOverlay = {
         // Display the tutorial overlay if this is the first playthrough
         if (game.firstPlayThrough) {
             console.log("<Game:DifficultyOverlay> Display the tutorial");
-            // Close difficulty overlay
+            // Close difficulty overlay to maintain proper functionality
             game.difficultyOverlay.close();
             // Open tutorial overlay
             game.tutorialOverlay.open();
@@ -397,13 +395,20 @@ game.difficultyOverlay = {
             game.hideElements.hideAll();
             // Redraw all elements
             game.drawOnce();
+            // Close difficulty overlay to maintain proper functionality
+            game.difficultyOverlay.close();
         }
     },
     resize: function () {
-        this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
-        this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
-        this.divHeader.style.fontSize = this.org_header_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
-        this.divFooter.style.fontSize = this.org_action_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+        if (parseInt(this.divContent.offsetHeight) > 0) {
+            // Set to 0, then attempt to update
+            this.divContent.style.top = "0px";
+            // Align the div element in the center of the screen
+            this.divContent.style.top = engine.height / 2 - this.divContent.offsetHeight / 2 + "px";
+        } else {
+            // Set to 10
+            this.divContent.style.top = "10px";
+        }
     }
 };
 game.difficultyOverlay.init() // Force initialize all objects in the difficulty overlay
@@ -512,7 +517,6 @@ game.tutorialOverlay = {
         game.timeoutOverlay.refreshTimer();
         // Get the active slide
         game.tutorialOverlay.activeE += 1;
-        console.log(`Active: ${game.tutorialOverlay.activeE}`);
         // Update the slide
         switch(game.tutorialOverlay.activeE) {
             case 0:
