@@ -1,6 +1,25 @@
 // JavaScript Document
 
 // - Play Scene
+//   - Tutorial Snackbar
+game.playTutorial = {
+    div: document.getElementById("playSnackbar"),
+    init: function() {
+        game.playTutorial.div.style.display = "block";
+        this.div.addEventListener("click", game.tutorialOverlay.openAlternate)
+    },
+    draw: function() {
+        this.div.style.display = "block";
+    },
+    play: function() {
+        game.playTutorial.div.className = "show";
+        setTimeout(function(){
+            game.playTutorial.div.className = game.playTutorial.div.className.replace("show", "");
+        }, 15000);
+    }
+};
+game.playTutorial.init(); // Force the play tutorial snackbar to initialize
+
 //   - Images
 game.playBackground = {
 	// Get handle to image
@@ -214,6 +233,7 @@ game.playLetterSpaces = {
 		// Adjust styles of every child element
         for (var i = 0; i < this.keyArray.length; i++) {
             var domElement = document.getElementById(this.keyArray[i]);
+            domElement.style.display = "inline-block";
             domElement.style.width = this.btnWidth + "px";
             domElement.style.height = domElement.childNodes[1].style.getPropertyValue('height') + "px";
             domElement.childNodes[1].style.fontSize = this.btnWidth * 0.65 + "px";
@@ -929,6 +949,10 @@ game.playTimerBox = {
         // Set the end time
         this.timeEnd = Date.now() + game.playTime;
     },
+    startTimerAlternate: function (newTime) {
+        // Update the new end time
+        this.timeEnd = newTime;
+    },
     displayTimer: function () {
         // Display time in MM:SS format
         if ((this.timeSeconds) >= 0) {
@@ -1219,7 +1243,6 @@ game.inputKeypad = {
                 // Attach Left Side with Buffer
                 this.posX = Math.max(20, Math.min(30, this.org_posX - engine.widthDifference));
                 this.posY = engine.height - this.height - 50 * (1 - Math.max(engine.widthProportion, engine.heightProportion));
-                //Math.min(game.playLetterSpace.height + game.playLetterSpace.posY + 40, engine.height - this.height - 40);
 
                 this.btnWidth = this.width / 14;
 

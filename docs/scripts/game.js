@@ -16,7 +16,7 @@
 window.game = Object.create(GameObject.prototype);
 
 // Keybindings
-game.keys = ['A', 'S', 'D', 'F', 'O', 'P'];
+game.keys = ['A', 'S', 'D', 'F', 'O', 'P', 'T', 'C'];
 for (var i = 0; i < game.keys.length; i++) {
     engine.input.bind(engine.key[game.keys[i]], game.keys[i]);
 }
@@ -50,7 +50,7 @@ game.readyForNextWord = false; // Test to identify when to update the word list
 game.playTime = (3 * 60 + 30) * 1000; // Play time (3:30)
 game.timeoutTime = 120; // Timeout time before returning to landing page
 game.difficulty = "medium"; //Current difficulty level
-game.firstPlayThrough = false; // Flag for the first play through
+game.firstPlayThrough = true; // Flag for the first play through
 
 game.lastTimeSized = new Date();
 
@@ -246,7 +246,7 @@ game.difficultyOverlay = {
     org_select_size: 53,
     org_action_size: 80,
     org_closer_size: 60,
-    init: function() {
+    init: function () {
         // Initialize the easy menu option
         this.aEasy.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Set to easy");
@@ -256,8 +256,12 @@ game.difficultyOverlay = {
             game.difficulty = "easy";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
+            // Reset words
+            game.updateWords.reset();
+            //re initialize words and sponsors
+            game.updateWords.update();
         });
-        
+
         // Initialize the medium menu option
         this.aMedium.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Set to medium");
@@ -267,8 +271,12 @@ game.difficultyOverlay = {
             game.difficulty = "medium";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
+            // Reset words
+            game.updateWords.reset();
+            //re initialize words and sponsors
+            game.updateWords.update();
         });
-        
+
         // Initialize the hard menu option
         this.aHard.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Set to hard");
@@ -278,8 +286,12 @@ game.difficultyOverlay = {
             game.difficulty = "hard";
             // Update difficulty styles
             game.difficultyOverlay.updateStyles();
+            // Reset words
+            game.updateWords.reset();
+            // Re initialize words and sponsors
+            game.updateWords.update();
         });
-        
+
         // Initialize the play menu option
         this.aPlay.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Play");
@@ -288,7 +300,7 @@ game.difficultyOverlay = {
             // Perform scene transition test
             game.difficultyOverlay.sceneTransition();
         });
-        
+
         // Initialize the close menu option
         this.closeButton.addEventListener("click", function (e) {
             console.log("<Game:Difficulty> Close button");
@@ -297,23 +309,27 @@ game.difficultyOverlay = {
             // Close the overlay
             game.difficultyOverlay.close();
         });
-            
+
     },
-    open: function() {
+    open: function () {
+        // Reset the height
+        this.div.style.height = "0%";
+        // Reset words
+        game.updateWords.reset();
         this.updateStyles();
         this.div.style.display = "block";
         this.divContent.style.display = "block";
         this.div.style.height = "100%";
         console.log("<Game:Difficulty> Open Overlay");
     },
-    close: function() {
+    close: function () {
         this.div.style.height = "0%";
         console.log("<Game:Difficulty> Close Overlay");
     },
     tester: (key) => {
         console.log(`Key: ${key}`);
     },
-    updateStyles: function() {
+    updateStyles: function () {
         this.deactivateAll();
         switch (game.difficulty) {
             case "easy":
@@ -334,7 +350,7 @@ game.difficultyOverlay = {
                 break;
         }
     },
-    deactivateAll: function() {
+    deactivateAll: function () {
         // Remove the active class from aEasy
         if (this.aEasy.getAttribute("class") === 'active') {
             this.aEasy.classList.remove("active");
@@ -351,14 +367,20 @@ game.difficultyOverlay = {
             console.log("<Game:DifficultyOverlay> Removed active from Hard");
         }
     },
-    sceneTransition: function() {
+    sceneTransition: function () {
         console.log("<Game:DifficultyOverlay> Transition Scenes");
         // Display the tutorial overlay if this is the first playthrough
         if (game.firstPlayThrough) {
             console.log("<Game:DifficultyOverlay> Display the tutorial");
+            // Close difficulty overlay
+            game.difficultyOverlay.close();
+            // Open tutorial overlay
+            game.tutorialOverlay.open();
         } else {
             // Otherwise, start the game
             console.log("<Game:DifficultyOverlay> Transition to the Play Scene");
+            // Activate tutorial helper
+            game.playTutorial.play();
             // Inform Google the user started playing a game
             game.google.start();
             // Set game score to zero
@@ -377,7 +399,7 @@ game.difficultyOverlay = {
             game.drawOnce();
         }
     },
-    resize: function() {
+    resize: function () {
         this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
         this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
         this.divHeader.style.fontSize = this.org_header_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
@@ -385,6 +407,247 @@ game.difficultyOverlay = {
     }
 };
 game.difficultyOverlay.init() // Force initialize all objects in the difficulty overlay
+
+//Tutorial Overlay
+game.tutorialOverlay = {
+    div: document.getElementById("tutorialOverlay"),
+    divContent: document.getElementById("tutorialContent"),
+    closeButton: document.getElementById("tutorialCloseButton"),
+    img01: document.getElementsByName("tutImg1"),
+    img02: document.getElementsByName("tutImg2"),
+    img03: document.getElementsByName("tutImg3"),
+    img04: document.getElementsByName("tutImg4"),
+    tutImg1: document.getElementById("tutorialImage01"),
+    tutImg2: document.getElementById("tutorialImage02"),
+    tutImg3: document.getElementById("tutorialImage03"),
+    tutImg4: document.getElementById("tutorialImage04"),
+    tutTxt1: document.getElementById("tutorialText01"),
+    tutTxt2: document.getElementById("tutorialText02"),
+    tutTxt3: document.getElementById("tutorialText03"),
+    tutTxt4: document.getElementById("tutorialText04"),
+    tutorialPages: document.getElementById("tutorialPages"),
+    org_header_size: 90,
+    org_select_size: 53,
+    org_action_size: 80,
+    org_closer_size: 60,
+    activeE: 0,
+    altOpen: false,
+    orgTimeStart: null,
+    init: function() {
+        // Images
+        this.tutImg1.addEventListener("click", this.nextSlide);
+        this.tutImg2.addEventListener("click", this.nextSlide);
+        this.tutImg3.addEventListener("click", this.nextSlide);
+        this.tutImg4.addEventListener("click", this.nextSlide);
+        // Text
+        this.tutTxt1.addEventListener("click", this.nextSlide);
+        this.tutTxt2.addEventListener("click", this.nextSlide);
+        this.tutTxt3.addEventListener("click", this.nextSlide);
+        this.tutTxt4.addEventListener("click", this.nextSlide);
+        // Pagination
+        $("#tutorialPages a:nth-child(1)").on("click", function() { game.tutorialOverlay.pagesUpdate(0);});
+        $("#tutorialPages a:nth-child(2)").on("click", function() { game.tutorialOverlay.pagesUpdate(1);});
+        $("#tutorialPages a:nth-child(3)").on("click", function() { game.tutorialOverlay.pagesUpdate(2);});
+        $("#tutorialPages a:nth-child(4)").on("click", function() { game.tutorialOverlay.pagesUpdate(3);});
+        // Close Button
+        this.closeButton.addEventListener("click", this.close);
+    },
+    // Open the tutorial overlay
+    open: function() {
+        // Reset the height
+        this.div.style.height = "0%";
+        game.tutorialOverlay.div.style.display = "block";
+        game.tutorialOverlay.divContent.style.display = "block";
+        game.tutorialOverlay.div.style.height = "100%";
+        
+        for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+            game.tutorialOverlay.img01[i].style.display = "block";
+        }
+        for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+            game.tutorialOverlay.img02[i].style.display = "none";
+        }
+        for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+            game.tutorialOverlay.img03[i].style.display = "none";
+        }
+        for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+            game.tutorialOverlay.img04[i].style.display = "none";
+        }
+        
+        $("#tutorialPages").css("display", "inline-block");
+        
+        console.log("<Game:Tutorial> Open");
+    },
+    openAlternate: function() {
+        // Reset the overlay
+        game.tutorialOverlay.tutorialPages.childNodes[1].classList.add("active");
+        game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+        game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+        game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+        // Reset the counter
+        game.tutorialOverlay.activeE = 0;
+        // Open the overlay
+        game.tutorialOverlay.open();
+        console.log("<Game:Tutorial> Open Alternate");
+        // Notify of alternate opening
+        game.tutorialOverlay.altOpen = true;
+        // Get the player's current play time
+        game.tutorialOverlay.orgTimeStart = Date.now() - game.playTimerBox.timeStart;
+    },
+    // Close the tutorial overlay
+    close: function() {
+        game.tutorialOverlay.div.style.height = "0%";
+        console.log("<Game:Tutorial> Close");
+        game.tutorialOverlay.startGame();
+    },
+    resize: function() {
+        this.divContent.style.fontSize = this.org_select_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+        this.closeButton.style.fontSize = this.org_closer_size * (1 - Math.max(engine.widthProportion, engine.heightProportion)) + "px";
+    },
+    pagesUpdate: (key) => {
+        game.tutorialOverlay.activeE = key - 1;
+        game.tutorialOverlay.nextSlide();
+    },
+    nextSlide: function() {
+        // Refresh the timeout timer
+        game.timeoutOverlay.refreshTimer();
+        // Get the active slide
+        game.tutorialOverlay.activeE += 1;
+        console.log(`Active: ${game.tutorialOverlay.activeE}`);
+        // Update the slide
+        switch(game.tutorialOverlay.activeE) {
+            case 0:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.add("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "block";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "none";
+                }
+                break;
+            case 1:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.add("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "block";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "none";
+                }
+                break;
+            case 2:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.add("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "block";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "none";
+                }
+                break;
+            case 3:
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.add("active");
+                for (var i = 0; i < game.tutorialOverlay.img01.length; i++) {
+                    game.tutorialOverlay.img01[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img02.length; i++) {
+                    game.tutorialOverlay.img02[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img03.length; i++) {
+                    game.tutorialOverlay.img03[i].style.display = "none";
+                }
+                for (var i = 0; i < game.tutorialOverlay.img04.length; i++) {
+                    game.tutorialOverlay.img04[i].style.display = "block";
+                }
+                break;
+            default:
+                // Exit tutorial (aka. start game)
+                game.tutorialOverlay.close();
+                // Start the game
+                game.tutorialOverlay.startGame();
+                // Reset the overlay
+                game.tutorialOverlay.tutorialPages.childNodes[1].classList.add("active");
+                game.tutorialOverlay.tutorialPages.childNodes[3].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[5].classList.remove("active");
+                game.tutorialOverlay.tutorialPages.childNodes[7].classList.remove("active");
+                break;
+        }
+    },
+    clickMe: () => {
+        console.log("Clicked!");
+    },
+    startGame: () => {
+        // If tutorial opened from the play scene...
+        if (game.tutorialOverlay.altOpen) {
+            // Set the new end time based on time within the tutorial
+            game.playTimerBox.startTimerAlternate(Date.now() + (game.playTime - game.tutorialOverlay.orgTimeStart));
+            // Reset altOpen
+            game.tutorialOverlay.altOpen = false;
+            // Refresh the timeout timer
+            game.timeoutOverlay.refreshTimer();
+            // Display keypads
+            game.playLetterSpaces.showLetters();
+            game.inputKeypad.adjustStyle();
+            // Redraw all elements
+            game.drawOnce();
+        } else {
+            // Otherwise, start the game
+            console.log("<Game:TutorialOverlay> Transition to the Play Scene");
+            // No longer the first play through...
+            game.firstPlayThrough = false;
+            // Inform Google the user started playing a game
+            game.google.start();
+            // Set game score to zero
+            game.score = 0;
+            // Reset the player object
+            game.player.reset();
+            // Get the current sponsor
+            game.getSponsor();
+            // Refresh the timeout timer
+            game.timeoutOverlay.refreshTimer();
+            // Set the new game state to Play Scene
+            game.currState = game.gameState[1];
+            // Hide all elements
+            game.hideElements.hideAll();
+            // Reset the keypads
+            game.inputKeypad.hideKeypad();
+            game.playLetterSpaces.hideKeypad();
+            // Redraw all elements
+            game.drawOnce();
+        }
+    },
+    tester: (key) => {
+        console.log(`Key: ${key}`);
+    }
+};
+game.tutorialOverlay.init(); // Force initialize all event listeners
 
 // Update words
 // - Maintain a short record of words for the user, preventing latency interference
@@ -405,17 +668,25 @@ game.updateWords = {
     },
     // Update the list of words
     update: function () {
-        if (game.word == game.lastWord) {
+        if (game.word == "") {
             // Set initial words
             this.nextWord();
             this.word();
-            this.nextWord();
         } else {
             // Get new word, set current word, and update last word
             this.lastWord();
             this.word();
             this.nextWord();
         }
+    },
+    // Reset the list of words (difficulty changes)
+    reset: function() {
+        game.word = "";
+        game.nextWord = "";
+        game.lastSponsor = "";
+        game.sponsor = "";
+        game.nextSponsor = "";
+        game.sponsorId = "";
     }
 }
 
@@ -503,7 +774,8 @@ game.getSponsor = function () {
             this.sponsorId = "sponsorTalie";
             break;
         default:
-            this.sponsorId = "__INVALID__";
+            this.sponsorId = "sponsorTalie";
+            this.word = "snacks";
             break;
     }
     // Return the sponsor ID
