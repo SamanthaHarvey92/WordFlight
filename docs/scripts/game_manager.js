@@ -14,12 +14,12 @@ game.currState = game.gameState[0];
 game.hideElements = {
     // Hide images
     images: function () {
-		// Hide all <img> elements
+        // Hide all <img> elements
         var y = document.getElementsByTagName("img");
         for (var i = 0; i < y.length; i++) {
             y[i].style.display = "none";
         }
-		// Hide all <div> elements
+        // Hide all <div> elements
         var z = document.getElementsByTagName("div");
         for (var i = 0; i < z.length; i++) {
             z[i].style.display = "none";
@@ -45,7 +45,7 @@ game.gameController = {
         if (game.word === "") {
             game.updateWords.update();
         }
-        
+
         // Toggle difficulty overlay
         for (var i = 0; i < game.keys.length; i++) {
             if (engine.input.pressed(game.keys[i])) {
@@ -60,22 +60,37 @@ game.gameController = {
             }
         }
 
+        //Toggle tutorial overlay
+        for (var i = 0; i < game.keys.length; i++) {
+            if (engine.input.pressed(game.keys[i])) {
+                game.tutorialOverlay.tester(`Key: ${game.keys[i]}`);
+                if (game.keys[i] == 'T') {
+                    game.tutorialOverlay.open();
+                } else if (game.keys[i] == 'C') {
+                    game.tutorialOverlay.close();
+                }
+                //Refresh timeout
+                game.timeoutOverlay.refreshTimer();
+            }
+        }
+
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				// Set game score to zero
+                game.playTutorial.play();
+                // Set game score to zero
                 game.score = 0;
-				// Reset the player object
+                // Reset the player object
                 game.player.reset();
-				// Get the current sponsor
+                // Get the current sponsor
                 game.getSponsor();
-				// Set the new game state to Play Scene
+                // Set the new game state to Play Scene
                 game.currState = game.gameState[1];
-				// Hide all elements
+                // Hide all elements
                 game.hideElements.hideAll();
                 // Refresh timeout
                 game.timeoutOverlay.refreshTimer();
-				// Redraw all elements
+                // Redraw all elements
                 game.drawOnce();
             }
         }
@@ -87,7 +102,7 @@ game.gameController = {
         if (!game.playTimerBox.timerExpired) {
             game.playTimerBox.update();
         } else {
-			// Once the timer expires...
+            // Once the timer expires...
             // Update the player object's score
             game.player.score = game.score;
 
@@ -114,9 +129,9 @@ game.gameController = {
 
         // Check whether a word is complete
         if (game.readyForNextWord) {
-			// Check if the plane is animating
+            // Check if the plane is animating
             if (game.planeManager.animate(dt)) {
-				// During animation, perform the following
+                // During animation, perform the following
                 // Query new word and sponsor
                 game.updateWords.update();
 
@@ -137,7 +152,7 @@ game.gameController = {
                 // Prepare for the next word
                 game.readyForNextWord = false;
 
-				// Redraw all assets
+                // Redraw all assets
                 game.drawOnce();
             }
         }
@@ -147,31 +162,31 @@ game.gameController = {
             game.playScoreBox.animate(dt);
         }
 
-		// DEBUG
+        // DEBUG
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				// Update words list
+                // Update words list
                 game.updateWords.update();
-				// Hide keypad
+                // Hide keypad
                 game.inputKeypad.hideKeypad();
-				// Hide letter spaces
+                // Hide letter spaces
                 game.playLetterSpaces.hideKeypad();
-				// Clear flag for next word
+                // Clear flag for next word
                 game.readyForNextWord = false;
-				// Reset all elements in the plane manager
+                // Reset all elements in the plane manager
                 game.planeManager.resetElements();
-				// Reset the play timer
+                // Reset the play timer
                 game.playTimerBox.resetTimer();
-				// Clear the player initials div
+                // Clear the player initials div
                 game.endPlayerInitials.clearInitials();
-				// Update game state to End Scene
+                // Update game state to End Scene
                 game.currState = game.gameState[2];
-				// Hide all elements
+                // Hide all elements
                 game.hideElements.hideAll();
                 // Refresh timeout
                 game.timeoutOverlay.refreshTimer();
-				// Redraw all elements
+                // Redraw all elements
                 game.drawOnce();
             }
         }
@@ -179,19 +194,19 @@ game.gameController = {
     gsEnd: function (dt) {
         // End Scene
 
-		// DEBUG
+        // DEBUG
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				// Hide keypad
+                // Hide keypad
                 game.inputKeypad.hideKeypad();
-				// Update game state to Leaderboard Scene
+                // Update game state to Leaderboard Scene
                 game.currState = game.gameState[3];
-				// Hide all elements
+                // Hide all elements
                 game.hideElements.hideAll();
                 // Refresh timeout
                 game.timeoutOverlay.refreshTimer();
-				// Redraw all elements
+                // Redraw all elements
                 game.drawOnce();
             }
         }
@@ -201,26 +216,26 @@ game.gameController = {
 
         //Animate Scene
         if (game.leaderboardAnimation.animActive) {
-            game.leaderboardAnimation.animate(dt);            
+            game.leaderboardAnimation.animate(dt);
         }
-        
-		// DEBUG
+
+        // DEBUG
         // Toggle next state
         for (var i = 0; i < game.controls.length; i++) {
             if (engine.input.pressed(game.controls[i])) {
-				// Reset player object
+                // Reset player object
                 game.player.reset();
                 // Reset plane animation
                 game.leaderboardAnimation.resetElements();
                 // Reset leaderboard table
                 game.top10players.hideTable();
-				// Update game state to Start Scene
+                // Update game state to Start Scene
                 game.currState = game.gameState[0];
-				// Hide all elements
+                // Hide all elements
                 game.hideElements.hideAll();
                 // Refresh timeout
                 game.timeoutOverlay.refreshTimer();
-				// Redraw all elements
+                // Redraw all elements
                 game.drawOnce();
             }
         }
@@ -250,7 +265,7 @@ game.update = function (dt) {
             this.gameController.gsStart(dt);
             break;
     };
-    
+
     // Force a draw when the window resizes
     if (this.lastTimeSized < (engine.timeSizing)) {
         this.drawOnce();
@@ -263,7 +278,7 @@ game.update = function (dt) {
     // Handle mouse clicks
     for (var i = 0; i < game.mouse.length; i++) {
         if (engine.input.pressed(game.mouse[i])) {
-			// Refresh the overlay's timer
+            // Refresh the overlay's timer
             game.timeoutOverlay.refreshTimer();
         }
     }
@@ -282,16 +297,20 @@ game.drawOnce = function () {
             this.startRunway.draw();
             this.startHangar.draw();
             this.wordFlightTitle.draw();
-			
+
             // Display buttons
             this.startButton.adjustStyle();
             this.leaderboardButton.adjustStyle();
             this.quitButton.adjustStyle();
             this.menuButton.adjustStyle();
-            
+
             // Difficulty Overlay
             this.difficultyOverlay.resize();
+
+            //Tutorial Overlay
+            this.tutorialOverlay.resize();
             break;
+
         case 'play':
             // Draw images on the canvas
             this.playBackground.draw();
@@ -303,7 +322,7 @@ game.drawOnce = function () {
             this.playTimerBox.draw();
             this.playScore.draw();
             this.playScoreBox.resize();
-			
+
             // Display plane parts
             this.planeCanvasBG.draw();
             this.playPlaneNose.resize();
@@ -322,13 +341,16 @@ game.drawOnce = function () {
             // Initialize plane manager
             this.planeManager.initialize();
             this.planeManager.draw();
-			
+
             // Display buttons
             this.playMenuButton.adjustStyle();
             this.playKeyPadSpace.adjustStyle();
             this.inputKeypad.adjustStyle();
             this.playLetterSpaces.adjustStyle();
             this.inputKeypad.adjustStyle();
+            
+            // Display Snackbar
+            this.playTutorial.draw();
             break;
         case 'end':
             // Draw images on the canvas
@@ -340,7 +362,7 @@ game.drawOnce = function () {
             this.endPlayerScore.draw();
             this.endPlayerInitials.draw();
             this.endGameOver.draw();
-			
+
             // Display buttons
             this.endSubmitButton.adjustStyle();
             this.endMenuButton.adjustStyle();
@@ -357,11 +379,11 @@ game.drawOnce = function () {
             this.leaderboardSponsorLogo.draw();
             this.top10players.adjustStyle();
             this.finalPlayerScore.draw();
-			
+
             // Display buttons
             this.leaderboardMenuButton.adjustStyle();
             this.leaderboardRetryButton.adjustStyle();
-            
+
             // Animations
             this.leaderboardAnimation.draw();
             break;
@@ -399,13 +421,13 @@ game.draw = function () {
 
 // Window loses focus
 window.onblur = function () {
-	// Pause the game
+    // Pause the game
     return game.stop();
 };
 
 // Window gains focus
 window.onfocus = function () {
-	// Force redraw of all elements
+    // Force redraw of all elements
     game.run();
     // Unpause the game
     return game.drawOnce();

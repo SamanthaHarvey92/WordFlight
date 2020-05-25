@@ -512,7 +512,7 @@ game.leaderboardRetryButton = {
         // Inform Google the player is starting a new game
         game.google.start();
         // Set the game state to Play Scene
-        game.currState = game.gameState[1];
+        game.currState = game.gameState[0];
         // Reset the player object
         game.player.reset();
         // Reset leaderboard table
@@ -525,6 +525,8 @@ game.leaderboardRetryButton = {
 		game.hideElements.hideAll();
         // Redraw all elements
 		game.drawOnce();
+        // Show the difficulty overlay before starting
+        game.difficultyOverlay.open();
     }
 };
 game.leaderboardRetryButton.init(); // Force initialize object on first script load
